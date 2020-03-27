@@ -29,12 +29,20 @@ namespace Musify {
                 lastNameTextBox.Text, 
                 secondLastNameTextBox.Text
             );
-            account.Register((jsonResponse) => {
+            account.Register(imAnArtistCheckBox.IsChecked.GetValueOrDefault(), (jsonResponse) => {
                 MessageBox.Show("Cuenta registrada.");
                 Close();
             }, (jsonResponse) => {
                 MessageBox.Show("Error al registrar la cuenta.");
-            });
+            }, artisticNameTextBox.Text);
+        }
+
+        private void ImAnArtistCheckBox_Checked(object sender, RoutedEventArgs e) {
+            artisticNameTextBox.IsEnabled = true;
+        }
+
+        private void ImAnArtistCheckBox_Unchecked(object sender, RoutedEventArgs e) {
+            artisticNameTextBox.IsEnabled = false;
         }
     }
 }

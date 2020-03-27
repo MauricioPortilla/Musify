@@ -80,14 +80,16 @@ namespace Musify {
             });
         }
 
-        public void Register(Action<dynamic> onSuccess, Action<dynamic> onFailure) {
+        public void Register(bool isArtist, Action<dynamic> onSuccess, Action<dynamic> onFailure, string artisticName = null) {
             var accountData = new {
                 requestType = "register",
                 email,
                 password,
                 name,
                 last_name = this.lastName,
-                second_last_name = this.secondLastName
+                second_last_name = this.secondLastName,
+                is_artist = isArtist,
+                artistic_name = artisticName
             };
             RestSharpTools.PostAsync("/Account", accountData, (response) => {
                 if (response.IsSuccessful) {

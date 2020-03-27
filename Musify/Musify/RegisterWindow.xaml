@@ -13,6 +13,8 @@
         <TextBox x:Name="nameTextBox" HorizontalAlignment="Left" Height="37" Margin="38,133,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="228" materialDesign:HintAssist.Hint="Nombre" Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
         <TextBox x:Name="lastNameTextBox" HorizontalAlignment="Left" Height="37" Margin="38,175,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="228" materialDesign:HintAssist.Hint="Apellido paterno" Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
         <TextBox x:Name="secondLastNameTextBox" HorizontalAlignment="Left" Height="37" Margin="38,217,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="228" materialDesign:HintAssist.Hint="Apellido materno" Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
-        <Button x:Name="registerButton" Content="Registrarse" HorizontalAlignment="Left" Margin="84,292,0,0" VerticalAlignment="Top" Width="130" Click="RegisterButton_Click"/>
+        <Button x:Name="registerButton" Content="Registrarse" HorizontalAlignment="Left" Margin="80,361,0,0" VerticalAlignment="Top" Width="130" Click="RegisterButton_Click"/>
+        <CheckBox x:Name="imAnArtistCheckBox" Content="Soy un artista" HorizontalAlignment="Left" Margin="38,278,0,0" VerticalAlignment="Top" Checked="ImAnArtistCheckBox_Checked" Unchecked="ImAnArtistCheckBox_Unchecked"/>
+        <TextBox x:Name="artisticNameTextBox" HorizontalAlignment="Left" Height="37" Margin="38,296,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="228" materialDesign:HintAssist.Hint="Nombre artístico" Style="{StaticResource MaterialDesignFloatingHintTextBox}" IsEnabled="False" />
     </Grid>
 </Window>
