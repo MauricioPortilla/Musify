@@ -5,8 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Musify"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="Iniciar sesión" Height="341.25" Width="449.375">
     <Grid>
-        
+        <TextBox x:Name="emailTextBox" HorizontalAlignment="Left" Height="37" Margin="110,68,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="228" materialDesign:HintAssist.Hint="Correo" Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+        <PasswordBox x:Name="passwordPasswordBox" HorizontalAlignment="Left" Height="37" Margin="110,110,0,0" VerticalAlignment="Top" Width="228" materialDesign:HintAssist.Hint="Contraseña" Style="{StaticResource MaterialDesignFloatingHintPasswordBox}" />
+        <Button x:Name="loginButton" Content="Iniciar sesión" HorizontalAlignment="Left" Margin="162,171,0,0" VerticalAlignment="Top" Width="114" Click="LoginButton_Click"/>
+        <Button x:Name="registerButton" Content="Registrarse" HorizontalAlignment="Left" Margin="162,218,0,0" VerticalAlignment="Top" Width="114" Click="RegisterButton_Click"/>
     </Grid>
 </Window>

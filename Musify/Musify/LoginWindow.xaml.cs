@@ -1,6 +1,8 @@
-﻿using System;
+﻿using RestSharp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,6 +22,19 @@ namespace Musify {
     public partial class LoginWindow : Window {
         public LoginWindow() {
             InitializeComponent();
+        }
+
+        private void LoginButton_Click(object sender, RoutedEventArgs e) {
+            Account.Login(emailTextBox.Text, passwordPasswordBox.Password, (account) => {
+                Session.Account = account;
+                MessageBox.Show("OK");
+            }, () => {
+                MessageBox.Show("Error al iniciar sesión.");
+            });
+        }
+
+        private void RegisterButton_Click(object sender, RoutedEventArgs e) {
+            new RegisterWindow().Show();
         }
     }
 }

@@ -1,0 +1,18 @@
+﻿<Window x:Class="Musify.RegisterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:Musify"
+        mc:Ignorable="d"
+        Title="Registrar cuenta" Height="450" Width="800">
+    <Grid>
+        <TextBox x:Name="emailTextBox" HorizontalAlignment="Left" Height="37" Margin="38,49,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="228" materialDesign:HintAssist.Hint="Correo" Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+        <PasswordBox x:Name="passwordPasswordBox" HorizontalAlignment="Left" Height="37" Margin="38,91,0,0" VerticalAlignment="Top" Width="228" materialDesign:HintAssist.Hint="Contraseña" Style="{StaticResource MaterialDesignFloatingHintPasswordBox}" />
+        <TextBox x:Name="nameTextBox" HorizontalAlignment="Left" Height="37" Margin="38,133,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="228" materialDesign:HintAssist.Hint="Nombre" Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+        <TextBox x:Name="lastNameTextBox" HorizontalAlignment="Left" Height="37" Margin="38,175,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="228" materialDesign:HintAssist.Hint="Apellido paterno" Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+        <TextBox x:Name="secondLastNameTextBox" HorizontalAlignment="Left" Height="37" Margin="38,217,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="228" materialDesign:HintAssist.Hint="Apellido materno" Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+        <Button x:Name="registerButton" Content="Registrarse" HorizontalAlignment="Left" Margin="84,292,0,0" VerticalAlignment="Top" Width="130" Click="RegisterButton_Click"/>
+    </Grid>
+</Window>
