@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace Musify {
-    class Account {
+    public class Account {
 
+        /// <summary>
+        /// Explains how to pass JSON data to an object of this type.
+        /// </summary>
         public static readonly Dictionary<string, string> JSON_EQUIVALENTS = new Dictionary<string, string>() {
             { "account_id", "AccountId" },
             { "email", "Email" },
@@ -67,7 +70,7 @@ namespace Musify {
 
         public static void Login(string email, string password, Action<Account> onSuccess, Action onFailure) {
             var accountData = new {
-                requestType = "login",
+                request_type = "login",
                 email,
                 password
             };
@@ -82,12 +85,12 @@ namespace Musify {
 
         public void Register(bool isArtist, Action<dynamic> onSuccess, Action<dynamic> onFailure, string artisticName = null) {
             var accountData = new {
-                requestType = "register",
+                request_type = "register",
                 email,
                 password,
                 name,
-                last_name = this.lastName,
-                second_last_name = this.secondLastName,
+                last_name = lastName,
+                second_last_name = secondLastName,
                 is_artist = isArtist,
                 artistic_name = artisticName
             };

@@ -1,0 +1,44 @@
+﻿<Page x:Class="Musify.PlaylistsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Musify"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Menú principal">
+    <Grid Background="#FFFFFF">
+        <materialDesign:DialogHost Identifier="PlaylistPage_WindowDialogHost" IsOpen="False" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <materialDesign:DialogHost.DialogContent>
+                <StackPanel Margin="16" x:Name="mainStackPanel">
+                    <Grid x:Name="dialogLoadingGrid" Visibility="Collapsed">
+                        <ProgressBar Style="{DynamicResource MaterialDesignCircularProgressBar}" HorizontalAlignment="Center" Margin="16" IsIndeterminate="True" Value="0" />
+                    </Grid>
+                    <Grid x:Name="dialogCreatePlaylistGrid" Visibility="Collapsed">
+                        <StackPanel>
+                            <TextBox x:Name="dialogPlaylistNameTextBox" HorizontalAlignment="Left" Height="37" TextWrapping="NoWrap" VerticalAlignment="Top" Width="228" materialDesign:HintAssist.Hint="Nombre de la lista" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="0,0,0,15" />
+                            <Button x:Name="dialogCreatePlaylistButton" Content="Aceptar" Click="CreatePlaylistButton_Click"/>
+                            <Button x:Name="dialogCancelButton" Content="Cancelar" Style="{StaticResource MaterialDesignFlatButton}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </materialDesign:DialogHost.DialogContent>
+        </materialDesign:DialogHost>
+        <materialDesign:ColorZone Mode="Accent" Padding="16" CornerRadius="0" materialDesign:ShadowAssist.ShadowDepth="Depth3">
+            <Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBlock x:Name="TitleBar" VerticalAlignment="Center" FontSize="16" Text="Menú Principal"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Width="119">
+                    <Button x:Name="subscribeButton" Content="Suscribirse" HorizontalAlignment="Right" VerticalAlignment="Top" Width="114"/>
+                </StackPanel>
+            </Grid>
+        </materialDesign:ColorZone>
+        <StackPanel Margin="0,69,0,0">
+            <TextBlock TextAlignment="Center" TextWrapping="NoWrap" Text="Listas de reproducción" VerticalAlignment="Top" FontSize="20"/>
+        </StackPanel>
+        <ListBox x:Name="playlistsListBox" Margin="10,102,10,61"/>
+        <Button x:Name="newPlaylistButton" Content="Nueva lista de reproducción" Margin="0,0,10,10" Click="NewPlaylistButton_Click" HorizontalAlignment="Right" Width="217" VerticalAlignment="Bottom"/>
+    </Grid>
+</Page>

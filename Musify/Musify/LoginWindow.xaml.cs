@@ -27,7 +27,8 @@ namespace Musify {
         private void LoginButton_Click(object sender, RoutedEventArgs e) {
             Account.Login(emailTextBox.Text, passwordPasswordBox.Password, (account) => {
                 Session.Account = account;
-                MessageBox.Show("OK");
+                new MainWindow().Show();
+                Close();
             }, () => {
                 MessageBox.Show("Error al iniciar sesión.");
             });
