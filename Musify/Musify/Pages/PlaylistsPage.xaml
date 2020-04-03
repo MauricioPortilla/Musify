@@ -25,20 +25,10 @@
                 </StackPanel>
             </materialDesign:DialogHost.DialogContent>
         </materialDesign:DialogHost>
-        <materialDesign:ColorZone Mode="Accent" Padding="16" CornerRadius="0" materialDesign:ShadowAssist.ShadowDepth="Depth3">
-            <Grid>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBlock x:Name="TitleBar" VerticalAlignment="Center" FontSize="16" Text="Menú Principal"/>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Width="119">
-                    <Button x:Name="subscribeButton" Content="Suscribirse" HorizontalAlignment="Right" VerticalAlignment="Top" Width="114"/>
-                </StackPanel>
-            </Grid>
-        </materialDesign:ColorZone>
-        <StackPanel Margin="0,69,0,0">
+        <StackPanel Margin="0,10,0,0">
             <TextBlock TextAlignment="Center" TextWrapping="NoWrap" Text="Listas de reproducción" VerticalAlignment="Top" FontSize="20"/>
         </StackPanel>
-        <ListBox x:Name="playlistsListBox" Margin="10,102,10,61"/>
+        <ListBox x:Name="playlistsListBox" Margin="10,40,10,60"/>
         <Button x:Name="newPlaylistButton" Content="Nueva lista de reproducción" Margin="0,0,10,10" Click="NewPlaylistButton_Click" HorizontalAlignment="Right" Width="217" VerticalAlignment="Bottom"/>
     </Grid>
 </Page>

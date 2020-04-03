@@ -24,5 +24,9 @@ namespace Musify {
             playerFrame.Source = new Uri("Pages/PlayerPage.xaml", UriKind.RelativeOrAbsolute);
             Session.PlayerPage = playerFrame.Content as PlayerPage;
         }
+        
+        public void MenuButton_Click(object sender, RoutedEventArgs e) {
+            
+        }
     }
 }

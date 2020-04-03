@@ -8,7 +8,30 @@
         mc:Ignorable="d"
         Title="Musify" Height="450" Width="800" MinWidth="350" WindowStartupLocation="CenterScreen">
     <Grid>
-        <Frame x:Name="mainFrame" Margin="0,0,0,70" />
+        <materialDesign:ColorZone Mode="Accent" Padding="16" CornerRadius="0" materialDesign:ShadowAssist.ShadowDepth="Depth3">
+            <Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <Menu Height="30" Background="Gray" BorderThickness="0">
+                        <MenuItem Header="Menú" Height="30" Background="Gray" Foreground="White" FontSize="10">
+                            <MenuItem Header="Menú principal" Background="Gray" Foreground="White" FontSize="10" Click="MenuButton_Click"/>
+                            <MenuItem Header="Buscar canción" Background="Gray" Foreground="White" FontSize="10" Click="MenuButton_Click"/>
+                            <MenuItem Header="Cola de reproducción" Background="Gray" Foreground="White" FontSize="10" Click="MenuButton_Click"/>
+                            <MenuItem Header="Historial de reproducción" Background="Gray" Foreground="White" FontSize="10" Click="MenuButton_Click"/>
+                            <MenuItem Header="Biblioteca propia" Background="Gray" Foreground="White" FontSize="10" Click="MenuButton_Click"/>
+                            <MenuItem Header="Estaciones de radio" Background="Gray" Foreground="White" FontSize="10" Click="MenuButton_Click"/>
+                            <MenuItem Header="Configurar reproductor" Background="Gray" Foreground="White" FontSize="10" Click="MenuButton_Click"/>
+                        </MenuItem>
+                    </Menu>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBlock x:Name="TitleBar" VerticalAlignment="Center" FontSize="16" Text="Menú Principal"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Width="119">
+                    <Button x:Name="subscribeButton" Content="Suscribirse" HorizontalAlignment="Right" VerticalAlignment="Top" Width="114"/>
+                </StackPanel>
+            </Grid>
+        </materialDesign:ColorZone>
+        <Frame x:Name="mainFrame" Margin="0,65,0,70" />
         <Frame x:Name="playerFrame" Height="70" VerticalAlignment="Bottom" />
     </Grid>
 </Window>
