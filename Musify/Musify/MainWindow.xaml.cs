@@ -26,7 +26,19 @@ namespace Musify {
         }
         
         public void MenuButton_Click(object sender, RoutedEventArgs e) {
-            
+            MenuItem button = (MenuItem)sender;
+            string opcion = button.Header.ToString();
+            switch (opcion) {
+                case "Menú principal":
+                    mainFrame.Source = new Uri("Pages/PlaylistsPage.xaml", UriKind.RelativeOrAbsolute);
+                    subscribeButton.Visibility = Visibility.Visible;
+                    break;
+                case "Cola de reproducción":
+                    mainFrame.Source = new Uri("Pages/PlayQueuePage.xaml", UriKind.RelativeOrAbsolute);
+                    subscribeButton.Visibility = Visibility.Hidden;
+                    break;
+            }
+            TitleBar.Text = opcion;
         }
     }
 }

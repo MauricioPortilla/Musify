@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:Musify"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="330" d:DesignWidth="800"
       Title="Menú principal">
     <Grid Background="#FFFFFF">
         <materialDesign:DialogHost Identifier="PlaylistPage_WindowDialogHost" IsOpen="False" HorizontalAlignment="Center" VerticalAlignment="Center">
