@@ -33,6 +33,10 @@ namespace Musify {
                     mainFrame.Source = new Uri("Pages/PlaylistsPage.xaml", UriKind.RelativeOrAbsolute);
                     subscribeButton.Visibility = Visibility.Visible;
                     break;
+                case "Buscar canción":
+                    mainFrame.Source = new Uri("Pages/SearchSongPage.xaml", UriKind.RelativeOrAbsolute);
+                    subscribeButton.Visibility = Visibility.Hidden;
+                    break;
                 case "Cola de reproducción":
                     mainFrame.Source = new Uri("Pages/PlayQueuePage.xaml", UriKind.RelativeOrAbsolute);
                     subscribeButton.Visibility = Visibility.Hidden;

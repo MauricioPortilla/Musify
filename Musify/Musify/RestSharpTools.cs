@@ -16,7 +16,8 @@ namespace Musify {
             Action<IRestResponse<TModel>> callback
         ) where TModel : new() {
             var request = new RestRequest(resource, DataFormat.Json);
-            request.AddJsonBody(parameters);
+            //request.AddJsonBody(parameters);
+            request.AddParameter("data", JsonConvert.SerializeObject(parameters));
             var response = await Session.REST_CLIENT.ExecuteGetAsync<TModel>(request, new CancellationTokenSource().Token);
             dynamic json = JObject.Parse(response.Content);
             if (json["status"] != null && json["status"] == "success") {
