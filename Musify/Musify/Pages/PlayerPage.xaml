@@ -10,18 +10,24 @@
       Title="Player">
     <Grid Background="LightGray">
         <StackPanel Orientation="Vertical">
-            <TextBlock x:Name="songNameTextBlock" TextWrapping="NoWrap" Text="SONG_NAME" FontSize="14" Height="19" Margin="15,15,0,0"/>
-            <TextBlock x:Name="artistNameTextBlock" TextWrapping="NoWrap" Text="ARTIST_NAME" Height="14" Margin="15,0,0,0"/>
+            <TextBlock x:Name="songNameTextBlock" TextWrapping="NoWrap" Text="" FontSize="14" Height="19" Margin="15,15,0,0"/>
+            <TextBlock x:Name="artistNameTextBlock" TextWrapping="NoWrap" Text="" Height="14" Margin="15,0,0,0"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button x:Name="rewindButton" Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" Content="{materialDesign:PackIcon SkipPrevious}" Width="40" MinWidth="40" />
-            <Button x:Name="playButton" Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" Content="{materialDesign:PackIcon Play}"  Width="40" MinWidth="40" />
-            <Button x:Name="forwardButton" Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" Content="{materialDesign:PackIcon SkipNext}"  Width="40" MinWidth="40" />
+            <Button x:Name="rewindButton" Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" Width="40" MinWidth="40" Click="RewindButton_Click">
+                <materialDesign:PackIcon Name="rewindButtonIcon" Kind="SkipPrevious" />
+            </Button>
+            <Button x:Name="playButton" Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" Width="40" MinWidth="40" Click="PlayButton_Click">
+                <materialDesign:PackIcon Name="playButtonIcon" Kind="Play" />
+            </Button>
+            <Button x:Name="forwardButton" Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}"  Width="40" MinWidth="40" Click="ForwardButton_Click">
+                <materialDesign:PackIcon Name="forwardButtonIcon" Kind="SkipNext" />
+            </Button>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Margin="0,53,0,0" HorizontalAlignment="Center">
-            <TextBlock x:Name="songCurrentTimeTextBlock" TextWrapping="NoWrap" Text="0:00" VerticalAlignment="Center" Padding="0,0,8,0"/>
-            <ProgressBar x:Name="songProgressBar" Value="0" Width="427" MaxWidth="750" Height="5" Padding="0" />
-            <TextBlock x:Name="songDurationTimeTextBlock" TextWrapping="NoWrap" Text="0:00" VerticalAlignment="Center" Padding="8,0,0,0"/>
+            <TextBlock x:Name="songCurrentTimeTextBlock" TextWrapping="NoWrap" Text="00:00" VerticalAlignment="Center" Padding="0,0,8,0"/>
+            <Slider x:Name="songSlider" Orientation="Horizontal" Minimum="0" Maximum="100" Value="0" Width="331" />
+            <TextBlock x:Name="songDurationTimeTextBlock" TextWrapping="NoWrap" Text="00:00" VerticalAlignment="Center" Padding="8,0,0,0"/>
         </StackPanel>
     </Grid>
 </Page>

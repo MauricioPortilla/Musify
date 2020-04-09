@@ -21,8 +21,10 @@ namespace Musify {
         public MainWindow() {
             InitializeComponent();
             mainFrame.Source = new Uri("Pages/PlaylistsPage.xaml", UriKind.RelativeOrAbsolute);
-            playerFrame.Source = new Uri("Pages/PlayerPage.xaml", UriKind.RelativeOrAbsolute);
-            Session.PlayerPage = playerFrame.Content as PlayerPage;
+            Session.PlayerPage = new PlayerPage();
+            //playerFrame.Source = new Uri("Pages/PlayerPage.xaml", UriKind.RelativeOrAbsolute);
+            playerFrame.Navigate(Session.PlayerPage);
+            //Session.PlayerPage = playerFrame. as PlayerPage;
         }
         
         public void MenuButton_Click(object sender, RoutedEventArgs e) {
