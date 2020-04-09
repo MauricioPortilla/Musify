@@ -24,9 +24,13 @@ namespace Musify.Pages {
     public partial class PlayerPage : Page {
 
         /// <summary>
-        /// Stores song data.
+        /// Manages song stream data.
         /// </summary>
         private WaveOut playerWaveOut;
+        /// <summary>
+        /// Stores song data.
+        /// </summary>
+        private IWaveProvider reader;
         /// <summary>
         /// Stores the latest song played.
         /// </summary>
@@ -89,24 +93,22 @@ namespace Musify.Pages {
                         }
                         memoryStream.Position = 0;
                         try {
-                            using (var reader = new WaveFileReader(memoryStream)) {
+                            reader = new WaveFileReader(memoryStream);
+                            Application.Current.Dispatcher.Invoke(delegate {
+                                songCurrentTimeTextBlock.Text = ((WaveFileReader) reader).CurrentTime.ToString("mm\\:ss");
+                                songDurationTimeTextBlock.Text = ((WaveFileReader) reader).TotalTime.ToString("mm\\:ss");
+                                songSlider.Value = 0;
+                            });
+                            PlayStreamSong(reader);
+                        } catch (Exception) {
+                            try {
+                                reader = new Mp3FileReader(memoryStream);
                                 Application.Current.Dispatcher.Invoke(delegate {
-                                    songCurrentTimeTextBlock.Text = reader.CurrentTime.ToString("mm\\:ss");
-                                    songDurationTimeTextBlock.Text = reader.TotalTime.ToString("mm\\:ss");
+                                    songCurrentTimeTextBlock.Text = ((Mp3FileReader) reader).CurrentTime.ToString("mm\\:ss");
+                                    songDurationTimeTextBlock.Text = ((Mp3FileReader) reader).TotalTime.ToString("mm\\:ss");
                                     songSlider.Value = 0;
                                 });
                                 PlayStreamSong(reader);
-                            }
-                        } catch (Exception) {
-                            try {
-                                using (var reader = new Mp3FileReader(memoryStream)) {
-                                    Application.Current.Dispatcher.Invoke(delegate {
-                                        songCurrentTimeTextBlock.Text = reader.CurrentTime.ToString("mm\\:ss");
-                                        songDurationTimeTextBlock.Text = reader.TotalTime.ToString("mm\\:ss");
-                                        songSlider.Value = 0;
-                                    });
-                                    PlayStreamSong(reader);
-                                }
                             } catch (Exception) {
                                 throw;
                             }
@@ -130,6 +132,7 @@ namespace Musify.Pages {
                 playerWaveOut.Dispose();
                 Application.Current.Dispatcher.Invoke(delegate {
                     playButtonIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Play;
+                    songSlider.IsEnabled = false;
                 });
             }
             using (playerWaveOut = new WaveOut(WaveCallbackInfo.FunctionCallback())) {
@@ -137,6 +140,7 @@ namespace Musify.Pages {
                 playerWaveOut.Play();
                 Application.Current.Dispatcher.Invoke(delegate {
                     playButtonIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Pause;
+                    songSlider.IsEnabled = true;
                 });
                 while (playerWaveOut.PlaybackState == PlaybackState.Playing || isPlayerStopped) {
                     System.Threading.Thread.Sleep(1000);
@@ -152,6 +156,7 @@ namespace Musify.Pages {
                     songCurrentTimeTextBlock.Text = "00:00";
                     songDurationTimeTextBlock.Text = "00:00";
                     songSlider.Value = 0;
+                    songSlider.IsEnabled = false;
                 });
                 isPlayerWaveOutAvailable = true;
             }
@@ -166,17 +171,37 @@ namespace Musify.Pages {
                 if (reader.GetType() == typeof(WaveFileReader)) {
                     var waveFileReader = (WaveFileReader) reader;
                     songCurrentTimeTextBlock.Text = waveFileReader.CurrentTime.ToString("mm\\:ss");
-                    songSlider.Value += TimeSpan.TicksPerSecond * songSlider.Maximum / waveFileReader.TotalTime.Ticks;
+                    songSlider.Value = waveFileReader.CurrentTime.Ticks * songSlider.Maximum / waveFileReader.TotalTime.Ticks;
                 } else if (reader.GetType() == typeof(Mp3FileReader)) {
                     var mp3FileReader = (Mp3FileReader) reader;
                     songCurrentTimeTextBlock.Text = mp3FileReader.CurrentTime.ToString("mm\\:ss");
-                    songSlider.Value += TimeSpan.TicksPerSecond * songSlider.Maximum / mp3FileReader.TotalTime.Ticks;
+                    songSlider.Value = mp3FileReader.CurrentTime.Ticks * songSlider.Maximum / mp3FileReader.TotalTime.Ticks;
                 }
             });
         }
 
+        /// <summary>
+        /// If a song is being played and its current time is higher than 2 seconds,
+        /// then it will rewind to the beginning. If there's no song being played, then
+        /// the previous song played will be played.
+        /// </summary>
+        /// <param name="sender">Rewind button</param>
+        /// <param name="e">Button event</param>
         private void RewindButton_Click(object sender, RoutedEventArgs e) {
-
+            if (reader != null && !isPlayerWaveOutAvailable) {
+                if (reader.GetType() == typeof(WaveFileReader)) {
+                    var waveFileReader = (WaveFileReader) reader;
+                    if (waveFileReader.CurrentTime.TotalSeconds > 2) {
+                        waveFileReader.CurrentTime = TimeSpan.FromMilliseconds(0);
+                    }
+                } else if (reader.GetType() == typeof(Mp3FileReader)) {
+                    var mp3FileReader = (Mp3FileReader) reader;
+                    if (mp3FileReader.CurrentTime.TotalSeconds > 2) {
+                        mp3FileReader.CurrentTime = TimeSpan.FromMilliseconds(0);
+                    }
+                }
+            }
+            // TODO: Go to previous song functionality
         }
 
         /// <summary>
@@ -204,6 +229,24 @@ namespace Musify.Pages {
 
         private void ForwardButton_Click(object sender, RoutedEventArgs e) {
 
+        }
+
+        /// <summary>
+        /// If there's a song being played and the player slider was dragged,
+        /// then the song will play from the point where dragging finished.
+        /// </summary>
+        /// <param name="sender">Player slider</param>
+        /// <param name="e">Slider event</param>
+        private void SongSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e) {
+            if (reader != null && !isPlayerWaveOutAvailable) {
+                if (reader.GetType() == typeof(WaveFileReader)) {
+                    var waveFileReader = (WaveFileReader) reader;
+                    waveFileReader.CurrentTime = TimeSpan.FromMilliseconds(((songSlider.Value * waveFileReader.TotalTime.Ticks / songSlider.Maximum) / TimeSpan.TicksPerSecond) * 1000);
+                } else if (reader.GetType() == typeof(Mp3FileReader)) {
+                    var mp3FileReader = (Mp3FileReader) reader;
+                    mp3FileReader.CurrentTime = TimeSpan.FromMilliseconds(((songSlider.Value * mp3FileReader.TotalTime.Ticks / songSlider.Maximum) / TimeSpan.TicksPerSecond) * 1000);
+                }
+            }
         }
     }
 }
