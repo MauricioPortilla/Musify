@@ -46,11 +46,7 @@ namespace Musify.Models {
         }
 
         public static void Fetch(int accountId, Action<List<Playlist>> onSuccess, Action onFailure) {
-            var data = new {
-                request_type = "accountPlaylists",
-                account_id = accountId
-            };
-            RestSharpTools.GetAsyncMultiple<Playlist>("/playlist", data, JSON_EQUIVALENTS, (response, objects) => {
+            RestSharpTools.GetAsyncMultiple<Playlist>("/account/" + accountId + "/playlists", null, JSON_EQUIVALENTS, (response, objects) => {
                 if (response.IsSuccessful) {
                     onSuccess(objects);
                 } else {

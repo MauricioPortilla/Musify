@@ -82,7 +82,7 @@ namespace Musify.Pages {
                     isPlayerWaveOutAvailable = false;
                     isStreamSongLocked = true;
                     isPlayerStopped = false;
-                    string streamUrl = Core.SERVER_API_URL + "/songstream?data={\"song_id\":" + songId + "}";
+                    string streamUrl = Core.SERVER_API_URL + "/songstream/" + songId;
                     using (Stream memoryStream = new MemoryStream()) {
                         using (Stream stream = WebRequest.Create(streamUrl).GetResponse().GetResponseStream()) {
                             byte[] buffer = new byte[32768];

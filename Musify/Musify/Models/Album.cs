@@ -50,27 +50,19 @@ namespace Musify.Models {
         }
 
         public static void FetchById(int albumId, Action<Album> onSuccess, Action onFailure) {
-            var data = new {
-                request_type = "albumById",
-                album_id = albumId
-            };
-            RestSharpTools.GetAsync<Album>("/album", data, JSON_EQUIVALENTS, (response) => {
+            RestSharpTools.GetAsync<Album>("/album/" + albumId, null, JSON_EQUIVALENTS, (response) => {
                 if (response.IsSuccessful) {
                     response.Data.FetchArtists(() => {
                         onSuccess(response.Data);
                     });
                 } else {
-                    onFailure();
+                    onFailure?.Invoke();
                 }
             });
         }
 
         private void FetchArtists(Action onFinish) {
-            var data = new {
-                request_type = "albumArtists",
-                album_id = albumId
-            };
-            RestSharpTools.GetAsyncMultiple<Artist>("/artist", data, Artist.JSON_EQUIVALENTS, (response, artists) => {
+            RestSharpTools.GetAsyncMultiple<Artist>("/album/" + albumId + "/artists", null, Artist.JSON_EQUIVALENTS, (response, artists) => {
                 if (response.IsSuccessful) {
                     this.artists = artists;
                 }

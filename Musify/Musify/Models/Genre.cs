@@ -27,11 +27,7 @@ namespace Musify.Models {
         }
 
         public static void FetchById(int genreId, Action<Genre> onSuccess, Action onFailure) {
-            var data = new {
-                request_type = "genreById",
-                genre_id = genreId
-            };
-            RestSharpTools.GetAsync<Genre>("/genre", data, JSON_EQUIVALENTS, (response) => {
+            RestSharpTools.GetAsync<Genre>("/genre/" + genreId, null, JSON_EQUIVALENTS, (response) => {
                 if (response.IsSuccessful) {
                     onSuccess(response.Data);
                 } else {
