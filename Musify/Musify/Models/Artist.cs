@@ -42,7 +42,7 @@ namespace Musify.Models {
                 request_type = "artistById",
                 artist_id = artistId
             };
-            RestSharpTools.GetAsync<Artist>("/Artist", data, JSON_EQUIVALENTS, (response) => {
+            RestSharpTools.GetAsync<Artist>("/artist", data, JSON_EQUIVALENTS, (response) => {
                 if (response.IsSuccessful) {
                     onSuccess(response.Data);
                 } else {

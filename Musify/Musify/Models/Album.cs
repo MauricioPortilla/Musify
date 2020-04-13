@@ -54,7 +54,7 @@ namespace Musify.Models {
                 request_type = "albumById",
                 album_id = albumId
             };
-            RestSharpTools.GetAsync<Album>("/Album", data, JSON_EQUIVALENTS, (response) => {
+            RestSharpTools.GetAsync<Album>("/album", data, JSON_EQUIVALENTS, (response) => {
                 if (response.IsSuccessful) {
                     response.Data.FetchArtists(() => {
                         onSuccess(response.Data);
@@ -70,7 +70,7 @@ namespace Musify.Models {
                 request_type = "albumArtists",
                 album_id = albumId
             };
-            RestSharpTools.GetAsyncMultiple<Artist>("/Artist", data, Artist.JSON_EQUIVALENTS, (response, artists) => {
+            RestSharpTools.GetAsyncMultiple<Artist>("/artist", data, Artist.JSON_EQUIVALENTS, (response, artists) => {
                 if (response.IsSuccessful) {
                     this.artists = artists;
                 }

@@ -69,10 +69,9 @@ namespace Musify.Models {
         /// <param name="onFailure">On failure</param>
         public static void FetchByTitleCoincidences(string title, Action<List<Song>> onSuccess, Action onFailure) {
             var data = new {
-                request_type = "songByTitleCoincidences",
                 title
             };
-            RestSharpTools.GetAsyncMultiple<Song>("/Song", data, JSON_EQUIVALENTS, (response, songs) => {
+            RestSharpTools.GetAsyncMultiple<Song>("/song/search", data, JSON_EQUIVALENTS, (response, songs) => {
                 if (response.IsSuccessful) {
                     if (songs.Count == 0) {
                         onSuccess(songs);

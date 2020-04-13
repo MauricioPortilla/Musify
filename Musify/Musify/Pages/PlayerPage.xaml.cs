@@ -82,7 +82,7 @@ namespace Musify.Pages {
                     isPlayerWaveOutAvailable = false;
                     isStreamSongLocked = true;
                     isPlayerStopped = false;
-                    string streamUrl = Core.SERVER_API_URL + "/Song?&data={\"request_type\"%3a\"streamSong\"%2c\"song_id\"%3a" + songId + "}";
+                    string streamUrl = Core.SERVER_API_URL + "/songstream?data={\"song_id\":" + songId + "}";
                     using (Stream memoryStream = new MemoryStream()) {
                         using (Stream stream = WebRequest.Create(streamUrl).GetResponse().GetResponseStream()) {
                             byte[] buffer = new byte[32768];
@@ -94,20 +94,12 @@ namespace Musify.Pages {
                         memoryStream.Position = 0;
                         try {
                             reader = new WaveFileReader(memoryStream);
-                            Application.Current.Dispatcher.Invoke(delegate {
-                                songCurrentTimeTextBlock.Text = ((WaveFileReader) reader).CurrentTime.ToString("mm\\:ss");
-                                songDurationTimeTextBlock.Text = ((WaveFileReader) reader).TotalTime.ToString("mm\\:ss");
-                                songSlider.Value = 0;
-                            });
+                            SetPlayerData(reader);
                             PlayStreamSong(reader);
                         } catch (Exception) {
                             try {
                                 reader = new Mp3FileReader(memoryStream);
-                                Application.Current.Dispatcher.Invoke(delegate {
-                                    songCurrentTimeTextBlock.Text = ((Mp3FileReader) reader).CurrentTime.ToString("mm\\:ss");
-                                    songDurationTimeTextBlock.Text = ((Mp3FileReader) reader).TotalTime.ToString("mm\\:ss");
-                                    songSlider.Value = 0;
-                                });
+                                SetPlayerData(reader);
                                 PlayStreamSong(reader);
                             } catch (Exception) {
                                 throw;
@@ -116,6 +108,7 @@ namespace Musify.Pages {
                     }
                 } catch (Exception) {
                     MessageBox.Show("Error al reproducir la canción.");
+                    isPlayerWaveOutAvailable = true;
                 }
             });
         }
@@ -193,11 +186,13 @@ namespace Musify.Pages {
                     var waveFileReader = (WaveFileReader) reader;
                     if (waveFileReader.CurrentTime.TotalSeconds > 2) {
                         waveFileReader.CurrentTime = TimeSpan.FromMilliseconds(0);
+                        SetPlayerData(reader);
                     }
                 } else if (reader.GetType() == typeof(Mp3FileReader)) {
                     var mp3FileReader = (Mp3FileReader) reader;
                     if (mp3FileReader.CurrentTime.TotalSeconds > 2) {
                         mp3FileReader.CurrentTime = TimeSpan.FromMilliseconds(0);
+                        SetPlayerData(reader);
                     }
                 }
             }

@@ -50,7 +50,7 @@ namespace Musify.Models {
                 request_type = "accountPlaylists",
                 account_id = accountId
             };
-            RestSharpTools.GetAsyncMultiple<Playlist>("/Playlist", data, JSON_EQUIVALENTS, (response, objects) => {
+            RestSharpTools.GetAsyncMultiple<Playlist>("/playlist", data, JSON_EQUIVALENTS, (response, objects) => {
                 if (response.IsSuccessful) {
                     onSuccess(objects);
                 } else {
@@ -66,7 +66,7 @@ namespace Musify.Models {
                 name
             };
             if (playlistId == 0) {
-                RestSharpTools.PostAsync<Playlist>("/Playlist", playlistData, JSON_EQUIVALENTS, (response) => {
+                RestSharpTools.PostAsync<Playlist>("/playlist", playlistData, JSON_EQUIVALENTS, (response) => {
                     if (response.IsSuccessful) {
                         onSuccess(response.Data);
                     } else {
@@ -74,7 +74,7 @@ namespace Musify.Models {
                     }
                 });
             } else {
-                RestSharpTools.PutAsync<Playlist>("/Playlist", playlistData, JSON_EQUIVALENTS, (response) => {
+                RestSharpTools.PutAsync<Playlist>("/playlist", playlistData, JSON_EQUIVALENTS, (response) => {
                     if (response.IsSuccessful) {
                         onSuccess(response.Data);
                     } else {

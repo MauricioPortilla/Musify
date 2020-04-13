@@ -74,7 +74,7 @@ namespace Musify {
                 email,
                 password
             };
-            RestSharpTools.PostAsync<Account>("/Account", accountData, JSON_EQUIVALENTS, (response) => {
+            RestSharpTools.PostAsync<Account>("/account", accountData, JSON_EQUIVALENTS, (response) => {
                 if (response.IsSuccessful) {
                     onSuccess(response.Data);
                 } else {
@@ -94,7 +94,7 @@ namespace Musify {
                 is_artist = isArtist,
                 artistic_name = artisticName
             };
-            RestSharpTools.PostAsync("/Account", accountData, (response) => {
+            RestSharpTools.PostAsync("/account", accountData, (response) => {
                 if (response.IsSuccessful) {
                     onSuccess(JObject.Parse(response.Content));
                 } else {
