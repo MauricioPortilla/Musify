@@ -26,6 +26,7 @@ namespace Musify.Pages {
         public ObservableCollection<SongTable> SongList {
             get => songList;
         }
+
         public SearchSongPage() {
             InitializeComponent();
             DataContext = this;
@@ -55,17 +56,21 @@ namespace Musify.Pages {
         }
 
         private void SongsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
-            IInputElement element = e.MouseDevice.DirectlyOver;
-            if (element != null && element is FrameworkElement) {
-                if (((FrameworkElement)element).Parent is DataGridCell) {
-                    var grid = sender as DataGrid;
-                    if (grid != null && grid.SelectedItems != null && grid.SelectedItems.Count == 1) {
-                        var songRow = (SongTable) grid.SelectedItem;
-                        Song song = songRow.Song;
-                        Session.PlayerPage.PlaySong(song);
-                    }
-                }
+            UIFunctions.SongTable_OnDoubleClick(sender, e);
+        }
+
+        private void AddToQueueButton_Click(object sender, RoutedEventArgs e) {
+
+        }
+
+        private void AddToPlaylistButton_Click(object sender, RoutedEventArgs e) {
+            if (songsDataGrid.SelectedItem != null) {
+                new AddSongToPlaylistWindow(((SongTable) songsDataGrid.SelectedItem).Song).Show();
             }
+        }
+
+        private void GenerateRadioStation_Click(object sender, RoutedEventArgs e) {
+
         }
     }
 }

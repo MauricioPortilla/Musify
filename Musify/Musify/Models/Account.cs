@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Musify.Models;
 using Newtonsoft.Json.Linq;
 
 namespace Musify {
@@ -56,6 +57,11 @@ namespace Musify {
             get => creationDate;
             set => creationDate = value;
         }
+        private List<AccountSong> accountSongs;
+        public List<AccountSong> AccountSongs {
+            get => accountSongs;
+            set => accountSongs = value;
+        }
 
         public Account() {
         }
@@ -100,6 +106,17 @@ namespace Musify {
                 } else {
                     onFailure(JObject.Parse(response.Content));
                 }
+            });
+        }
+
+        public void FetchAccountSongs(Action onSuccess, Action onFailure) {
+            RestSharpTools.GetAsyncMultiple<AccountSong>("/account/" + accountId + "/accountsongs", null, AccountSong.JSON_EQUIVALENTS, (response, accountSongs) => {
+                if (response.IsSuccessful) {
+                    this.accountSongs = accountSongs;
+                    onSuccess?.Invoke();
+                    return;
+                }
+                onFailure?.Invoke();
             });
         }
     }

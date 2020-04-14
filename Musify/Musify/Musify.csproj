@@ -54,6 +54,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -79,11 +80,21 @@
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\AccountSong.cs" />
     <Compile Include="Models\Album.cs" />
     <Compile Include="Models\Artist.cs" />
     <Compile Include="Models\Genre.cs" />
     <Compile Include="Models\Playlist.cs" />
     <Compile Include="Models\Song.cs" />
+    <Compile Include="AddSongToPlaylistWindow.xaml.cs">
+      <DependentUpon>AddSongToPlaylistWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ConsultAccountSongs.xaml.cs">
+      <DependentUpon>ConsultAccountSongs.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ConsultArtistPage.xaml.cs">
+      <DependentUpon>ConsultArtistPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\PlayerPage.xaml.cs">
       <DependentUpon>PlayerPage.xaml</DependentUpon>
     </Compile>
@@ -104,6 +115,7 @@
     </Compile>
     <Compile Include="RestSharpTools.cs" />
     <Compile Include="Session.cs" />
+    <Compile Include="UIFunctions.cs" />
     <Page Include="LoginWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -117,6 +129,18 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddSongToPlaylistWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\ConsultAccountSongs.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\ConsultArtistPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

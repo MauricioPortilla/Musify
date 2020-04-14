@@ -33,6 +33,11 @@ namespace Musify.Models {
             get => artisticName;
             set => artisticName = value;
         }
+        private List<Album> albums;
+        public List<Album> Albums {
+            get => albums;
+            set => albums = value;
+        }
 
         public Artist() {
         }
@@ -44,6 +49,15 @@ namespace Musify.Models {
                 } else {
                     onFailure();
                 }
+            });
+        }
+
+        public void FetchAlbums(Action onFinish) {
+            RestSharpTools.GetAsyncMultiple<Album>("/artist/" + artistId + "/albums", null, Album.JSON_EQUIVALENTS, (response, albums) => {
+                if (response.IsSuccessful) {
+                    this.albums = albums;
+                }
+                onFinish();
             });
         }
 

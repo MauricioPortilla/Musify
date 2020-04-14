@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace Musify.Models {
     public class Album {
@@ -45,6 +48,11 @@ namespace Musify.Models {
             get => artists;
             set => artists = value;
         }
+        private List<Song> songs;
+        public List<Song> Songs {
+            get => songs;
+            set => songs = value;
+        }
 
         public Album() {
         }
@@ -61,7 +69,7 @@ namespace Musify.Models {
             });
         }
 
-        private void FetchArtists(Action onFinish) {
+        public void FetchArtists(Action onFinish) {
             RestSharpTools.GetAsyncMultiple<Artist>("/album/" + albumId + "/artists", null, Artist.JSON_EQUIVALENTS, (response, artists) => {
                 if (response.IsSuccessful) {
                     this.artists = artists;
@@ -79,6 +87,22 @@ namespace Musify.Models {
                 names += artist.ArtisticName;
             }
             return names;
+        }
+
+        public BitmapImage FetchImage() {
+            return new BitmapImage(new Uri(Core.SERVER_API_URL + "/album/" + albumId + "/image", UriKind.RelativeOrAbsolute));
+        }
+
+        public void FetchSongs(Action onFinish) {
+            RestSharpTools.GetAsyncMultiple<Song>("/album/" + albumId + "/songs", null, Song.JSON_EQUIVALENTS, (response, songs) => {
+                if (response.IsSuccessful) {
+                    this.songs = songs;
+                    foreach (var song in songs) {
+                        song.Album = this;
+                    }
+                }
+                onFinish?.Invoke();
+            });
         }
 
         public override string ToString() {

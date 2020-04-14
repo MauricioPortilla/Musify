@@ -36,6 +36,10 @@ namespace Musify.Pages {
         /// </summary>
         private Song latestSongPlayed;
         /// <summary>
+        /// Stores the latest account song played.
+        /// </summary>
+        private AccountSong latestAccountSongPlayed;
+        /// <summary>
         /// Checks if player was stopped or not.
         /// </summary>
         private bool isPlayerStopped = false;
@@ -61,9 +65,22 @@ namespace Musify.Pages {
         /// <param name="song">Song to play</param>
         public void PlaySong(Song song) {
             latestSongPlayed = song;
+            latestAccountSongPlayed = null;
             songNameTextBlock.Text = song.Title;
             artistNameTextBlock.Text = song.Album.GetArtistsNames();
-            MakeRequestStreamSong(song.SongId);
+            MakeRequestStreamSong(Core.SERVER_API_URL + "/stream/song/" + song.SongId);
+        }
+
+        /// <summary>
+        /// Plays an AccountSong.
+        /// </summary>
+        /// <param name="accountSong">Account song to play</param>
+        public void PlayAccountSong(AccountSong accountSong) {
+            latestAccountSongPlayed = accountSong;
+            latestSongPlayed = null;
+            songNameTextBlock.Text = accountSong.Title;
+            artistNameTextBlock.Text = "";
+            MakeRequestStreamSong(Core.SERVER_API_URL + "/stream/accountsong/" + accountSong.AccountSongId);
         }
 
         /// <summary>
@@ -71,8 +88,8 @@ namespace Musify.Pages {
         /// request to server to stream and store the song data. Once the
         /// song it's been stored completely, the song will be played.
         /// </summary>
-        /// <param name="songId">Song Identifier to be played</param>
-        private void MakeRequestStreamSong(int songId) {
+        /// <param name="streamUrl">Stream URL</param>
+        private void MakeRequestStreamSong(string streamUrl) {
             isStreamSongLocked = false;
             Task.Run(() => {
                 while (!isPlayerWaveOutAvailable) {
@@ -82,7 +99,6 @@ namespace Musify.Pages {
                     isPlayerWaveOutAvailable = false;
                     isStreamSongLocked = true;
                     isPlayerStopped = false;
-                    string streamUrl = Core.SERVER_API_URL + "/songstream/" + songId;
                     using (Stream memoryStream = new MemoryStream()) {
                         using (Stream stream = WebRequest.Create(streamUrl).GetResponse().GetResponseStream()) {
                             byte[] buffer = new byte[32768];
@@ -95,11 +111,17 @@ namespace Musify.Pages {
                         try {
                             reader = new WaveFileReader(memoryStream);
                             SetPlayerData(reader);
+                            Application.Current.Dispatcher.Invoke(delegate {
+                                songDurationTimeTextBlock.Text = ((WaveFileReader) reader).TotalTime.ToString("mm\\:ss");
+                            });
                             PlayStreamSong(reader);
                         } catch (Exception) {
                             try {
                                 reader = new Mp3FileReader(memoryStream);
                                 SetPlayerData(reader);
+                                Application.Current.Dispatcher.Invoke(delegate {
+                                    songDurationTimeTextBlock.Text = ((Mp3FileReader) reader).TotalTime.ToString("mm\\:ss");
+                                });
                                 PlayStreamSong(reader);
                             } catch (Exception) {
                                 throw;
@@ -202,7 +224,7 @@ namespace Musify.Pages {
         /// <summary>
         /// If the song is being played, then it will be paused. If the song was
         /// paused, then it will be resumed. If the song was stopped, then it will
-        /// be played again from the beginning.
+        /// be played again from the beginning. This applies to a Song and to an AccountSong.
         /// </summary>
         /// <param name="sender">Play button</param>
         /// <param name="e">Button event</param>
@@ -217,7 +239,11 @@ namespace Musify.Pages {
                     playerWaveOut.Play();
                     playButtonIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Pause;
                 } else {
-                    MakeRequestStreamSong(latestSongPlayed.SongId);
+                    if (latestSongPlayed != null) {
+                        PlaySong(latestSongPlayed);
+                    } else if (latestAccountSongPlayed != null) {
+                        PlayAccountSong(latestAccountSongPlayed);
+                    }
                 }
             }
         }
@@ -242,6 +268,14 @@ namespace Musify.Pages {
                     mp3FileReader.CurrentTime = TimeSpan.FromMilliseconds(((songSlider.Value * mp3FileReader.TotalTime.Ticks / songSlider.Maximum) / TimeSpan.TicksPerSecond) * 1000);
                 }
             }
+        }
+
+        private void ArtistNameTextBlock_MouseDown(object sender, MouseButtonEventArgs e) {
+            if (string.IsNullOrEmpty(artistNameTextBlock.Text)) {
+                return;
+            }
+            Session.MainWindow.mainFrame.Navigate(new ConsultArtistPage(latestSongPlayed.Album.Artists[0]));
+            Session.MainWindow.TitleBar.Text = latestSongPlayed.Album.Artists[0].ArtisticName;
         }
     }
 }

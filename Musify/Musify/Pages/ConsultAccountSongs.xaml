@@ -1,0 +1,36 @@
+﻿<Page x:Class="Musify.Pages.ConsultAccountSongs"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Musify.Pages"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Consultar biblioteca propia" Background="White">
+    <Grid>
+        <DataGrid
+            x:Name="accountSongsDataGrid"
+            Margin="34,21,34,63"
+            ItemsSource="{Binding AccountSongList}"
+            CanUserSortColumns="True"
+            CanUserAddRows="False"
+            CanUserReorderColumns="False"
+            AutoGenerateColumns="False"
+            materialDesign:DataGridAssist.CellPadding="13 8 8 8"
+            materialDesign:DataGridAssist.ColumnHeaderPadding="8"
+            IsReadOnly="True"
+            MouseDoubleClick="AccountSongsDataGrid_MouseDoubleClick">
+            <DataGrid.Columns>
+                <DataGridTextColumn
+                    Binding="{Binding Title}"
+                    Header="Título"/>
+                <DataGridTextColumn
+                    Binding="{Binding Duration}"
+                    Header="Duración"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button x:Name="addSongButton" Content="Agregar canción" HorizontalAlignment="Right" Margin="0,0,197,15" VerticalAlignment="Bottom" Width="148" Click="AddSongButton_Click"/>
+        <Button x:Name="deleteSongButton" Content="Eliminar canción" HorizontalAlignment="Right" Margin="0,0,34,15" VerticalAlignment="Bottom" Width="148" Click="DeleteSongButton_Click"/>
+    </Grid>
+</Page>

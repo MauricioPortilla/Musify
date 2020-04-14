@@ -11,7 +11,7 @@
     <Grid Background="LightGray">
         <StackPanel Orientation="Vertical">
             <TextBlock x:Name="songNameTextBlock" TextWrapping="NoWrap" Text="" FontSize="14" Height="19" Margin="15,15,0,0"/>
-            <TextBlock x:Name="artistNameTextBlock" TextWrapping="NoWrap" Text="" Height="17" Margin="15,0,0,0"/>
+            <TextBlock x:Name="artistNameTextBlock" TextWrapping="NoWrap" Text="" Height="17" Margin="15,0,0,0" Cursor="Hand" MouseDown="ArtistNameTextBlock_MouseDown"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
             <Button x:Name="rewindButton" Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" Width="40" MinWidth="40" Click="RewindButton_Click">

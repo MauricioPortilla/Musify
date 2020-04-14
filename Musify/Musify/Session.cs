@@ -11,6 +11,8 @@ namespace Musify {
     class Session {
         public static readonly RestClient REST_CLIENT = new RestClient(Core.SERVER_API_URL);
         public static Account Account;
+        public static System.Windows.Controls.Frame MainFrame;
+        public static MainWindow MainWindow;
         public static PlayerPage PlayerPage;
     }
 }

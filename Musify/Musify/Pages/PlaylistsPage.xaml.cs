@@ -20,6 +20,7 @@ namespace Musify {
     /// Lógica de interacción para PlaylistsPage.xaml
     /// </summary>
     public partial class PlaylistsPage : Page {
+
         private DialogOpenedEventArgs dialogOpenEventArgs;
 
         public PlaylistsPage() {

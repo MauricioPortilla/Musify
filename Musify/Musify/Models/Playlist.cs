@@ -80,6 +80,32 @@ namespace Musify.Models {
             }
         }
 
+        public void AddSong(Song song, Action onSuccess, Action onFailure) {
+            var data = new {
+                song_id = song.SongId
+            };
+            RestSharpTools.PostAsync("/playlist/" + playlistId + "/song", data, (response) => {
+                if (response.IsSuccessful) {
+                    onSuccess();
+                } else {
+                    onFailure?.Invoke();
+                }
+            });
+        }
+
+        public void ContainsSong(Song song, Action onSuccess, Action onFailure) {
+            var data = new {
+                song_id = song.SongId
+            };
+            RestSharpTools.GetAsync<Song>("/playlist/" + playlistId + "/songs/" + song.SongId, null, Song.JSON_EQUIVALENTS, (response) => {
+                if (response.IsSuccessful) {
+                    onSuccess();
+                } else {
+                    onFailure?.Invoke();
+                }
+            });
+        }
+
         public override string ToString() {
             return name;
         }

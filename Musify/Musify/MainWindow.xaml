@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Musify"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Musify" Height="450" Width="800" MinWidth="350" WindowStartupLocation="CenterScreen">
+        Title="Musify" Height="450" Width="800" MinWidth="582" MinHeight="519" WindowStartupLocation="CenterScreen">
     <Grid>
         <materialDesign:ColorZone Mode="Accent" Padding="10" CornerRadius="0" materialDesign:ShadowAssist.ShadowDepth="Depth3">
             <Grid>
@@ -17,7 +17,7 @@
                             <MenuItem Header="Buscar canción" Background="Gray" Click="MenuButton_Click"/>
                             <MenuItem Header="Cola de reproducción" Background="Gray" Click="MenuButton_Click"/>
                             <MenuItem Header="Historial de reproducción" Background="Gray" Click="MenuButton_Click"/>
-                            <MenuItem Header="Biblioteca propia" Background="Gray" Click="MenuButton_Click"/>
+                            <MenuItem Header="Biblioteca personal" Background="Gray" Click="MenuButton_Click"/>
                             <MenuItem Header="Estaciones de radio" Background="Gray" Click="MenuButton_Click"/>
                             <MenuItem Header="Configurar reproductor" Background="Gray" Click="MenuButton_Click"/>
                         </MenuItem>
