@@ -58,24 +58,36 @@ namespace Musify.Models {
         }
 
         public static void FetchById(int albumId, Action<Album> onSuccess, Action onFailure) {
-            RestSharpTools.GetAsync<Album>("/album/" + albumId, null, JSON_EQUIVALENTS, (response) => {
-                if (response.IsSuccessful) {
-                    response.Data.FetchArtists(() => {
-                        onSuccess(response.Data);
-                    });
-                } else {
-                    onFailure?.Invoke();
-                }
-            });
+            try {
+                RestSharpTools.GetAsync<Album>("/album/" + albumId, null, JSON_EQUIVALENTS, (response) => {
+                    if (response.IsSuccessful) {
+                        response.Data.FetchArtists(() => {
+                            onSuccess(response.Data);
+                        }, () => { });
+                    } else {
+                        onFailure?.Invoke();
+                    }
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Album->FetchById() -> " + exception.Message);
+                onFailure();
+            }
         }
 
-        public void FetchArtists(Action onFinish) {
-            RestSharpTools.GetAsyncMultiple<Artist>("/album/" + albumId + "/artists", null, Artist.JSON_EQUIVALENTS, (response, artists) => {
-                if (response.IsSuccessful) {
-                    this.artists = artists;
-                }
-                onFinish();
-            });
+        public void FetchArtists(Action onSuccess, Action onFailure) {
+            try {
+                RestSharpTools.GetAsyncMultiple<Artist>("/album/" + albumId + "/artists", null, Artist.JSON_EQUIVALENTS, (response, artists) => {
+                    if (response.IsSuccessful) {
+                        this.artists = artists;
+                        onSuccess();
+                        return;
+                    }
+                    onFailure();
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Album->FetchArtists() -> " + exception.Message);
+                onFailure();
+            }
         }
 
         public string GetArtistsNames() {
@@ -93,16 +105,23 @@ namespace Musify.Models {
             return new BitmapImage(new Uri(Core.SERVER_API_URL + "/album/" + albumId + "/image", UriKind.RelativeOrAbsolute));
         }
 
-        public void FetchSongs(Action onFinish) {
-            RestSharpTools.GetAsyncMultiple<Song>("/album/" + albumId + "/songs", null, Song.JSON_EQUIVALENTS, (response, songs) => {
-                if (response.IsSuccessful) {
-                    this.songs = songs;
-                    foreach (var song in songs) {
-                        song.Album = this;
+        public void FetchSongs(Action onSuccess, Action onFailure) {
+            try {
+                RestSharpTools.GetAsyncMultiple<Song>("/album/" + albumId + "/songs", null, Song.JSON_EQUIVALENTS, (response, songs) => {
+                    if (response.IsSuccessful) {
+                        this.songs = songs;
+                        foreach (var song in songs) {
+                            song.Album = this;
+                        }
+                        onSuccess?.Invoke();
+                        return;
                     }
-                }
-                onFinish?.Invoke();
-            });
+                    onFailure?.Invoke();
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Album->FetchSongs() -> " + exception.Message);
+                onFailure?.Invoke();
+            }
         }
 
         public override string ToString() {

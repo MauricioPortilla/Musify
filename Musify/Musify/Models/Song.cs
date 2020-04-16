@@ -11,7 +11,8 @@ namespace Musify.Models {
             { "song_id", "SongId" },
             { "album_id", "AlbumId" },
             { "genre_id", "GenreId" },
-            { "title", "Title" }
+            { "title", "Title" },
+            { "song_location", "SongLocation" }
         };
 
         private int songId;
@@ -44,6 +45,11 @@ namespace Musify.Models {
             get => title;
             set => title = value;
         }
+        private string songLocation;
+        public string SongLocation {
+            get => songLocation;
+            set => songLocation = value;
+        }
         private string duration = "0:00";
         public string Duration {
             get => duration;
@@ -68,25 +74,30 @@ namespace Musify.Models {
         /// <param name="onSuccess">On success</param>
         /// <param name="onFailure">On failure</param>
         public static void FetchByTitleCoincidences(string title, Action<List<Song>> onSuccess, Action onFailure) {
-            RestSharpTools.GetAsyncMultiple<Song>("/song/search/" + title, null, JSON_EQUIVALENTS, (response, songs) => {
-                if (response.IsSuccessful) {
-                    if (songs.Count == 0) {
-                        onSuccess(songs);
-                        return;
-                    }
-                    foreach (var song in songs) {
-                        Album.FetchById(song.albumId, (album) => {
-                            song.album = album;
-                            Genre.FetchById(song.genreId, (genre) => {
-                                song.genre = genre;
-                                onSuccess(songs);
+            try {
+                RestSharpTools.GetAsyncMultiple<Song>("/song/search/" + title, null, JSON_EQUIVALENTS, (response, songs) => {
+                    if (response.IsSuccessful) {
+                        if (songs.Count == 0) {
+                            onSuccess(songs);
+                            return;
+                        }
+                        foreach (var song in songs) {
+                            Album.FetchById(song.albumId, (album) => {
+                                song.album = album;
+                                Genre.FetchById(song.genreId, (genre) => {
+                                    song.genre = genre;
+                                    onSuccess(songs);
+                                }, null);
                             }, null);
-                        }, null);
+                        }
+                    } else {
+                        onFailure();
                     }
-                } else {
-                    onFailure();
-                }
-            });
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Playlist->FetchByTitleCoincidences() -> " + exception.Message);
+                onFailure?.Invoke();
+            }
         }
 
         public override string ToString() {

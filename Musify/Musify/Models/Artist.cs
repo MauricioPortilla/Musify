@@ -43,22 +43,34 @@ namespace Musify.Models {
         }
 
         public static void FetchById(int artistId, Action<Artist> onSuccess, Action onFailure) {
-            RestSharpTools.GetAsync<Artist>("/artist/" + artistId, null, JSON_EQUIVALENTS, (response) => {
-                if (response.IsSuccessful) {
-                    onSuccess(response.Data);
-                } else {
-                    onFailure();
-                }
-            });
+            try {
+                RestSharpTools.GetAsync<Artist>("/artist/" + artistId, null, JSON_EQUIVALENTS, (response) => {
+                    if (response.IsSuccessful) {
+                        onSuccess(response.Data);
+                    } else {
+                        onFailure();
+                    }
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Artist->FetchById() -> " + exception.Message);
+                onFailure?.Invoke();
+            }
         }
 
-        public void FetchAlbums(Action onFinish) {
-            RestSharpTools.GetAsyncMultiple<Album>("/artist/" + artistId + "/albums", null, Album.JSON_EQUIVALENTS, (response, albums) => {
-                if (response.IsSuccessful) {
-                    this.albums = albums;
-                }
-                onFinish();
-            });
+        public void FetchAlbums(Action onSuccess, Action onFailure) {
+            try {
+                RestSharpTools.GetAsyncMultiple<Album>("/artist/" + artistId + "/albums", null, Album.JSON_EQUIVALENTS, (response, albums) => {
+                    if (response.IsSuccessful) {
+                        this.albums = albums;
+                        onSuccess();
+                        return;
+                    }
+                    onFailure();
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Artist->FetchAlbums() -> " + exception.Message);
+                onFailure?.Invoke();
+            }
         }
 
         public override string ToString() {

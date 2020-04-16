@@ -18,7 +18,6 @@ namespace Musify {
             { "password", "Password" },
             { "name", "Name" },
             { "last_name", "LastName" },
-            { "second_last_name", "SecondLastName" },
             { "creation_date", "CreationDate" }
         };
 
@@ -47,11 +46,6 @@ namespace Musify {
             get => lastName;
             set => lastName = value;
         }
-        private string secondLastName;
-        public string SecondLastName {
-            get => secondLastName;
-            set => secondLastName = value;
-        }
         private DateTime creationDate;
         public DateTime CreationDate {
             get => creationDate;
@@ -66,12 +60,11 @@ namespace Musify {
         public Account() {
         }
 
-        public Account(string email, string password, string name, string lastName, string secondLastName) {
+        public Account(string email, string password, string name, string lastName) {
             this.email = email;
             this.password = password;
             this.name = name;
             this.lastName = lastName;
-            this.secondLastName = secondLastName;
         }
 
         public static void Login(string email, string password, Action<Account> onSuccess, Action onFailure) {
@@ -80,44 +73,94 @@ namespace Musify {
                 email,
                 password
             };
-            RestSharpTools.PostAsync<Account>("/account", accountData, JSON_EQUIVALENTS, (response) => {
-                if (response.IsSuccessful) {
-                    onSuccess(response.Data);
-                } else {
-                    onFailure();
-                }
-            });
+            try {
+                RestSharpTools.PostAsync<Account>("/account", accountData, JSON_EQUIVALENTS, (response) => {
+                    if (response.IsSuccessful) {
+                        onSuccess(response.Data);
+                    } else {
+                        onFailure();
+                    }
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Account->Login() -> " + exception.Message);
+                onFailure();
+            }
+            
         }
 
-        public void Register(bool isArtist, Action<dynamic> onSuccess, Action<dynamic> onFailure, string artisticName = null) {
+        public void Register(bool isArtist, Action onSuccess, Action onFailure, string artisticName = null) {
             var accountData = new {
                 request_type = "register",
                 email,
                 password,
                 name,
                 last_name = lastName,
-                second_last_name = secondLastName,
                 is_artist = isArtist,
                 artistic_name = artisticName
             };
-            RestSharpTools.PostAsync("/account", accountData, (response) => {
-                if (response.IsSuccessful) {
-                    onSuccess(JObject.Parse(response.Content));
-                } else {
-                    onFailure(JObject.Parse(response.Content));
-                }
-            });
+            try {
+                RestSharpTools.PostAsync("/account", accountData, (response) => {
+                    if (response.IsSuccessful) {
+                        onSuccess();
+                    } else {
+                        onFailure();
+                    }
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Account->Register() -> " + exception.Message);
+                onFailure();
+            }
+            
         }
 
         public void FetchAccountSongs(Action onSuccess, Action onFailure) {
-            RestSharpTools.GetAsyncMultiple<AccountSong>("/account/" + accountId + "/accountsongs", null, AccountSong.JSON_EQUIVALENTS, (response, accountSongs) => {
-                if (response.IsSuccessful) {
-                    this.accountSongs = accountSongs;
-                    onSuccess?.Invoke();
-                    return;
-                }
-                onFailure?.Invoke();
-            });
+            try {
+                RestSharpTools.GetAsyncMultiple<AccountSong>("/account/" + accountId + "/accountsongs", null, AccountSong.JSON_EQUIVALENTS, (response, accountSongs) => {
+                    if (response.IsSuccessful) {
+                        this.accountSongs = accountSongs;
+                        onSuccess?.Invoke();
+                        return;
+                    }
+                    onFailure?.Invoke();
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Account->FetchAccountSongs() -> " + exception.Message);
+                onFailure();
+            }
+        }
+
+        public void AddAccountSongs(string[] fileRoutes, Action onSuccess, Action onFailure) {
+            try {
+                RestSharpTools.PostMultimediaAsync<AccountSong>(
+                "/account/" + accountId + "/accountsongs", null, fileRoutes,
+                AccountSong.JSON_EQUIVALENTS, (response, accountSongs) => {
+                    if (response.IsSuccessful) {
+                        this.accountSongs = this.accountSongs.Union(accountSongs).ToList();
+                        onSuccess?.Invoke();
+                        return;
+                    }
+                    onFailure?.Invoke();
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Account->AddAccountSongs() -> " + exception.Message);
+                onFailure();
+            }
+        }
+
+        public void DeleteAccountSong(AccountSong accountSong, Action onSuccess, Action onFailure) {
+            try {
+                RestSharpTools.DeleteAsync("/account/" + accountId + "/accountsong/" + accountSong.AccountSongId, null, (response) => {
+                    if (response.IsSuccessful) {
+                        accountSongs.Remove(accountSong);
+                        onSuccess?.Invoke();
+                        return;
+                    }
+                    onFailure?.Invoke();
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Account->DeleteAccountSong() -> " + exception.Message);
+                onFailure();
+            }
         }
     }
 }

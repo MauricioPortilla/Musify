@@ -36,10 +36,14 @@ namespace Musify.Pages {
                     album.FetchArtists(() => {
                         album.FetchSongs(() => {
                             CreateAlbumUI(album);
+                        }, () => {
+                            MessageBox.Show("Ocurrió un error al cargar el artista.");
                         });
+                    }, () => {
+                        MessageBox.Show("Ocurrió un error al cargar el artista.");
                     });
                 }
-            });
+            }, () => { });
         }
 
         private void CreateAlbumUI(Album album) {

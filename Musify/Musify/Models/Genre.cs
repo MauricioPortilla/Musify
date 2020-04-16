@@ -27,13 +27,18 @@ namespace Musify.Models {
         }
 
         public static void FetchById(int genreId, Action<Genre> onSuccess, Action onFailure) {
-            RestSharpTools.GetAsync<Genre>("/genre/" + genreId, null, JSON_EQUIVALENTS, (response) => {
-                if (response.IsSuccessful) {
-                    onSuccess(response.Data);
-                } else {
-                    onFailure();
-                }
-            });
+            try {
+                RestSharpTools.GetAsync<Genre>("/genre/" + genreId, null, JSON_EQUIVALENTS, (response) => {
+                    if (response.IsSuccessful) {
+                        onSuccess(response.Data);
+                    } else {
+                        onFailure();
+                    }
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Genre->FetchById() -> " + exception.Message);
+                onFailure?.Invoke();
+            }
         }
     }
 }

@@ -26,13 +26,12 @@ namespace Musify {
                 emailTextBox.Text, 
                 passwordPasswordBox.Password, 
                 nameTextBox.Text, 
-                lastNameTextBox.Text, 
-                secondLastNameTextBox.Text
+                lastNameTextBox.Text
             );
-            account.Register(imAnArtistCheckBox.IsChecked.GetValueOrDefault(), (jsonResponse) => {
+            account.Register(imAnArtistCheckBox.IsChecked.GetValueOrDefault(), () => {
                 MessageBox.Show("Cuenta registrada.");
                 Close();
-            }, (jsonResponse) => {
+            }, () => {
                 MessageBox.Show("Error al registrar la cuenta.");
             }, artisticNameTextBox.Text);
         }

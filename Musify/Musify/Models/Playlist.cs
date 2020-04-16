@@ -46,13 +46,18 @@ namespace Musify.Models {
         }
 
         public static void Fetch(int accountId, Action<List<Playlist>> onSuccess, Action onFailure) {
-            RestSharpTools.GetAsyncMultiple<Playlist>("/account/" + accountId + "/playlists", null, JSON_EQUIVALENTS, (response, objects) => {
-                if (response.IsSuccessful) {
-                    onSuccess(objects);
-                } else {
-                    onFailure();
-                }
-            });
+            try {
+                RestSharpTools.GetAsyncMultiple<Playlist>("/account/" + accountId + "/playlists", null, JSON_EQUIVALENTS, (response, objects) => {
+                    if (response.IsSuccessful) {
+                        onSuccess(objects);
+                    } else {
+                        onFailure();
+                    }
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Playlist->Fetch() -> " + exception.Message);
+                onFailure?.Invoke();
+            }
         }
 
         public void Save(Action<Playlist> onSuccess, Action onFailure) {
@@ -61,22 +66,27 @@ namespace Musify.Models {
                 account_id = accountId,
                 name
             };
-            if (playlistId == 0) {
-                RestSharpTools.PostAsync<Playlist>("/playlist", playlistData, JSON_EQUIVALENTS, (response) => {
-                    if (response.IsSuccessful) {
-                        onSuccess(response.Data);
-                    } else {
-                        onFailure();
-                    }
-                });
-            } else {
-                RestSharpTools.PutAsync<Playlist>("/playlist", playlistData, JSON_EQUIVALENTS, (response) => {
-                    if (response.IsSuccessful) {
-                        onSuccess(response.Data);
-                    } else {
-                        onFailure();
-                    }
-                });
+            try {
+                if (playlistId == 0) {
+                    RestSharpTools.PostAsync<Playlist>("/playlist", playlistData, JSON_EQUIVALENTS, (response) => {
+                        if (response.IsSuccessful) {
+                            onSuccess(response.Data);
+                        } else {
+                            onFailure();
+                        }
+                    });
+                } else {
+                    RestSharpTools.PutAsync<Playlist>("/playlist", playlistData, JSON_EQUIVALENTS, (response) => {
+                        if (response.IsSuccessful) {
+                            onSuccess(response.Data);
+                        } else {
+                            onFailure();
+                        }
+                    });
+                }
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Playlist->Save() -> " + exception.Message);
+                onFailure?.Invoke();
             }
         }
 
@@ -84,26 +94,36 @@ namespace Musify.Models {
             var data = new {
                 song_id = song.SongId
             };
-            RestSharpTools.PostAsync("/playlist/" + playlistId + "/song", data, (response) => {
-                if (response.IsSuccessful) {
-                    onSuccess();
-                } else {
-                    onFailure?.Invoke();
-                }
-            });
+            try {
+                RestSharpTools.PostAsync("/playlist/" + playlistId + "/song", data, (response) => {
+                    if (response.IsSuccessful) {
+                        onSuccess();
+                    } else {
+                        onFailure?.Invoke();
+                    }
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Playlist->AddSong() -> " + exception.Message);
+                onFailure?.Invoke();
+            }
         }
 
         public void ContainsSong(Song song, Action onSuccess, Action onFailure) {
             var data = new {
                 song_id = song.SongId
             };
-            RestSharpTools.GetAsync<Song>("/playlist/" + playlistId + "/songs/" + song.SongId, null, Song.JSON_EQUIVALENTS, (response) => {
-                if (response.IsSuccessful) {
-                    onSuccess();
-                } else {
-                    onFailure?.Invoke();
-                }
-            });
+            try {
+                RestSharpTools.GetAsync<Song>("/playlist/" + playlistId + "/songs/" + song.SongId, null, Song.JSON_EQUIVALENTS, (response) => {
+                    if (response.IsSuccessful) {
+                        onSuccess();
+                    } else {
+                        onFailure?.Invoke();
+                    }
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Playlist->ContainsSong() -> " + exception.Message);
+                onFailure?.Invoke();
+            }
         }
 
         public override string ToString() {
