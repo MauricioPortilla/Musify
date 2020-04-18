@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Musify"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Musify" Height="450" Width="800" MinWidth="582" MinHeight="519" WindowStartupLocation="CenterScreen">
+        Title="Musify" Height="450" Width="800" MinWidth="582" MinHeight="519" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
     <Grid>
         <materialDesign:ColorZone Mode="Accent" Padding="10" CornerRadius="0" materialDesign:ShadowAssist.ShadowDepth="Depth3">
             <Grid>
