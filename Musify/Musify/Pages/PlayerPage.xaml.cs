@@ -100,17 +100,12 @@ namespace Musify.Pages {
                     isStreamSongLocked = true;
                     isPlayerStopped = false;
                     using (Stream memoryStream = new MemoryStream()) {
-                        Console.WriteLine("Hola1");
                         using (Stream stream = WebRequest.Create(streamUrl).GetResponse().GetResponseStream()) {
-                            Console.WriteLine("Hola1");
                             byte[] buffer = new byte[32768];
                             int read;
-                            Console.WriteLine("Hola1");
                             while ((read = stream.Read(buffer, 0, buffer.Length)) > 0) {
-                                Console.WriteLine("Hola1");
                                 memoryStream.Write(buffer, 0, read);
                             }
-                            Console.WriteLine("Hola1");
                         }
                         memoryStream.Position = 0;
                         try {
