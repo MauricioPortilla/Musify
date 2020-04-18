@@ -68,7 +68,7 @@ namespace Musify.Pages {
             latestAccountSongPlayed = null;
             songNameTextBlock.Text = song.Title;
             artistNameTextBlock.Text = song.Album.GetArtistsNames();
-            MakeRequestStreamSong(Core.SERVER_API_URL + "/stream/song/" + song.SongId);
+            MakeRequestStreamSong(Core.SERVER_API_URL + "/stream/song/" + song.SongId + "/" + Session.SongStreamingQuality);
         }
 
         /// <summary>
