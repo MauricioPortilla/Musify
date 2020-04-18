@@ -100,6 +100,27 @@ namespace Musify.Models {
             }
         }
 
+        public static void FetchById(int SongId, Action<Song> onSuccess, Action onFailure) {
+            try {
+                RestSharpTools.GetAsync<Song>("/song/" + SongId, null, JSON_EQUIVALENTS, (response) => {
+                    if (response.IsSuccessful) {
+                        Album.FetchById(response.Data.albumId, (album) => {
+                            response.Data.album = album;
+                            Genre.FetchById(response.Data.genreId, (genre) => {
+                                response.Data.genre = genre;
+                                onSuccess(response.Data);
+                            }, null);
+                        }, null);
+                    } else {
+                        onFailure();
+                    }
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Playlist->FetchBy() -> " + exception.Message);
+                onFailure?.Invoke();
+            }
+        }
+
         public override string ToString() {
             return title;
         }

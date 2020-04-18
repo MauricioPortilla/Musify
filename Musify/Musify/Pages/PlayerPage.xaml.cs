@@ -51,12 +51,47 @@ namespace Musify.Pages {
         /// True if player is playing a song; false if not.
         /// </summary>
         private bool isPlayerWaveOutAvailable = true;
+        /// <summary>
+        /// Stores the songs ID in the play history.
+        /// </summary>
+        private List<int> playHistory = new List<int>();
+        public List<int> PlayHistory {
+            get => playHistory;
+            set => playHistory = value;
+        }
 
         /// <summary>
         /// Creates a new player instance.
         /// </summary>
         public PlayerPage() {
             InitializeComponent();
+            LoadSongsIdPlayHistory();
+        }
+
+        /// <summary>
+        /// Load the songs ID in the play history that are stored in a file in the application directory.
+        /// </summary>
+        /// <returns></returns>
+        public bool LoadSongsIdPlayHistory() {
+            string directory = AppDomain.CurrentDomain.BaseDirectory + "\\data\\songs";
+            string file = AppDomain.CurrentDomain.BaseDirectory + "\\data\\songs\\playHistory" + Session.Account.Name;
+            if (Directory.Exists(directory)) {
+                if (File.Exists(file)) {
+                    FileStream fileStream = new FileStream(file, FileMode.Open, FileAccess.Read);
+                    BinaryReader binaryReader = new BinaryReader(fileStream);
+                    for (int i = 0; i < fileStream.Length / 4; i++) {
+                        PlayHistory.Add(binaryReader.ReadInt32());
+                    }
+                    binaryReader.Close();
+                    fileStream.Close();
+                    return true;
+                }
+                File.Create(file);
+            } else {
+                Directory.CreateDirectory(directory);
+                File.Create(file);
+            }
+            return false;
         }
 
         /// <summary>
@@ -100,12 +135,17 @@ namespace Musify.Pages {
                     isStreamSongLocked = true;
                     isPlayerStopped = false;
                     using (Stream memoryStream = new MemoryStream()) {
+                        Console.WriteLine("Hola1");
                         using (Stream stream = WebRequest.Create(streamUrl).GetResponse().GetResponseStream()) {
+                            Console.WriteLine("Hola1");
                             byte[] buffer = new byte[32768];
                             int read;
+                            Console.WriteLine("Hola1");
                             while ((read = stream.Read(buffer, 0, buffer.Length)) > 0) {
+                                Console.WriteLine("Hola1");
                                 memoryStream.Write(buffer, 0, read);
                             }
+                            Console.WriteLine("Hola1");
                         }
                         memoryStream.Position = 0;
                         try {

@@ -7,7 +7,7 @@
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
       Height="289.687" Width="531.875"
-      Title="Agregar canción a lista de reproducción">
+      Title="Agregar canción a lista de reproducción" WindowStartupLocation="CenterScreen">
     <Grid>
         <StackPanel Margin="0,10,0,0">
             <TextBlock TextAlignment="Center" TextWrapping="NoWrap" Text="Listas de reproducción" VerticalAlignment="Top" FontSize="20"/>

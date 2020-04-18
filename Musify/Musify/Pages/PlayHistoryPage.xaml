@@ -18,12 +18,14 @@
                 </MenuItem>
             </Menu>
         </StackPanel>
-        <DataGrid x:Name="playHistoryDataGrid" Margin="10,40,10,10" SelectionUnit="FullRow" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True" SelectionMode="Single">
+        <DataGrid x:Name="playHistoryDataGrid" Margin="10,40,10,10" ItemsSource="{Binding SongPlayHistory}" CanUserSortColumns="True" CanUserAddRows="False" 
+                  CanUserReorderColumns="False" AutoGenerateColumns="False" materialDesign:DataGridAssist.CellPadding="13 8 8 8" 
+                  materialDesign:DataGridAssist.ColumnHeaderPadding="8" IsReadOnly="True" MouseDoubleClick="PlayHistoryDataGrid_MouseDoubleClick">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Título" Width="280" CanUserResize="False" CanUserSort="False"/>
-                <DataGridTextColumn Header="Artista" Width="200" CanUserResize="False" CanUserSort="False"/>
-                <DataGridTextColumn Header="Álbum" Width="200" CanUserResize="False" CanUserSort="False"/>
-                <DataGridTextColumn Header="Duración" Width="100" CanUserResize="False" CanUserSort="False"/>
+                <DataGridTextColumn Binding="{Binding Title}" Width="280" CanUserResize="False" CanUserSort="False" Header="Título"/>
+                <DataGridTextColumn Binding="{Binding ArtistsNames}" Width="200" CanUserResize="False" CanUserSort="False" Header="Artista"/>
+                <DataGridTextColumn Binding="{Binding Album}" Width="200" CanUserResize="False" CanUserSort="False" Header="Álbum"/>
+                <DataGridTextColumn Binding="{Binding Duration}" Width="100" CanUserResize="False" CanUserSort="False" Header="Duración"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

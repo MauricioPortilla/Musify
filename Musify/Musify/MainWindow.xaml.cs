@@ -1,6 +1,8 @@
 ﻿using Musify.Pages;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,11 +44,30 @@ namespace Musify {
                 case "Cola de reproducción":
                     mainFrame.Source = new Uri("Pages/PlayQueuePage.xaml", UriKind.RelativeOrAbsolute);
                     break;
+                case "Historial de reproducción":
+                    mainFrame.Source = new Uri("Pages/PlayHistoryPage.xaml", UriKind.RelativeOrAbsolute);
+                    break;
                 case "Biblioteca personal":
                     mainFrame.Source = new Uri("Pages/ConsultAccountSongs.xaml", UriKind.RelativeOrAbsolute);
                     break;
             }
             TitleBar.Text = opcion;
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e) {
+            string directory = AppDomain.CurrentDomain.BaseDirectory + "\\data\\songs";
+            string file = AppDomain.CurrentDomain.BaseDirectory + "\\data\\songs\\playHistory" + Session.Account.Name;
+            if (!Directory.Exists(directory)) {
+                Directory.CreateDirectory(directory);
+            }
+            List<int> songsIdPlayHistory = Session.PlayerPage.PlayHistory;
+            FileStream fileStream = new FileStream(file, FileMode.Create);
+            BinaryWriter binaryWriter = new BinaryWriter(fileStream);
+            foreach (int songID in songsIdPlayHistory) {
+                binaryWriter.Write(songID);
+            }
+            binaryWriter.Close();
+            fileStream.Close();
         }
     }
 }
