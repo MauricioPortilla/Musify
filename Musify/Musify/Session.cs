@@ -14,6 +14,8 @@ namespace Musify {
         public static System.Windows.Controls.Frame MainFrame;
         public static MainWindow MainWindow;
         public static PlayerPage PlayerPage;
+        public static List<int> SongsIdPlayQueue = new List<int>();
+        public static List<int> SongsIdPlayHistory = new List<int>();
         public static string SongStreamingQuality = "mediumQuality";
     }
 }

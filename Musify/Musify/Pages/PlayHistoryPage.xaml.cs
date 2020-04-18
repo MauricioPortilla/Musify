@@ -34,9 +34,9 @@ namespace Musify.Pages {
 
         public void LoadSongPlayHistory() {
             songPlayHistory.Clear();
-            List<int> idSongsPlayHistory = Session.PlayerPage.PlayHistory;
-            foreach (int idSong in idSongsPlayHistory) {
-                Song.FetchById(idSong, (song) => {
+            List<int> idSongsPlayHistory = Session.SongsIdPlayHistory;
+            for (int i = idSongsPlayHistory.Count - 1; i <= 0; i--) {
+                Song.FetchById(idSongsPlayHistory.ElementAt(i), (song) => {
                     songPlayHistory.Add(new SongTable {
                         Song = song,
                         Title = song.Title,

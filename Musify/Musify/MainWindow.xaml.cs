@@ -27,8 +27,81 @@ namespace Musify {
             mainFrame.Source = new Uri("Pages/PlaylistsPage.xaml", UriKind.RelativeOrAbsolute);
             Session.PlayerPage = new PlayerPage();
             playerFrame.Navigate(Session.PlayerPage);
+            LoadConfiguration();
         }
-        
+
+        public void LoadConfiguration() {
+            string directory = AppDomain.CurrentDomain.BaseDirectory + "\\data\\songs";
+            if (Directory.Exists(directory)) {
+                LoadSongsIdPlayQueue();
+                LoadSongsIdPlayHistory();
+            } else {
+                Directory.CreateDirectory(directory);
+                File.Create(AppDomain.CurrentDomain.BaseDirectory + "\\data\\songs\\playQueue" + Session.Account.AccountId);
+                File.Create(AppDomain.CurrentDomain.BaseDirectory + "\\data\\songs\\playHistory" + Session.Account.AccountId);
+            }
+            directory = AppDomain.CurrentDomain.BaseDirectory + "\\data\\player";
+            if (Directory.Exists(directory)) {
+                LoadConfigurationPlayer();
+            } else {
+                Directory.CreateDirectory(directory);
+                File.Create(AppDomain.CurrentDomain.BaseDirectory + "\\data\\player\\player" + Session.Account.AccountId);
+            }
+        }
+
+        public void LoadSongsIdPlayQueue() {
+            string file = AppDomain.CurrentDomain.BaseDirectory + "\\data\\songs\\playQueue" + Session.Account.AccountId;
+            if (File.Exists(file)) {
+                FileStream fileStream = new FileStream(file, FileMode.Open, FileAccess.Read);
+                BinaryReader binaryReader = new BinaryReader(fileStream);
+                for (int i = 0; i < fileStream.Length / 4; i++) {
+                    Session.SongsIdPlayQueue.Add(binaryReader.ReadInt32());
+                }
+                binaryReader.Close();
+                fileStream.Close();
+            }
+        }
+
+        public void LoadSongsIdPlayHistory() {
+            string file = AppDomain.CurrentDomain.BaseDirectory + "\\data\\songs\\playHistory" + Session.Account.AccountId;
+            if (File.Exists(file)) {
+                FileStream fileStream = new FileStream(file, FileMode.Open, FileAccess.Read);
+                BinaryReader binaryReader = new BinaryReader(fileStream);
+                for (int i = 0; i < fileStream.Length / 4; i++) {
+                    Session.SongsIdPlayHistory.Add(binaryReader.ReadInt32());
+                }
+                binaryReader.Close();
+                fileStream.Close();
+            }
+        }
+
+        public void LoadConfigurationPlayer() {
+            string file = AppDomain.CurrentDomain.BaseDirectory + "\\data\\player\\player" + Session.Account.AccountId;
+            if (File.Exists(file)) {
+                FileStream fileStream = new FileStream(file, FileMode.Open, FileAccess.Read);
+                BinaryReader binaryReader = new BinaryReader(fileStream);
+                if (fileStream.Length / 4 == 1) {
+                    int configurationPlayer = binaryReader.ReadInt32();
+                    switch (configurationPlayer) {
+                        case 0:
+                            Session.SongStreamingQuality = "automaticQuality";
+                            break;
+                        case 1:
+                            Session.SongStreamingQuality = "lowQuality";
+                            break;
+                        case 2:
+                            Session.SongStreamingQuality = "mediumQuality";
+                            break;
+                        case 3:
+                            Session.SongStreamingQuality = "highQuality";
+                            break;
+                    }
+                }
+                binaryReader.Close();
+                fileStream.Close();
+            }
+        }
+
         public void MenuButton_Click(object sender, RoutedEventArgs e) {
             MenuItem button = (MenuItem) sender;
             string opcion = button.Header.ToString();
@@ -56,15 +129,48 @@ namespace Musify {
 
         private void Window_Closing(object sender, CancelEventArgs e) {
             string directory = AppDomain.CurrentDomain.BaseDirectory + "\\data\\songs";
-            string file = AppDomain.CurrentDomain.BaseDirectory + "\\data\\songs\\playHistory" + Session.Account.Name;
             if (!Directory.Exists(directory)) {
                 Directory.CreateDirectory(directory);
             }
-            List<int> songsIdPlayHistory = Session.PlayerPage.PlayHistory;
+            directory = AppDomain.CurrentDomain.BaseDirectory + "\\data\\player";
+            if (!Directory.Exists(directory)) {
+                Directory.CreateDirectory(directory);
+            }
+            string file = AppDomain.CurrentDomain.BaseDirectory + "\\data\\songs\\playHistory" + Session.Account.AccountId;
+            List<int> songsId = Session.SongsIdPlayHistory;
             FileStream fileStream = new FileStream(file, FileMode.Create);
             BinaryWriter binaryWriter = new BinaryWriter(fileStream);
-            foreach (int songID in songsIdPlayHistory) {
-                binaryWriter.Write(songID);
+            foreach (int songId in songsId) {
+                binaryWriter.Write(songId);
+            }
+            binaryWriter.Close();
+            fileStream.Close();
+            file = AppDomain.CurrentDomain.BaseDirectory + "\\data\\songs\\playQueue" + Session.Account.AccountId;
+            songsId = Session.SongsIdPlayQueue;
+            fileStream = new FileStream(file, FileMode.Create);
+            binaryWriter = new BinaryWriter(fileStream);
+            foreach (int songId in songsId) {
+                binaryWriter.Write(songId);
+            }
+            binaryWriter.Close();
+            fileStream.Close();
+            file = AppDomain.CurrentDomain.BaseDirectory + "\\data\\player\\player" + Session.Account.AccountId;
+            string configurationPlayer = Session.SongStreamingQuality;
+            fileStream = new FileStream(file, FileMode.Create);
+            binaryWriter = new BinaryWriter(fileStream);
+            switch (configurationPlayer) {
+                case "automaticQuality":
+                    binaryWriter.Write(0);
+                    break;
+                case "lowQuality":
+                    binaryWriter.Write(1);
+                    break;
+                case "mediumQuality":
+                    binaryWriter.Write(2);
+                    break;
+                case "highQuality":
+                    binaryWriter.Write(3);
+                    break;
             }
             binaryWriter.Close();
             fileStream.Close();
