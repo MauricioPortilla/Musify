@@ -21,9 +21,9 @@ namespace Musify.Pages {
     /// Lógica de interacción para PlayHistoryPage.xaml
     /// </summary>
     public partial class PlayHistoryPage : Page {
-        private readonly ObservableCollection<SongTable> songPlayHistory = new ObservableCollection<SongTable>();
-        public ObservableCollection<SongTable> SongPlayHistory {
-            get => songPlayHistory;
+        private readonly ObservableCollection<SongTable> songsPlayHistory = new ObservableCollection<SongTable>();
+        public ObservableCollection<SongTable> SongsPlayHistory {
+            get => songsPlayHistory;
         }
 
         public PlayHistoryPage() {
@@ -33,12 +33,15 @@ namespace Musify.Pages {
         }
 
         public void LoadSongPlayHistory() {
-            songPlayHistory.Clear();
-            List<int> idSongsPlayHistory = Session.SongsIdPlayHistory;
-            Console.WriteLine(idSongsPlayHistory.Count);
-            for (int i = idSongsPlayHistory.Count - 1; i >= 0; i--) {
-                Song.FetchById(idSongsPlayHistory.ElementAt(i), (song) => {
-                    songPlayHistory.Add(new SongTable {
+            songsPlayHistory.Clear();
+            List<int> songsIdPlayHistory = Session.SongsIdPlayHistory;
+            int limit = 0;
+            if (songsIdPlayHistory.Count > 50) {
+                limit = songsIdPlayHistory.Count - 50;
+            }
+            for (int i = songsIdPlayHistory.Count - 1; i >= limit; i--) {
+                Song.FetchById(songsIdPlayHistory.ElementAt(i), (song) => {
+                    songsPlayHistory.Add(new SongTable {
                         Song = song,
                         Title = song.Title,
                         ArtistsNames = song.Album.GetArtistsNames(),
@@ -53,6 +56,27 @@ namespace Musify.Pages {
 
         private void PlayHistoryDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
             UIFunctions.SongTable_OnDoubleClick(sender, e);
+        }
+
+        private void PlayHistoryDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            if (playHistoryDataGrid.SelectedIndex >= 0) {
+                optionsMenu.Visibility = Visibility.Visible;
+            } else {
+                optionsMenu.Visibility = Visibility.Hidden;
+            }
+        }
+
+        private void AddToQueueMenuItem_Click(object sender, RoutedEventArgs e) {
+            Session.SongsIdPlayQueue.Add(((SongTable)playHistoryDataGrid.SelectedItem).Song.SongId);
+            playHistoryDataGrid.SelectedIndex = -1;
+        }
+
+        private void AddToPlaylistMenuItem_Click(object sender, RoutedEventArgs e) {
+
+        }
+
+        private void GenerateRadioStationMenuItem_Click(object sender, RoutedEventArgs e) {
+
         }
     }
 }

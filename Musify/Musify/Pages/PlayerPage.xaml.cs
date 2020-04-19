@@ -142,6 +142,7 @@ namespace Musify.Pages {
         /// </summary>
         /// <param name="reader">Reader that stores the song data</param>
         private void PlayStreamSong(IWaveProvider reader) {
+            Session.SongsIdPlayHistory.Add(latestSongPlayed.SongId);
             if (playerWaveOut != null && playerWaveOut.PlaybackState == PlaybackState.Playing) {
                 playerWaveOut.Stop();
                 playerWaveOut.Dispose();

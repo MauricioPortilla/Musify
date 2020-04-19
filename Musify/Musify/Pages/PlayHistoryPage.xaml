@@ -10,22 +10,23 @@
       Title="Historial de reproducción">
     <Grid Background="#FFFFFF">
         <StackPanel Margin="0,10,10,0" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
-            <Menu x:Name="optionsMenu" Height="30" Background="Gray" BorderThickness="0" IsEnabled="False">
+            <Menu x:Name="optionsMenu" Height="30" Background="Gray" BorderThickness="0" Visibility="Hidden">
                 <MenuItem Header="..." Height="30" Background="Gray" BorderThickness="0" Foreground="White" FontSize="12">
-                    <MenuItem Header="Agregar a la cola" Background="Gray"/>
-                    <MenuItem Header="Agregar a una lista de reproducción" Background="Gray"/>
-                    <MenuItem Header="Generar estación de radio" Background="Gray"/>
+                    <MenuItem Header="Agregar a la cola" Background="Gray" Click="AddToQueueMenuItem_Click"/>
+                    <MenuItem Header="Agregar a una lista de reproducción" Background="Gray" Click="AddToPlaylistMenuItem_Click"/>
+                    <MenuItem Header="Generar estación de radio" Background="Gray" Click="GenerateRadioStationMenuItem_Click"/>
                 </MenuItem>
             </Menu>
         </StackPanel>
-        <DataGrid x:Name="playHistoryDataGrid" Margin="10,40,10,10" ItemsSource="{Binding SongPlayHistory}" CanUserSortColumns="True" CanUserAddRows="False" 
-                  CanUserReorderColumns="False" AutoGenerateColumns="False" materialDesign:DataGridAssist.CellPadding="13 8 8 8" 
-                  materialDesign:DataGridAssist.ColumnHeaderPadding="8" IsReadOnly="True" MouseDoubleClick="PlayHistoryDataGrid_MouseDoubleClick">
+        <DataGrid x:Name="playHistoryDataGrid" Margin="10,40,10,10" ItemsSource="{Binding SongsPlayHistory}" CanUserSortColumns="True" CanUserAddRows="False" 
+                  CanUserReorderColumns="False" AutoGenerateColumns="False" SelectionMode="Single" materialDesign:DataGridAssist.CellPadding="13 8 8 8" 
+                  materialDesign:DataGridAssist.ColumnHeaderPadding="8" IsReadOnly="True" MouseDoubleClick="PlayHistoryDataGrid_MouseDoubleClick" 
+                  SelectionChanged="PlayHistoryDataGrid_SelectionChanged">
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Title}" Width="280" CanUserResize="False" CanUserSort="False" Header="Título"/>
-                <DataGridTextColumn Binding="{Binding ArtistsNames}" Width="200" CanUserResize="False" CanUserSort="False" Header="Artista"/>
-                <DataGridTextColumn Binding="{Binding Album}" Width="200" CanUserResize="False" CanUserSort="False" Header="Álbum"/>
-                <DataGridTextColumn Binding="{Binding Duration}" Width="100" CanUserResize="False" CanUserSort="False" Header="Duración"/>
+                <DataGridTextColumn Binding="{Binding Title}" CanUserResize="False" CanUserSort="False" Header="Título"/>
+                <DataGridTextColumn Binding="{Binding ArtistsNames}" CanUserResize="False" CanUserSort="False" Header="Artista"/>
+                <DataGridTextColumn Binding="{Binding Album}" CanUserResize="False" CanUserSort="False" Header="Álbum"/>
+                <DataGridTextColumn Binding="{Binding Duration}" CanUserResize="False" CanUserSort="False" Header="Duración"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
