@@ -104,27 +104,32 @@ namespace Musify {
 
         public void MenuButton_Click(object sender, RoutedEventArgs e) {
             MenuItem button = (MenuItem) sender;
-            string opcion = button.Header.ToString();
+            string opcion = button.Name;
             subscribeButton.Visibility = Visibility.Hidden;
             switch (opcion) {
-                case "Menú principal":
+                case "MainMenuMenuItem":
                     mainFrame.Source = new Uri("Pages/PlaylistsPage.xaml", UriKind.RelativeOrAbsolute);
                     subscribeButton.Visibility = Visibility.Visible;
                     break;
-                case "Buscar canción":
+                case "SearchSongMenuItem":
                     mainFrame.Source = new Uri("Pages/SearchSongPage.xaml", UriKind.RelativeOrAbsolute);
                     break;
-                case "Cola de reproducción":
+                case "PlayQueueMenuItem":
                     mainFrame.Source = new Uri("Pages/PlayQueuePage.xaml", UriKind.RelativeOrAbsolute);
                     break;
-                case "Historial de reproducción":
+                case "PlayHistoryMenuItem":
                     mainFrame.Source = new Uri("Pages/PlayHistoryPage.xaml", UriKind.RelativeOrAbsolute);
                     break;
-                case "Biblioteca personal":
+                case "PersonalLibraryMenuItem":
                     mainFrame.Source = new Uri("Pages/ConsultAccountSongs.xaml", UriKind.RelativeOrAbsolute);
                     break;
+                case "RadioStationsMenuItem":
+                    break;
+                case "PlayerSettingsMenuItem":
+                    mainFrame.Source = new Uri("Pages/PlayerSettingsPage.xaml", UriKind.RelativeOrAbsolute);
+                    break;
             }
-            TitleBar.Text = opcion;
+            TitleBar.Text = button.Header.ToString();
         }
 
         private void Window_Closing(object sender, CancelEventArgs e) {

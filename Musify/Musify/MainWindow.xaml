@@ -13,13 +13,13 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                     <Menu Height="30" Background="Gray" BorderThickness="0">
                         <MenuItem Header="Menú" Height="30" Background="Gray" Foreground="White" FontSize="12">
-                            <MenuItem Header="Menú principal" Background="Gray" Click="MenuButton_Click"/>
-                            <MenuItem Header="Buscar canción" Background="Gray" Click="MenuButton_Click"/>
-                            <MenuItem Header="Cola de reproducción" Background="Gray" Click="MenuButton_Click"/>
-                            <MenuItem Header="Historial de reproducción" Background="Gray" Click="MenuButton_Click"/>
-                            <MenuItem Header="Biblioteca personal" Background="Gray" Click="MenuButton_Click"/>
-                            <MenuItem Header="Estaciones de radio" Background="Gray" Click="MenuButton_Click"/>
-                            <MenuItem Header="Configurar reproductor" Background="Gray" Click="MenuButton_Click"/>
+                            <MenuItem x:Name="MainMenuMenuItem" Header="Menú principal" Background="Gray" Click="MenuButton_Click"/>
+                            <MenuItem x:Name="SearchSongMenuItem" Header="Buscar canción" Background="Gray" Click="MenuButton_Click"/>
+                            <MenuItem x:Name="PlayQueueMenuItem" Header="Cola de reproducción" Background="Gray" Click="MenuButton_Click"/>
+                            <MenuItem x:Name="PlayHistoryMenuItem" Header="Historial de reproducción" Background="Gray" Click="MenuButton_Click"/>
+                            <MenuItem x:Name="PersonalLibraryMenuItem" Header="Biblioteca personal" Background="Gray" Click="MenuButton_Click"/>
+                            <MenuItem x:Name="RadioStationsMenuItem" Header="Estaciones de radio" Background="Gray" Click="MenuButton_Click"/>
+                            <MenuItem x:Name="PlayerSettingsMenuItem" Header="Configuraración del reproductor" Background="Gray" Click="MenuButton_Click"/>
                         </MenuItem>
                     </Menu>
                 </StackPanel>
