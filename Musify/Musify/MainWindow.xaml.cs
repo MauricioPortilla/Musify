@@ -138,13 +138,16 @@ namespace Musify {
             }
             string file = AppDomain.CurrentDomain.BaseDirectory + "\\data\\songs\\playHistory" + Session.Account.AccountId;
             List<int> songsId = Session.SongsIdPlayHistory;
-            int limit = 0;
+            if (Session.PlayerPage.LatestSongPlayed != null) {
+                songsId.Add(Session.PlayerPage.LatestSongPlayed.SongId);
+            }
+            int start = 0;
             if (songsId.Count > 50) {
-                limit = songsId.Count - 50;
+                start = songsId.Count - 50;
             }
             FileStream fileStream = new FileStream(file, FileMode.Create);
             BinaryWriter binaryWriter = new BinaryWriter(fileStream);
-            for (int i = songsId.Count - 1; i >= limit; i--) {
+            for (int i = start; i < songsId.Count; i++) {
                 binaryWriter.Write(songsId.ElementAt(i));
             }
             binaryWriter.Close();

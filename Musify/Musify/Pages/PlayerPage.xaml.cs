@@ -35,6 +35,10 @@ namespace Musify.Pages {
         /// Stores the latest song played.
         /// </summary>
         private Song latestSongPlayed;
+        public Song LatestSongPlayed {
+            get => latestSongPlayed;
+            set => latestSongPlayed = value;
+        }
         /// <summary>
         /// Stores the latest account song played.
         /// </summary>
@@ -64,6 +68,9 @@ namespace Musify.Pages {
         /// </summary>
         /// <param name="song">Song to play</param>
         public void PlaySong(Song song) {
+            if (latestSongPlayed != null) {
+                Session.SongsIdPlayHistory.Add(latestSongPlayed.SongId);
+            }
             latestSongPlayed = song;
             latestAccountSongPlayed = null;
             songNameTextBlock.Text = song.Title;
@@ -142,7 +149,6 @@ namespace Musify.Pages {
         /// </summary>
         /// <param name="reader">Reader that stores the song data</param>
         private void PlayStreamSong(IWaveProvider reader) {
-            Session.SongsIdPlayHistory.Add(latestSongPlayed.SongId);
             if (playerWaveOut != null && playerWaveOut.PlaybackState == PlaybackState.Playing) {
                 playerWaveOut.Stop();
                 playerWaveOut.Dispose();
@@ -249,8 +255,31 @@ namespace Musify.Pages {
             }
         }
 
+        /// <summary>
+        /// If there are songs in play queue then the next song in play queue will be played
+        /// and will be removed from this.
+        /// </summary>
+        /// <param name="sender">Forward button</param>
+        /// <param name="e">Button event</param>
         private void ForwardButton_Click(object sender, RoutedEventArgs e) {
-
+            List<int> songsIdPlayQueue = Session.SongsIdPlayQueue;
+            if (songsIdPlayQueue.Count > 0) {
+                Song.FetchById(songsIdPlayQueue.ElementAt(0), (song) => {
+                    Session.PlayerPage.PlaySong(song);
+                    Session.SongsIdPlayQueue.RemoveAt(0);
+                    if (Session.MainFrame.ToString().Split('/').Last().Equals("PlayHistoryPage.xaml")) {
+                        PlayHistoryPage currentPage = Session.MainFrame.Content as PlayHistoryPage;
+                        currentPage.LoadPlayHistory();
+                    } else {
+                        if (Session.MainFrame.ToString().Split('/').Last().Equals("PlayQueuePage.xaml")) {
+                            PlayQueuePage currentPage = Session.MainFrame.Content as PlayQueuePage;
+                            currentPage.LoadPlayQueue();
+                        }
+                    }
+                }, () => {
+                    MessageBox.Show("Ocurrió un error al cargar la canción.");
+                });
+            }
         }
 
         /// <summary>

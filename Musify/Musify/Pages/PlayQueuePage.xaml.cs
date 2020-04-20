@@ -31,23 +31,39 @@ namespace Musify.Pages {
             InitializeComponent();
             DataContext = this;
             LoadPlayQueue();
+            /*Task.Run(() => {
+                while (true) {
+                    Console.Write(".");
+                    if (Session.PlayerPage.IsFowardButtonPressed) {
+                        LoadPlayQueue();
+                        Session.PlayerPage.IsFowardButtonPressed = false;
+                    }
+                }
+            });*/
         }
 
-        private void LoadPlayQueue() {
+        public void LoadPlayQueue() {
             songsPlayQueue.Clear();
             List<int> songsIdPlayQueue = Session.SongsIdPlayQueue;
             if (songsIdPlayQueue.Count > 0) {
                 deletePlayQueueButton.Visibility = Visibility.Visible;
+            } else {
+                deletePlayQueueButton.Visibility = Visibility.Hidden;
             }
-            for (int i = 0; i < songsIdPlayQueue.Count; i++) {
+            LoadSong(0, songsIdPlayQueue.Count, songsIdPlayQueue);
+        }
+
+        public void LoadSong(int i, int limit, List<int> songsIdPlayQueue) {
+            if (i < limit) {
                 Song.FetchById(songsIdPlayQueue.ElementAt(i), (song) => {
-                    songsPlayQueue.Add(new SongTable {
+                    SongsPlayQueue.Add(new SongTable {
                         Song = song,
                         Title = song.Title,
                         ArtistsNames = song.Album.GetArtistsNames(),
                         Album = song.Album,
                         Duration = song.Duration
                     });
+                    LoadSong(i + 1, limit, songsIdPlayQueue);
                 }, () => {
                     MessageBox.Show("Ocurrió un error al cargar las canciones.");
                 });
@@ -56,6 +72,10 @@ namespace Musify.Pages {
 
         private void PlayQueueDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
             UIFunctions.SongTable_OnDoubleClick(sender, e);
+            for (int i = 0; i <= playQueueDataGrid.SelectedIndex; i++) {
+                Session.SongsIdPlayQueue.RemoveAt(0);
+            }
+            LoadPlayQueue();
         }
 
         private void PlayQueueDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) {

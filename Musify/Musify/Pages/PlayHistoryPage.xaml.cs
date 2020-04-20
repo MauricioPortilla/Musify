@@ -29,25 +29,30 @@ namespace Musify.Pages {
         public PlayHistoryPage() {
             InitializeComponent();
             DataContext = this;
-            LoadSongPlayHistory();
+            LoadPlayHistory();
         }
 
-        public void LoadSongPlayHistory() {
+        public void LoadPlayHistory() {
             songsPlayHistory.Clear();
             List<int> songsIdPlayHistory = Session.SongsIdPlayHistory;
             int limit = 0;
             if (songsIdPlayHistory.Count > 50) {
                 limit = songsIdPlayHistory.Count - 50;
             }
-            for (int i = songsIdPlayHistory.Count - 1; i >= limit; i--) {
+            LoadSong(songsIdPlayHistory.Count - 1, limit, songsIdPlayHistory);
+        }
+
+        public void LoadSong(int i, int limit, List<int> songsIdPlayHistory) {
+            if (i >= limit) {
                 Song.FetchById(songsIdPlayHistory.ElementAt(i), (song) => {
-                    songsPlayHistory.Add(new SongTable {
+                    SongsPlayHistory.Add(new SongTable {
                         Song = song,
                         Title = song.Title,
                         ArtistsNames = song.Album.GetArtistsNames(),
                         Album = song.Album,
                         Duration = song.Duration
                     });
+                    LoadSong(i - 1, limit, songsIdPlayHistory);
                 }, () => {
                     MessageBox.Show("Ocurrió un error al cargar las canciones.");
                 });
@@ -56,6 +61,7 @@ namespace Musify.Pages {
 
         private void PlayHistoryDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
             UIFunctions.SongTable_OnDoubleClick(sender, e);
+            LoadPlayHistory();
         }
 
         private void PlayHistoryDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) {
