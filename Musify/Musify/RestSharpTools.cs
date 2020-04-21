@@ -21,6 +21,7 @@ namespace Musify {
                 if (parameters != null) {
                     request.AddParameter("data", JsonConvert.SerializeObject(parameters));
                 }
+                request.AddHeader("Authorization", Session.AccessToken ?? "");
                 var response = await Session.REST_CLIENT.ExecuteGetAsync<TModel>(request, new CancellationTokenSource().Token);
                 dynamic json = JObject.Parse(response.Content);
                 if (json["status"] != null && json["status"] == "success") {
@@ -41,6 +42,7 @@ namespace Musify {
                 if (parameters != null) {
                     request.AddParameter("data", JsonConvert.SerializeObject(parameters));
                 }
+                request.AddHeader("Authorization", Session.AccessToken ?? "");
                 var response = await Session.REST_CLIENT.ExecuteGetAsync(request, new CancellationTokenSource().Token);
                 List<TModel> objects = new List<TModel>();
                 if (response.IsSuccessful) {
@@ -59,6 +61,7 @@ namespace Musify {
             try {
                 var request = new RestRequest(resource, DataFormat.Json);
                 request.AddJsonBody(parameters);
+                request.AddHeader("Authorization", Session.AccessToken ?? "");
                 var response = await Session.REST_CLIENT.ExecutePostAsync<TModel>(request, new CancellationTokenSource().Token);
                 dynamic json = JObject.Parse(response.Content);
                 if (json["status"] != null && json["status"] == "success") {
@@ -75,6 +78,7 @@ namespace Musify {
                 var request = new RestRequest(resource);
                 request.RequestFormat = DataFormat.Json;
                 request.AddJsonBody(parameters);
+                request.AddHeader("Authorization", Session.AccessToken ?? "");
                 var response = await Session.REST_CLIENT.ExecutePostAsync(request, new CancellationTokenSource().Token);
                 callback(response);
             } catch (Exception) {
@@ -91,6 +95,7 @@ namespace Musify {
                 request.AddJsonBody(parameters);
                 request.AlwaysMultipartFormData = true;
                 request.AddHeader("Content-Type", "multipart/form-data");
+                request.AddHeader("Authorization", Session.AccessToken ?? "");
                 int counter = 0;
                 foreach (var fileRoute in fileRoutes) {
                     if (File.Exists(fileRoute)) {
@@ -116,6 +121,7 @@ namespace Musify {
             try {
                 var request = new RestRequest(resource, DataFormat.Json);
                 request.AddJsonBody(parameters);
+                request.AddHeader("Authorization", Session.AccessToken ?? "");
                 var response = await Session.REST_CLIENT.ExecuteAsync<TModel>(request, Method.PUT, new CancellationTokenSource().Token);
                 dynamic json = JObject.Parse(response.Content);
                 if (json["status"] != null && json["status"] == "success") {
@@ -131,6 +137,7 @@ namespace Musify {
             try {
                 var request = new RestRequest(resource, DataFormat.Json);
                 request.AddJsonBody(parameters);
+                request.AddHeader("Authorization", Session.AccessToken ?? "");
                 var response = await Session.REST_CLIENT.ExecuteAsync(request, Method.DELETE, new CancellationTokenSource().Token);
                 callback(response);
             } catch (Exception) {

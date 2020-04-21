@@ -69,13 +69,13 @@ namespace Musify {
 
         public static void Login(string email, string password, Action<Account> onSuccess, Action onFailure) {
             var accountData = new {
-                request_type = "login",
                 email,
                 password
             };
             try {
-                RestSharpTools.PostAsync<Account>("/account", accountData, JSON_EQUIVALENTS, (response) => {
+                RestSharpTools.PostAsync<Account>("/auth/login", accountData, JSON_EQUIVALENTS, (response) => {
                     if (response.IsSuccessful) {
+                        Session.AccessToken = ((dynamic) JObject.Parse(response.Content))["access_token"];
                         onSuccess(response.Data);
                     } else {
                         onFailure();
@@ -90,7 +90,6 @@ namespace Musify {
 
         public void Register(bool isArtist, Action onSuccess, Action onFailure, string artisticName = null) {
             var accountData = new {
-                request_type = "register",
                 email,
                 password,
                 name,
@@ -99,7 +98,7 @@ namespace Musify {
                 artistic_name = artisticName
             };
             try {
-                RestSharpTools.PostAsync("/account", accountData, (response) => {
+                RestSharpTools.PostAsync("/auth/register", accountData, (response) => {
                     if (response.IsSuccessful) {
                         onSuccess();
                     } else {

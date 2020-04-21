@@ -107,7 +107,9 @@ namespace Musify.Pages {
                     isStreamSongLocked = true;
                     isPlayerStopped = false;
                     using (Stream memoryStream = new MemoryStream()) {
-                        using (Stream stream = WebRequest.Create(streamUrl).GetResponse().GetResponseStream()) {
+                        WebRequest webRequest = WebRequest.Create(streamUrl);
+                        webRequest.Headers["Authorization"] = Session.AccessToken ?? "";
+                        using (Stream stream = webRequest.GetResponse().GetResponseStream()) {
                             byte[] buffer = new byte[32768];
                             int read;
                             while ((read = stream.Read(buffer, 0, buffer.Length)) > 0) {
