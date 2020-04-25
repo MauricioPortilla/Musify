@@ -14,6 +14,7 @@ namespace Musify.Models {
             { "account_song_id", "AccountSongId" },
             { "account_id", "AccountId" },
             { "title", "Title" },
+            { "duration", "Duration" },
             { "song_location", "SongLocation" },
             { "upload_date", "UploadDate" }
         };
@@ -33,6 +34,11 @@ namespace Musify.Models {
             get => title;
             set => title = value;
         }
+        private string duration;
+        public string Duration {
+            get => duration;
+            set => duration = value;
+        }
         private string songLocation;
         public string SongLocation {
             get => songLocation;
@@ -42,11 +48,6 @@ namespace Musify.Models {
         public DateTime UploadDate {
             get => uploadDate;
             set => uploadDate = value;
-        }
-        private string duration;
-        public string Duration {
-            get => duration;
-            set => duration = value;
         }
 
         public AccountSong() {

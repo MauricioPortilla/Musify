@@ -1,5 +1,6 @@
 ﻿using MaterialDesignThemes.Wpf;
 using Musify.Models;
+using Musify.Pages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,6 +63,11 @@ namespace Musify {
             }, () => {
                 MessageBox.Show("Ocurrió un error al crear la lista de reproducción.");
             });
+        }
+
+        private void PlaylistsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            ConsultPlaylistPage consultPlaylistPage = new ConsultPlaylistPage(playlistsListBox.SelectedItem as Playlist);
+            Session.MainFrame.Navigate(consultPlaylistPage);
         }
     }
 }

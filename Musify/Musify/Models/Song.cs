@@ -12,7 +12,9 @@ namespace Musify.Models {
             { "album_id", "AlbumId" },
             { "genre_id", "GenreId" },
             { "title", "Title" },
-            { "song_location", "SongLocation" }
+            { "duration", "Duration" },
+            { "song_location", "SongLocation" },
+            { "status", "Status" }
         };
 
         private int songId;
@@ -45,15 +47,20 @@ namespace Musify.Models {
             get => title;
             set => title = value;
         }
+        private string duration = "0:00";
+        public string Duration {
+            get => duration;
+            set => duration = value;
+        }
         private string songLocation;
         public string SongLocation {
             get => songLocation;
             set => songLocation = value;
         }
-        private string duration = "0:00";
-        public string Duration {
-            get => duration;
-            set => duration = value;
+        private string status;
+        public string Status {
+            get => status;
+            set => status = value;
         }
 
         public Song() {

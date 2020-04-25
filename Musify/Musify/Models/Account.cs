@@ -51,10 +51,15 @@ namespace Musify {
             get => creationDate;
             set => creationDate = value;
         }
-        private List<AccountSong> accountSongs;
+        private List<AccountSong> accountSongs = new List<AccountSong>();
         public List<AccountSong> AccountSongs {
             get => accountSongs;
             set => accountSongs = value;
+        }
+        private List<Song> likedSongs = new List<Song>();
+        public List<Song> LikedSongs {
+            get => likedSongs;
+            set => likedSongs = value;
         }
 
         public Account() {

@@ -31,7 +31,7 @@ namespace Musify.Models {
             get => account;
             set => account = value;
         }
-        private List<Song> songs;
+        private List<Song> songs = new List<Song>();
         public List<Song> Songs {
             get => songs;
             set => songs = value;
@@ -51,11 +51,35 @@ namespace Musify.Models {
                     if (response.IsSuccessful) {
                         onSuccess(objects);
                     } else {
-                        onFailure();
+                        onFailure?.Invoke();
                     }
                 });
             } catch (Exception exception) {
                 Console.WriteLine("Exception@Playlist->Fetch() -> " + exception.Message);
+                onFailure?.Invoke();
+            }
+        }
+
+        public void FetchSongs(Action onSuccess, Action onFailure) {
+            try {
+                RestSharpTools.GetAsyncMultiple<Song>("/playlist/" + playlistId + "/songs", null, Song.JSON_EQUIVALENTS, (response, objects) => {
+                    if (response.IsSuccessful) {
+                        songs = objects;
+                        foreach (var song in songs) {
+                            Album.FetchById(song.AlbumId, (album) => {
+                                song.Album = album;
+                                Genre.FetchById(song.GenreId, (genre) => {
+                                    song.Genre = genre;
+                                    onSuccess();
+                                }, null);
+                            }, null);
+                        }
+                    } else {
+                        onFailure?.Invoke();
+                    }
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Playlist->FetchSongs() -> " + exception.Message);
                 onFailure?.Invoke();
             }
         }

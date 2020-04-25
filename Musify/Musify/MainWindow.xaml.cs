@@ -31,26 +31,14 @@ namespace Musify {
         }
 
         public void LoadConfiguration() {
-            string directory = AppDomain.CurrentDomain.BaseDirectory + "\\data\\songs";
-            if (Directory.Exists(directory)) {
-                LoadSongsIdPlayQueue();
-                LoadSongsIdPlayHistory();
-            } else {
-                Directory.CreateDirectory(directory);
-                File.Create(AppDomain.CurrentDomain.BaseDirectory + "\\data\\songs\\playQueue" + Session.Account.AccountId);
-                File.Create(AppDomain.CurrentDomain.BaseDirectory + "\\data\\songs\\playHistory" + Session.Account.AccountId);
-            }
-            directory = AppDomain.CurrentDomain.BaseDirectory + "\\data\\player";
-            if (Directory.Exists(directory)) {
-                LoadConfigurationPlayer();
-            } else {
-                Directory.CreateDirectory(directory);
-                File.Create(AppDomain.CurrentDomain.BaseDirectory + "\\data\\player\\player" + Session.Account.AccountId);
-            }
+            App.CreateDirectories();
+            LoadSongsIdPlayQueue();
+            LoadSongsIdPlayHistory();
+            LoadConfigurationPlayer();
         }
 
         public void LoadSongsIdPlayQueue() {
-            string file = AppDomain.CurrentDomain.BaseDirectory + "\\data\\songs\\playQueue" + Session.Account.AccountId;
+            string file = App.DATA_SONGS_DIRECTORY + "/playQueue" + Session.Account.AccountId;
             if (File.Exists(file)) {
                 FileStream fileStream = new FileStream(file, FileMode.Open, FileAccess.Read);
                 BinaryReader binaryReader = new BinaryReader(fileStream);
@@ -63,7 +51,7 @@ namespace Musify {
         }
 
         public void LoadSongsIdPlayHistory() {
-            string file = AppDomain.CurrentDomain.BaseDirectory + "\\data\\songs\\playHistory" + Session.Account.AccountId;
+            string file = App.DATA_SONGS_DIRECTORY + "/playHistory" + Session.Account.AccountId;
             if (File.Exists(file)) {
                 FileStream fileStream = new FileStream(file, FileMode.Open, FileAccess.Read);
                 BinaryReader binaryReader = new BinaryReader(fileStream);
@@ -76,7 +64,7 @@ namespace Musify {
         }
 
         public void LoadConfigurationPlayer() {
-            string file = AppDomain.CurrentDomain.BaseDirectory + "\\data\\player\\player" + Session.Account.AccountId;
+            string file = App.DATA_PLAYER_DIRECTORY + "/player" + Session.Account.AccountId;
             if (File.Exists(file)) {
                 FileStream fileStream = new FileStream(file, FileMode.Open, FileAccess.Read);
                 BinaryReader binaryReader = new BinaryReader(fileStream);
@@ -133,15 +121,8 @@ namespace Musify {
         }
 
         private void Window_Closing(object sender, CancelEventArgs e) {
-            string directory = AppDomain.CurrentDomain.BaseDirectory + "\\data\\songs";
-            if (!Directory.Exists(directory)) {
-                Directory.CreateDirectory(directory);
-            }
-            directory = AppDomain.CurrentDomain.BaseDirectory + "\\data\\player";
-            if (!Directory.Exists(directory)) {
-                Directory.CreateDirectory(directory);
-            }
-            string file = AppDomain.CurrentDomain.BaseDirectory + "\\data\\songs\\playHistory" + Session.Account.AccountId;
+            App.CreateDirectories();
+            string file = App.DATA_SONGS_DIRECTORY + "/playHistory" + Session.Account.AccountId;
             List<int> songsId = Session.SongsIdPlayHistory;
             if (Session.PlayerPage.LatestSongPlayed != null) {
                 songsId.Add(Session.PlayerPage.LatestSongPlayed.SongId);
@@ -157,7 +138,7 @@ namespace Musify {
             }
             binaryWriter.Close();
             fileStream.Close();
-            file = AppDomain.CurrentDomain.BaseDirectory + "\\data\\songs\\playQueue" + Session.Account.AccountId;
+            file = App.DATA_SONGS_DIRECTORY + "/playQueue" + Session.Account.AccountId;
             songsId = Session.SongsIdPlayQueue;
             fileStream = new FileStream(file, FileMode.Create);
             binaryWriter = new BinaryWriter(fileStream);
@@ -166,7 +147,7 @@ namespace Musify {
             }
             binaryWriter.Close();
             fileStream.Close();
-            file = AppDomain.CurrentDomain.BaseDirectory + "\\data\\player\\player" + Session.Account.AccountId;
+            file = App.DATA_PLAYER_DIRECTORY + "/player" + Session.Account.AccountId;
             string configurationPlayer = Session.SongStreamingQuality;
             fileStream = new FileStream(file, FileMode.Create);
             binaryWriter = new BinaryWriter(fileStream);

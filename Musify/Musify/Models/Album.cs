@@ -12,6 +12,7 @@ namespace Musify.Models {
 
         public static Dictionary<string, string> JSON_EQUIVALENTS = new Dictionary<string, string>() {
             { "album_id", "AlbumId" },
+            { "type", "Type" },
             { "name", "Name" },
             { "launch_year", "LaunchYear" },
             { "discography", "Discography" },
@@ -22,6 +23,11 @@ namespace Musify.Models {
         public int AlbumId {
             get => albumId;
             set => albumId = value;
+        }
+        private string type;
+        public string Type {
+            get => type;
+            set => type = value;
         }
         private string name;
         public string Name {
@@ -43,12 +49,12 @@ namespace Musify.Models {
             get => imageLocation;
             set => imageLocation = value;
         }
-        private List<Artist> artists;
+        private List<Artist> artists = new List<Artist>();
         public List<Artist> Artists {
             get => artists;
             set => artists = value;
         }
-        private List<Song> songs;
+        private List<Song> songs = new List<Song>();
         public List<Song> Songs {
             get => songs;
             set => songs = value;

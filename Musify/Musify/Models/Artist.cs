@@ -33,7 +33,7 @@ namespace Musify.Models {
             get => artisticName;
             set => artisticName = value;
         }
-        private List<Album> albums;
+        private List<Album> albums = new List<Album>();
         public List<Album> Albums {
             get => albums;
             set => albums = value;

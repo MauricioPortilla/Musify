@@ -70,6 +70,11 @@ namespace Musify.Pages {
             StackPanel albumDataStackPanel = new StackPanel();
             albumDataStackPanel.Margin = new Thickness(12, 35, 0, 0);
             albumDataStackPanel.Orientation = Orientation.Vertical;
+            TextBlock albumTypeTextBlock = new TextBlock();
+            albumTypeTextBlock.Text = album.Type;
+            albumTypeTextBlock.FontSize = 10;
+            albumTypeTextBlock.FontWeight = FontWeights.Bold;
+            albumDataStackPanel.Children.Add(albumTypeTextBlock);
             TextBlock albumNameTextBlock = new TextBlock();
             albumNameTextBlock.Text = album.Name;
             albumNameTextBlock.FontSize = 20;
