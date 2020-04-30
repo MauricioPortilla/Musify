@@ -76,6 +76,9 @@ namespace Musify.Pages {
             songNameTextBlock.Text = song.Title;
             artistNameTextBlock.Text = song.Album.GetArtistsNames();
             MakeRequestStreamSong(Core.SERVER_API_URL + "/stream/song/" + song.SongId + "/" + Session.SongStreamingQuality);
+            // TODO: Mostrar solamente si no se ha seleccionado ninguna anteriormente con respecto a la canción actual.
+            likeButton.Visibility = Visibility.Visible;
+            dislikeButton.Visibility = Visibility.Visible;
         }
 
         /// <summary>
@@ -88,6 +91,8 @@ namespace Musify.Pages {
             songNameTextBlock.Text = accountSong.Title;
             artistNameTextBlock.Text = "";
             MakeRequestStreamSong(Core.SERVER_API_URL + "/stream/accountsong/" + accountSong.AccountSongId);
+            likeButton.Visibility = Visibility.Hidden;
+            dislikeButton.Visibility = Visibility.Hidden;
         }
 
         /// <summary>
@@ -308,6 +313,24 @@ namespace Musify.Pages {
             }
             Session.MainWindow.mainFrame.Navigate(new ConsultArtistPage(latestSongPlayed.Album.Artists[0]));
             Session.MainWindow.TitleBar.Text = latestSongPlayed.Album.Artists[0].ArtisticName;
+        }
+
+        private void LikeButton_Click(object sender, RoutedEventArgs e) {
+            Session.Account.LikeSong(latestSongPlayed, () => {
+                likeButton.IsEnabled = false;
+                dislikeButton.IsEnabled = false;
+            }, () => {
+                MessageBox.Show("Ocurrió un error al procesar tu solicitud.");
+            });
+        }
+
+        private void DislikeButton_Click(object sender, RoutedEventArgs e) {
+            Session.Account.DislikeSong(latestSongPlayed, () => {
+                likeButton.IsEnabled = false;
+                dislikeButton.IsEnabled = false;
+            }, () => {
+                MessageBox.Show("Ocurrió un error al procesar tu solicitud.");
+            });
         }
     }
 }

@@ -166,5 +166,41 @@ namespace Musify {
                 onFailure();
             }
         }
+
+        public void LikeSong(Song song, Action onSuccess, Action onFailure) {
+            try {
+                var data = new {
+                    account_id = accountId
+                };
+                RestSharpTools.PostAsync("/song/" + song.SongId + "/songlike", data, (response) => {
+                    if (response.IsSuccessful) {
+                        onSuccess();
+                        return;
+                    }
+                    onFailure();
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Account->LikeSong() -> " + exception.Message);
+                onFailure();
+            }
+        }
+
+        public void DislikeSong(Song song, Action onSuccess, Action onFailure) {
+            try {
+                var data = new {
+                    account_id = accountId
+                };
+                RestSharpTools.PostAsync("/song/" + song.SongId + "/songdislike", data, (response) => {
+                    if (response.IsSuccessful) {
+                        onSuccess();
+                        return;
+                    }
+                    onFailure();
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Account->DislikeSong() -> " + exception.Message);
+                onFailure();
+            }
+        }
     }
 }

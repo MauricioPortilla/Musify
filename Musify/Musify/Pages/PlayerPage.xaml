@@ -10,7 +10,15 @@
       Title="Player">
     <Grid Background="LightGray">
         <StackPanel Orientation="Vertical">
-            <TextBlock x:Name="songNameTextBlock" TextWrapping="NoWrap" Text="" FontSize="14" Height="19" Margin="15,15,0,0"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock x:Name="songNameTextBlock" TextWrapping="NoWrap" Text="" FontSize="14" Height="19" Margin="15,15,0,0"/>
+                <Button x:Name="likeButton" Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" Width="20" MinWidth="20" Height="20" Background="DarkGreen" Margin="10,15,0,0" Visibility="Hidden" Click="LikeButton_Click">
+                    <materialDesign:PackIcon Name="likeButtonIcon" Kind="Like" Width="10" />
+                </Button>
+                <Button x:Name="dislikeButton" Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" Width="20" MinWidth="20" Height="20" Background="DarkRed" Margin="5,15,0,0" Visibility="Hidden" Click="DislikeButton_Click">
+                    <materialDesign:PackIcon Name="dislikeButtonIcon" Kind="Dislike" Width="10" />
+                </Button>
+            </StackPanel>
             <TextBlock x:Name="artistNameTextBlock" TextWrapping="NoWrap" Text="" Height="17" Margin="15,0,0,0" Cursor="Hand" MouseDown="ArtistNameTextBlock_MouseDown"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
