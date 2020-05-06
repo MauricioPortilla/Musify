@@ -45,7 +45,7 @@ namespace Musify.Models {
         public Playlist() {
         }
 
-        public static void Fetch(int accountId, Action<List<Playlist>> onSuccess, Action onFailure) {
+        public static void FetchByAccountId(int accountId, Action<List<Playlist>> onSuccess, Action onFailure) {
             try {
                 RestSharpTools.GetAsyncMultiple<Playlist>("/account/" + accountId + "/playlists", null, JSON_EQUIVALENTS, (response, objects) => {
                     if (response.IsSuccessful) {
@@ -55,7 +55,7 @@ namespace Musify.Models {
                     }
                 });
             } catch (Exception exception) {
-                Console.WriteLine("Exception@Playlist->Fetch() -> " + exception.Message);
+                Console.WriteLine("Exception@Playlist->FetchByAccountId() -> " + exception.Message);
                 onFailure?.Invoke();
             }
         }

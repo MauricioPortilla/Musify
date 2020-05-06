@@ -30,7 +30,7 @@ namespace Musify {
 
         private void LoadPlaylists() {
             playlistsListBox.Items.Clear();
-            Playlist.Fetch(Session.Account.AccountId, (playlists) => {
+            Playlist.FetchByAccountId(Session.Account.AccountId, (playlists) => {
                 foreach (var playlist in playlists) {
                     playlistsListBox.Items.Add(playlist);
                 }

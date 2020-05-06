@@ -14,7 +14,7 @@
                     <Menu Height="30" Background="Gray" BorderThickness="0">
                         <MenuItem Header="Menú" Height="30" Background="Gray" Foreground="White" FontSize="12">
                             <MenuItem x:Name="MainMenuMenuItem" Header="Menú principal" Background="Gray" Click="MenuButton_Click"/>
-                            <MenuItem x:Name="SearchSongMenuItem" Header="Buscar canción" Background="Gray" Click="MenuButton_Click"/>
+                            <MenuItem x:Name="SearchMenuItem" Header="Buscar" Background="Gray" Click="MenuButton_Click"/>
                             <MenuItem x:Name="PlayQueueMenuItem" Header="Cola de reproducción" Background="Gray" Click="MenuButton_Click"/>
                             <MenuItem x:Name="PlayHistoryMenuItem" Header="Historial de reproducción" Background="Gray" Click="MenuButton_Click"/>
                             <MenuItem x:Name="PersonalLibraryMenuItem" Header="Biblioteca personal" Background="Gray" Click="MenuButton_Click"/>

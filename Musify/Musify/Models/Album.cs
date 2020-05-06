@@ -80,6 +80,29 @@ namespace Musify.Models {
             }
         }
 
+        public static void FetchByNameCoincidences(string name, Action<List<Album>> onSuccess, Action onFailure) {
+            try {
+                RestSharpTools.GetAsyncMultiple<Album>("/album/search/" + name, null, JSON_EQUIVALENTS, (response, albums) => {
+                    if (response.IsSuccessful) {
+                        if (albums.Count == 0) {
+                            onSuccess(albums);
+                            return;
+                        }
+                        foreach (var album in albums) {
+                            album.FetchArtists(() => {
+                                onSuccess(albums);
+                            }, null);
+                        }
+                    } else {
+                        onFailure();
+                    }
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Album->FetchByNameCoincidences() -> " + exception.Message);
+                onFailure?.Invoke();
+            }
+        }
+
         public void FetchArtists(Action onSuccess, Action onFailure) {
             try {
                 RestSharpTools.GetAsyncMultiple<Artist>("/album/" + albumId + "/artists", null, Artist.JSON_EQUIVALENTS, (response, artists) => {
@@ -88,11 +111,11 @@ namespace Musify.Models {
                         onSuccess();
                         return;
                     }
-                    onFailure();
+                    onFailure?.Invoke();
                 });
             } catch (Exception exception) {
                 Console.WriteLine("Exception@Album->FetchArtists() -> " + exception.Message);
-                onFailure();
+                onFailure?.Invoke();
             }
         }
 
@@ -132,6 +155,17 @@ namespace Musify.Models {
 
         public override string ToString() {
             return name;
+        }
+
+        /// <summary>
+        /// Represents an Album in a table.
+        /// </summary>
+        public struct AlbumTable {
+            public Album Album;
+            public string Type { get; set; }
+            public string Name { get; set; }
+            public string Artist { get; set; }
+            public int LaunchYear { get; set; }
         }
     }
 }

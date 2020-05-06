@@ -57,6 +57,21 @@ namespace Musify.Models {
             }
         }
 
+        public static void FetchByArtisticNameCoincidences(string artisticName, Action<List<Artist>> onSuccess, Action onFailure) {
+            try {
+                RestSharpTools.GetAsyncMultiple<Artist>("/artist/search/" + artisticName, null, JSON_EQUIVALENTS, (response, artists) => {
+                    if (response.IsSuccessful) {
+                        onSuccess(artists);
+                    } else {
+                        onFailure();
+                    }
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Artist->FetchByArtisticNameCoincidences() -> " + exception.Message);
+                onFailure?.Invoke();
+            }
+        }
+
         public void FetchAlbums(Action onSuccess, Action onFailure) {
             try {
                 RestSharpTools.GetAsyncMultiple<Album>("/artist/" + artistId + "/albums", null, Album.JSON_EQUIVALENTS, (response, albums) => {
@@ -75,6 +90,14 @@ namespace Musify.Models {
 
         public override string ToString() {
             return artisticName;
+        }
+
+        /// <summary>
+        /// Represents an Artist in a table.
+        /// </summary>
+        public struct ArtistTable {
+            public Artist Artist;
+            public string ArtisticName { get; set; }
         }
     }
 }

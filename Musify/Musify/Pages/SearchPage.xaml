@@ -1,0 +1,84 @@
+﻿<Page
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Musify.Pages"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" x:Class="Musify.Pages.SearchPage"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="SearchSongPage" Background="White">
+    <Grid>
+        <TextBox x:Name="searchTextBox" HorizontalAlignment="Left" Height="37" Margin="28,26,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="228" materialDesign:HintAssist.Hint="Buscar" Style="{StaticResource MaterialDesignFloatingHintTextBox}" KeyUp="SearchTextBox_KeyUp" />
+        <Button x:Name="addToQueueButton" Content="Agregar a la cola" HorizontalAlignment="Right" Margin="0,0,388,20" VerticalAlignment="Bottom" Width="151" Click="AddToQueueButton_Click"/>
+        <Button x:Name="addToPlaylistButton" Content="Agregar a una lista" HorizontalAlignment="Right" Margin="0,0,223,20" VerticalAlignment="Bottom" Width="151" Click="AddToPlaylistButton_Click"/>
+        <Button x:Name="generateRadioStation" Content="Generar estación de radio" HorizontalAlignment="Right" Margin="0,0,10,20" VerticalAlignment="Bottom" Width="199" Click="GenerateRadioStation_Click"/>
+        <TabControl x:Name="searchTabControl" HorizontalAlignment="Left" Height="304" Margin="10,78,0,0" VerticalAlignment="Top" Width="780">
+            <TabItem Header="Canción">
+                <Grid Background="#FFE5E5E5">
+                    <DataGrid
+                        x:Name="songsDataGrid"
+                        ItemsSource="{Binding SongList}"
+                        CanUserSortColumns="True"
+                        CanUserAddRows="False"
+                        CanUserReorderColumns="False"
+                        AutoGenerateColumns="False"
+                        materialDesign:DataGridAssist.CellPadding="13 8 8 8"
+                        materialDesign:DataGridAssist.ColumnHeaderPadding="8"
+                        IsReadOnly="True"
+                        MouseDoubleClick="SongsDataGrid_MouseDoubleClick">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                Binding="{Binding Title}"
+                                Header="Título"/>
+                            <DataGridTextColumn
+                                Binding="{Binding ArtistsNames}"
+                                Header="Artista"/>
+                            <DataGridTextColumn
+                                Binding="{Binding Album}"
+                                Header="Álbum"/>
+                            <DataGridTextColumn
+                                Binding="{Binding Duration}"
+                                Header="Duración"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Álbum">
+                <Grid>
+                    <ListView x:Name="albumsListView" ItemsSource="{Binding AlbumList}" SelectionChanged="AlbumsListView_SelectionChanged">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn
+                                    DisplayMemberBinding="{Binding Type}"
+                                    Header="Tipo" />
+                                <GridViewColumn
+                                    DisplayMemberBinding="{Binding Name}"
+                                    Header="Nombre" />
+                                <GridViewColumn
+                                    DisplayMemberBinding="{Binding Artist}"
+                                    Header="Artista" />
+                                <GridViewColumn
+                                    DisplayMemberBinding="{Binding LaunchYear}"
+                                    Header="Año de lanzamiento" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Artista">
+                <Grid>
+                    <ListView x:Name="artistsListView" ItemsSource="{Binding ArtistList}" SelectionChanged="ArtistsListView_SelectionChanged">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn
+                                    DisplayMemberBinding="{Binding ArtisticName}"
+                                    Header="Nombre artístico" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Page>
