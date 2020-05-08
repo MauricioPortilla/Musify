@@ -44,7 +44,7 @@ namespace Musify.Pages {
                 AccountSongList.Add(new AccountSongTable {
                     AccountSong = accountSong,
                     Title = accountSong.Title,
-                    Duration = "00:00"
+                    Duration = accountSong.Duration
                 });
             }
         }
@@ -62,12 +62,16 @@ namespace Musify.Pages {
                     MessageBox.Show("Has superado el límite de 250 canciones.");
                     return;
                 }
-                Session.Account.AddAccountSongs(selectedFiles, () => {
-                    SetAccountSongs();
-                    MessageBox.Show("Canciones cargadas con éxito.");
-                }, () => {
+                try {
+                    Session.Account.AddAccountSongs(selectedFiles, () => {
+                        SetAccountSongs();
+                        MessageBox.Show("Canciones cargadas con éxito.");
+                    }, () => {
+                        MessageBox.Show("Ocurrió un error al subir la canción.");
+                    });
+                } catch (Exception) {
                     MessageBox.Show("Ocurrió un error al subir la canción.");
-                });
+                }
             }
         }
 

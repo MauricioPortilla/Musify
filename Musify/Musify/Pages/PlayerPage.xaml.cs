@@ -1,10 +1,12 @@
 ﻿using Musify.Models;
 using NAudio.Wave;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.Caching;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -40,6 +42,10 @@ namespace Musify.Pages {
             set => latestSongPlayed = value;
         }
         /// <summary>
+        /// Stores the latest stream retrieved from server.
+        /// </summary>
+        private List<byte> latestStream;
+        /// <summary>
         /// Stores the latest account song played.
         /// </summary>
         private AccountSong latestAccountSongPlayed;
@@ -71,8 +77,12 @@ namespace Musify.Pages {
             if (latestSongPlayed != null) {
                 Session.SongsIdPlayHistory.Add(latestSongPlayed.SongId);
             }
-            latestSongPlayed = song;
             latestAccountSongPlayed = null;
+            if (latestSongPlayed != null && latestSongPlayed.SongId == song.SongId) {
+                PlayMemoryStream(new MemoryStream(latestStream.ToArray()));
+                return;
+            }
+            latestSongPlayed = song;
             songNameTextBlock.Text = song.Title;
             artistNameTextBlock.Text = song.Album.GetArtistsNames();
             MakeRequestStreamSong(Core.SERVER_API_URL + "/stream/song/" + song.SongId + "/" + Session.SongStreamingQuality);
@@ -86,8 +96,12 @@ namespace Musify.Pages {
         /// </summary>
         /// <param name="accountSong">Account song to play</param>
         public void PlayAccountSong(AccountSong accountSong) {
-            latestAccountSongPlayed = accountSong;
             latestSongPlayed = null;
+            if (latestAccountSongPlayed != null && latestAccountSongPlayed.AccountSongId == accountSong.AccountSongId) {
+                PlayMemoryStream(new MemoryStream(latestStream.ToArray()));
+                return;
+            }
+            latestAccountSongPlayed = accountSong;
             songNameTextBlock.Text = accountSong.Title;
             artistNameTextBlock.Text = "";
             MakeRequestStreamSong(Core.SERVER_API_URL + "/stream/accountsong/" + accountSong.AccountSongId);
@@ -111,42 +125,55 @@ namespace Musify.Pages {
                     isPlayerWaveOutAvailable = false;
                     isStreamSongLocked = true;
                     isPlayerStopped = false;
+                    latestStream = new List<byte>();
                     using (Stream memoryStream = new MemoryStream()) {
                         WebRequest webRequest = WebRequest.Create(streamUrl);
                         webRequest.Headers["Authorization"] = Session.AccessToken ?? "";
                         using (Stream stream = webRequest.GetResponse().GetResponseStream()) {
-                            byte[] buffer = new byte[32768];
+                            byte[] buffer = new byte[1024 * 1024];
                             int read;
                             while ((read = stream.Read(buffer, 0, buffer.Length)) > 0) {
                                 memoryStream.Write(buffer, 0, read);
+                                latestStream.AddRange(buffer.ToList().GetRange(0, read).ToArray());
                             }
                         }
-                        memoryStream.Position = 0;
-                        try {
-                            reader = new WaveFileReader(memoryStream);
-                            SetPlayerData(reader);
-                            Application.Current.Dispatcher.Invoke(delegate {
-                                songDurationTimeTextBlock.Text = ((WaveFileReader) reader).TotalTime.ToString("mm\\:ss");
-                            });
-                            PlayStreamSong(reader);
-                        } catch (Exception) {
-                            try {
-                                reader = new Mp3FileReader(memoryStream);
-                                SetPlayerData(reader);
-                                Application.Current.Dispatcher.Invoke(delegate {
-                                    songDurationTimeTextBlock.Text = ((Mp3FileReader) reader).TotalTime.ToString("mm\\:ss");
-                                });
-                                PlayStreamSong(reader);
-                            } catch (Exception) {
-                                throw;
-                            }
-                        }
+                        PlayMemoryStream(memoryStream);
                     }
-                } catch (Exception) {
+                } catch (Exception exception) {
+                    Console.WriteLine("Exception@PlayerPage->MakeRequestStreamSong() -> " + exception);
                     MessageBox.Show("Error al reproducir la canción.");
                     isPlayerWaveOutAvailable = true;
                 }
             });
+        }
+
+        /// <summary>
+        /// Attempts to play an audio stream.
+        /// </summary>
+        /// <param name="memoryStream">Audio stream to play</param>
+        private void PlayMemoryStream(Stream memoryStream) {
+            try {
+                memoryStream.Position = 0;
+                reader = new WaveFileReader(memoryStream);
+                SetPlayerData(reader);
+                Application.Current.Dispatcher.Invoke(delegate {
+                    songDurationTimeTextBlock.Text = ((WaveFileReader) reader).TotalTime.ToString("mm\\:ss");
+                });
+                PlayStreamSong(reader);
+            } catch (Exception) {
+                Console.WriteLine("Exception@PlayerPage->PlayMemoryStream() -> Audio file is not .wav, trying with .mp3");
+                try {
+                    reader = new Mp3FileReader(memoryStream);
+                    SetPlayerData(reader);
+                    Application.Current.Dispatcher.Invoke(delegate {
+                        songDurationTimeTextBlock.Text = ((Mp3FileReader) reader).TotalTime.ToString("mm\\:ss");
+                    });
+                    PlayStreamSong(reader);
+                } catch (Exception exception) {
+                    Console.WriteLine("Exception@PlayerPage->PlayMemoryStream() -> " + exception);
+                    throw;
+                }
+            }
         }
 
         /// <summary>
@@ -253,10 +280,10 @@ namespace Musify.Pages {
                     playerWaveOut.Play();
                     playButtonIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Pause;
                 } else {
-                    if (latestSongPlayed != null) {
-                        PlaySong(latestSongPlayed);
-                    } else if (latestAccountSongPlayed != null) {
-                        PlayAccountSong(latestAccountSongPlayed);
+                    if (latestStream != null) {
+                        Task.Run(() => {
+                            PlayMemoryStream(new MemoryStream(latestStream.ToArray()));
+                        });
                     }
                 }
             }
@@ -271,21 +298,25 @@ namespace Musify.Pages {
         private void ForwardButton_Click(object sender, RoutedEventArgs e) {
             List<int> songsIdPlayQueue = Session.SongsIdPlayQueue;
             if (songsIdPlayQueue.Count > 0) {
-                Song.FetchById(songsIdPlayQueue.ElementAt(0), (song) => {
-                    Session.PlayerPage.PlaySong(song);
-                    Session.SongsIdPlayQueue.RemoveAt(0);
-                    if (Session.MainFrame.ToString().Split('/').Last().Equals("PlayHistoryPage.xaml")) {
-                        PlayHistoryPage currentPage = Session.MainFrame.Content as PlayHistoryPage;
-                        currentPage.LoadPlayHistory();
-                    } else {
-                        if (Session.MainFrame.ToString().Split('/').Last().Equals("PlayQueuePage.xaml")) {
-                            PlayQueuePage currentPage = Session.MainFrame.Content as PlayQueuePage;
-                            currentPage.LoadPlayQueue();
+                try {
+                    Song.FetchById(songsIdPlayQueue.ElementAt(0), (song) => {
+                        Session.PlayerPage.PlaySong(song);
+                        Session.SongsIdPlayQueue.RemoveAt(0);
+                        if (Session.MainFrame.ToString().Split('/').Last().Equals("PlayHistoryPage.xaml")) {
+                            PlayHistoryPage currentPage = Session.MainFrame.Content as PlayHistoryPage;
+                            currentPage.LoadPlayHistory();
+                        } else {
+                            if (Session.MainFrame.ToString().Split('/').Last().Equals("PlayQueuePage.xaml")) {
+                                PlayQueuePage currentPage = Session.MainFrame.Content as PlayQueuePage;
+                                currentPage.LoadPlayQueue();
+                            }
                         }
-                    }
-                }, () => {
+                    }, () => {
+                        MessageBox.Show("Ocurrió un error al cargar la canción.");
+                    });
+                } catch (Exception) {
                     MessageBox.Show("Ocurrió un error al cargar la canción.");
-                });
+                }
             }
         }
 
@@ -316,21 +347,29 @@ namespace Musify.Pages {
         }
 
         private void LikeButton_Click(object sender, RoutedEventArgs e) {
-            Session.Account.LikeSong(latestSongPlayed, () => {
-                likeButton.IsEnabled = false;
-                dislikeButton.IsEnabled = false;
-            }, () => {
+            try {
+                Session.Account.LikeSong(latestSongPlayed, () => {
+                    likeButton.IsEnabled = false;
+                    dislikeButton.IsEnabled = false;
+                }, () => {
+                    MessageBox.Show("Ocurrió un error al procesar tu solicitud.");
+                });
+            } catch (Exception) {
                 MessageBox.Show("Ocurrió un error al procesar tu solicitud.");
-            });
+            }
         }
 
         private void DislikeButton_Click(object sender, RoutedEventArgs e) {
-            Session.Account.DislikeSong(latestSongPlayed, () => {
-                likeButton.IsEnabled = false;
-                dislikeButton.IsEnabled = false;
-            }, () => {
+            try {
+                Session.Account.DislikeSong(latestSongPlayed, () => {
+                    likeButton.IsEnabled = false;
+                    dislikeButton.IsEnabled = false;
+                }, () => {
+                    MessageBox.Show("Ocurrió un error al procesar tu solicitud.");
+                });
+            } catch (Exception) {
                 MessageBox.Show("Ocurrió un error al procesar tu solicitud.");
-            });
+            }
         }
     }
 }

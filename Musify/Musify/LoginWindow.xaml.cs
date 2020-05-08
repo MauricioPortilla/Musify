@@ -25,13 +25,17 @@ namespace Musify {
         }
 
         private void LoginButton_Click(object sender, RoutedEventArgs e) {
-            Account.Login(emailTextBox.Text, passwordPasswordBox.Password, (account) => {
-                Session.Account = account;
-                new MainWindow().Show();
-                Close();
-            }, () => {
+            try {
+                Account.Login(emailTextBox.Text, passwordPasswordBox.Password, (account) => {
+                    Session.Account = account;
+                    new MainWindow().Show();
+                    Close();
+                }, () => {
+                    MessageBox.Show("Error al iniciar sesión.");
+                });
+            } catch (Exception) {
                 MessageBox.Show("Error al iniciar sesión.");
-            });
+            }
         }
 
         private void RegisterButton_Click(object sender, RoutedEventArgs e) {

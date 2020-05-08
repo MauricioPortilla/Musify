@@ -103,7 +103,8 @@ namespace Musify.Models {
                 });
             } catch (Exception exception) {
                 Console.WriteLine("Exception@Song->FetchByTitleCoincidences() -> " + exception.Message);
-                onFailure?.Invoke();
+                //onFailure?.Invoke();
+                throw;
             }
         }
 
@@ -124,7 +125,8 @@ namespace Musify.Models {
                 });
             } catch (Exception exception) {
                 Console.WriteLine("Exception@Song->FetchById() -> " + exception.Message);
-                onFailure?.Invoke();
+                //onFailure?.Invoke();
+                throw;
             }
         }
 
