@@ -116,6 +116,9 @@ namespace Musify {
                 case "PlayerSettingsMenuItem":
                     mainFrame.Source = new Uri("Pages/PlayerSettingsPage.xaml", UriKind.RelativeOrAbsolute);
                     break;
+                case "CreateAlbumMenuItem":
+                    mainFrame.Source = new Uri("Pages/CreateAlbumPage.xaml", UriKind.RelativeOrAbsolute);
+                    break;
             }
             TitleBar.Text = button.Header.ToString();
         }

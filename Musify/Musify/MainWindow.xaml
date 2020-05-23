@@ -20,6 +20,7 @@
                             <MenuItem x:Name="PersonalLibraryMenuItem" Header="Biblioteca personal" Background="Gray" Click="MenuButton_Click"/>
                             <MenuItem x:Name="RadioStationsMenuItem" Header="Estaciones de radio" Background="Gray" Click="MenuButton_Click"/>
                             <MenuItem x:Name="PlayerSettingsMenuItem" Header="Configuraración del reproductor" Background="Gray" Click="MenuButton_Click"/>
+                            <MenuItem x:Name="CreateAlbumMenuItem" Header="Crear álbum" Background="Gray" Click="MenuButton_Click"/>
                         </MenuItem>
                     </Menu>
                 </StackPanel>
