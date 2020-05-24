@@ -31,15 +31,6 @@ namespace Musify.Pages {
             InitializeComponent();
             DataContext = this;
             LoadPlayQueue();
-            /*Task.Run(() => {
-                while (true) {
-                    Console.Write(".");
-                    if (Session.PlayerPage.IsFowardButtonPressed) {
-                        LoadPlayQueue();
-                        Session.PlayerPage.IsFowardButtonPressed = false;
-                    }
-                }
-            });*/
         }
 
         public void LoadPlayQueue() {
@@ -97,11 +88,12 @@ namespace Musify.Pages {
         }
 
         private void AddToPlaylistMenuItem_Click(object sender, RoutedEventArgs e) {
-
+            new AddSongToPlaylistWindow(((SongTable)playQueueDataGrid.SelectedItem).Song).Show();
+            playQueueDataGrid.SelectedIndex = -1;
         }
 
         private void GenerateRadioStationMenuItem_Click(object sender, RoutedEventArgs e) {
-
+            playQueueDataGrid.SelectedIndex = -1;
         }
 
         private void RemoveFromQueueMenuItem_Click(object sender, RoutedEventArgs e) {

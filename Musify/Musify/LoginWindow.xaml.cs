@@ -1,4 +1,5 @@
-﻿using RestSharp;
+﻿using Musify.Models;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,8 +29,11 @@ namespace Musify {
             try {
                 Account.Login(emailTextBox.Text, passwordPasswordBox.Password, (account) => {
                     Session.Account = account;
-                    new MainWindow().Show();
-                    Close();
+                    Session.Account.FetchArtist(() => {
+                        new MainWindow().Show();
+                        Close();
+                    }, () => {
+                    });
                 }, () => {
                     MessageBox.Show("Error al iniciar sesión.");
                 });

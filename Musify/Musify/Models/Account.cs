@@ -51,6 +51,11 @@ namespace Musify {
             get => creationDate;
             set => creationDate = value;
         }
+        private Artist artist = new Artist();
+        public Artist Artist {
+            get => artist;
+            set => artist = value;
+        }
         private List<AccountSong> accountSongs = new List<AccountSong>();
         public List<AccountSong> AccountSongs {
             get => accountSongs;
@@ -115,6 +120,20 @@ namespace Musify {
                 onFailure();
             }
             
+        }
+
+        public void FetchArtist(Action onSuccess, Action onFailure) {
+            try {
+                RestSharpTools.GetAsync<Artist>("/account/" + accountId + "/artist", null, Artist.JSON_EQUIVALENTS, (response) => {
+                    if (response.IsSuccessful) {
+                        this.artist = response.Data;
+                    }
+                    onSuccess();
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Artist->FetchById() -> " + exception.Message);
+                onFailure?.Invoke();
+            }
         }
 
         public void FetchAccountSongs(Action onSuccess, Action onFailure) {

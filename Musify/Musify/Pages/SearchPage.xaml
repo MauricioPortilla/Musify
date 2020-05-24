@@ -12,8 +12,8 @@
         <TextBox x:Name="searchTextBox" HorizontalAlignment="Left" Height="37" Margin="28,26,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="228" materialDesign:HintAssist.Hint="Buscar" Style="{StaticResource MaterialDesignFloatingHintTextBox}" KeyUp="SearchTextBox_KeyUp" />
         <Button x:Name="addToQueueButton" Content="Agregar a la cola" HorizontalAlignment="Right" Margin="0,0,388,20" VerticalAlignment="Bottom" Width="151" Click="AddToQueueButton_Click"/>
         <Button x:Name="addToPlaylistButton" Content="Agregar a una lista" HorizontalAlignment="Right" Margin="0,0,223,20" VerticalAlignment="Bottom" Width="151" Click="AddToPlaylistButton_Click"/>
-        <Button x:Name="generateRadioStation" Content="Generar estación de radio" HorizontalAlignment="Right" Margin="0,0,10,20" VerticalAlignment="Bottom" Width="199" Click="GenerateRadioStation_Click"/>
-        <TabControl x:Name="searchTabControl" HorizontalAlignment="Left" Height="304" Margin="10,78,0,0" VerticalAlignment="Top" Width="780">
+        <Button x:Name="generateRadioStationButton" Content="Generar estación de radio" HorizontalAlignment="Right" Margin="0,0,10,20" VerticalAlignment="Bottom" Width="199" Click="GenerateRadioStationButton_Click"/>
+        <TabControl x:Name="searchTabControl" HorizontalAlignment="Left" Height="220" Margin="10,78,0,0" VerticalAlignment="Top" Width="780">
             <TabItem Header="Canción">
                 <Grid Background="#FFE5E5E5">
                     <DataGrid

@@ -101,17 +101,24 @@ namespace Musify.Pages {
         }
 
         private void AddToQueueButton_Click(object sender, RoutedEventArgs e) {
-
+            if (songsDataGrid.SelectedItem != null) {
+                Session.SongsIdPlayQueue.Add(((SongTable)songsDataGrid.SelectedItem).Song.SongId);
+                songsDataGrid.SelectedIndex = -1;
+            }
         }
 
         private void AddToPlaylistButton_Click(object sender, RoutedEventArgs e) {
             if (songsDataGrid.SelectedItem != null) {
-                new AddSongToPlaylistWindow(((SongTable) songsDataGrid.SelectedItem).Song).Show();
+                new AddSongToPlaylistWindow(((SongTable)songsDataGrid.SelectedItem).Song).Show();
+                songsDataGrid.SelectedIndex = -1;
             }
         }
 
-        private void GenerateRadioStation_Click(object sender, RoutedEventArgs e) {
-
+        private void GenerateRadioStationButton_Click(object sender, RoutedEventArgs e) {
+            if (songsDataGrid.SelectedItem != null) {
+                // TODO: Create Radio station.
+                songsDataGrid.SelectedIndex = -1;
+            }
         }
 
         private void AlbumsListView_SelectionChanged(object sender, RoutedEventArgs e) {

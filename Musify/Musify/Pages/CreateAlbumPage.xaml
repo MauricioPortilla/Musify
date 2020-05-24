@@ -6,23 +6,22 @@
       xmlns:local="clr-namespace:Musify.Pages"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
-      Title="CreateAlbumPage" Background="White">
+      d:DesignHeight="350" d:DesignWidth="800"
+      Title="Crear álbum" Background="White">
     <Grid>
-        <TextBox x:Name="nameAlbumTextBox" HorizontalAlignment="Left" Height="37" TextWrapping="NoWrap" VerticalAlignment="Top" Width="200" materialDesign:HintAssist.Hint="Nombre del álbum" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="40,20,0,0" />
-        <TextBox x:Name="discographyTextBox" HorizontalAlignment="Left" Height="37" TextWrapping="NoWrap" VerticalAlignment="Top" Width="200" materialDesign:HintAssist.Hint="Discografía" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="250,20,0,0" />
-        <TextBlock TextAlignment="Center" HorizontalAlignment="Left" TextWrapping="NoWrap" Text="Año de lanzamiento:" VerticalAlignment="Top" Margin="460,35,0,0"/>
-        <ComboBox x:Name="launchYearComboBox" HorizontalAlignment="Left" Height="20" VerticalAlignment="Top" Width="50" Margin="575,35,0,0"/>
-        <Button x:Name="selectImageButton" Content="Seleccionar imagen" HorizontalAlignment="Left" Height="28" Margin="40,70,0,0" VerticalAlignment="Top" Width="156"/>
-        <TextBlock x:Name="imageNameTextBlock" TextAlignment="Center" HorizontalAlignment="Left" TextWrapping="NoWrap" Foreground="Blue" VerticalAlignment="Top" Margin="200,75,0,0"/>
-        <TextBox x:Name="artistSearchTextBox" HorizontalAlignment="Left" Height="37" TextWrapping="NoWrap" VerticalAlignment="Top" Width="200" materialDesign:HintAssist.Hint="Nombre de artista" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="40,100,0,0" KeyUp="ArtistSearchTextBox_KeyUp"/>
-        <ListBox x:Name="artistsListBox" ItemsSource="{Binding ArtistsList}" HorizontalAlignment="Left" Height="180" VerticalAlignment="Top" Width="350" Margin="40,150,0,0" />
-        <ListBox x:Name="artistsFoundListBox" HorizontalAlignment="Left" MaxHeight="150" VerticalAlignment="Top" Width="200" Margin="40,140,0,0" Background="Gray" Foreground="White" SelectionChanged="artistsFoundListBox_SelectionChanged"/>
-        <Button x:Name="deleteArtistButton" Content="Eliminar artista" HorizontalAlignment="Left" Height="28" Margin="250,0,0,80" VerticalAlignment="Bottom" Width="128" Click="DeleteArtistButton_Click"/>
-        <Button x:Name="addSongButton" Content="Agregar canción" HorizontalAlignment="Right" Height="28" Margin="0,105,40,0" VerticalAlignment="Top" Width="137" Click="AddSongButton_Click"/>
-        <ListBox x:Name="songsListBox" HorizontalAlignment="Right" Height="180" VerticalAlignment="Top" Width="350" Margin="0,150,40,0" />
-        <Button x:Name="deleteSongButton" Content="Eliminar canción" HorizontalAlignment="Right" Height="28" Margin="0,0,40,80" VerticalAlignment="Bottom" Width="137" Click="DeleteSongButton_Click"/>
-        <Button x:Name="acceptButton" Content="Aceptar" HorizontalAlignment="Center" Margin="160,0,0,20" VerticalAlignment="Bottom" Width="148" Click="AcceptButton_Click"/>
-        <Button x:Name="cancelButton" Content="Cancelar" HorizontalAlignment="Center" Margin="-160,0,0,20" VerticalAlignment="Bottom" Width="148" Click="CancelButton_Click"/>
+        <TextBox x:Name="nameAlbumTextBox" HorizontalAlignment="Left" Height="37" TextWrapping="NoWrap" VerticalAlignment="Top" Width="200" materialDesign:HintAssist.Hint="Nombre del álbum" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="40,00,0,0" />
+        <TextBox x:Name="discographyTextBox" HorizontalAlignment="Left" Height="37" TextWrapping="NoWrap" VerticalAlignment="Top" Width="200" materialDesign:HintAssist.Hint="Discografía" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="250,0,0,0" />
+        <TextBlock TextAlignment="Center" HorizontalAlignment="Left" TextWrapping="NoWrap" Text="Año de lanzamiento:" VerticalAlignment="Top" Margin="460,15,0,0"/>
+        <ComboBox x:Name="launchYearComboBox" ItemsSource="{Binding YearsList}" HorizontalAlignment="Left" Height="25" VerticalAlignment="Top" Width="50" Margin="575,10,0,0"/>
+        <Button x:Name="selectImageButton" Content="Seleccionar imagen" HorizontalAlignment="Left" Height="28" Margin="40,45,0,0" VerticalAlignment="Top" Width="156" Click="SelectImageButton_Click"/>
+        <TextBlock x:Name="imageNameTextBlock" TextAlignment="Center" HorizontalAlignment="Left" TextWrapping="NoWrap" Foreground="Blue" VerticalAlignment="Top" Margin="200,50,0,0"/>
+        <TextBox x:Name="artistSearchTextBox" HorizontalAlignment="Left" Height="37" TextWrapping="NoWrap" VerticalAlignment="Top" Width="200" materialDesign:HintAssist.Hint="Artista" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="40,80,0,0" KeyUp="ArtistSearchTextBox_KeyUp"/>
+        <ListBox x:Name="artistsListBox" ItemsSource="{Binding ArtistsList}" HorizontalAlignment="Left" Height="132" VerticalAlignment="Top" Width="350" Margin="40,125,0,0" BorderBrush="Black" BorderThickness="1"/>
+        <ListBox x:Name="artistsFoundListBox" HorizontalAlignment="Left" MaxHeight="150" VerticalAlignment="Top" Width="200" Margin="40,120,0,0" Background="Gray" Foreground="White" SelectionChanged="ArtistsFoundListBox_SelectionChanged"/>
+        <Button x:Name="deleteArtistButton" Content="Eliminar artista" HorizontalAlignment="Left" Height="28" Margin="262,0,0,60" VerticalAlignment="Bottom" Width="128" Click="DeleteArtistButton_Click"/>
+        <Button x:Name="addSongButton" Content="Agregar canción" HorizontalAlignment="Right" Height="28" Margin="0,90,40,0" VerticalAlignment="Top" Width="137" Click="AddSongButton_Click"/>
+        <ListBox x:Name="songsListBox" HorizontalAlignment="Right" Height="132" VerticalAlignment="Top" Width="350" Margin="0,125,40,0" BorderBrush="Black" BorderThickness="1"/>
+        <Button x:Name="deleteSongButton" Content="Eliminar canción" HorizontalAlignment="Right" Height="28" Margin="0,0,40,60" VerticalAlignment="Bottom" Width="137" Click="DeleteSongButton_Click"/>
+        <Button x:Name="acceptButton" Content="Aceptar" HorizontalAlignment="Center" Margin="0,0,0,10" VerticalAlignment="Bottom" Width="148" Click="AcceptButton_Click"/>
     </Grid>
 </Page>

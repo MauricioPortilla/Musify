@@ -1,4 +1,5 @@
-﻿using Musify.Models;
+﻿using Forms = System.Windows.Forms;
+using Musify.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,14 +21,23 @@ namespace Musify.Pages {
     /// Lógica de interacción para CreateAlbumPage.xaml
     /// </summary>
     public partial class CreateAlbumPage : Page {
+        private string selectedImage;
         private readonly ObservableCollection<Artist> artistsList = new ObservableCollection<Artist>();
         public ObservableCollection<Artist> ArtistsList {
             get => artistsList;
+        }
+        private readonly ObservableCollection<int> yearsList = new ObservableCollection<int>();
+        public ObservableCollection<int> YearsList {
+            get => yearsList;
         }
 
         public CreateAlbumPage() {
             InitializeComponent();
             DataContext = this;
+            artistsList.Add(Session.Account.Artist);
+            for (int i = DateTime.Now.Year; i >= 1900; i--) {
+                yearsList.Add(i);
+            }
         }
 
         private void ArtistSearchTextBox_KeyUp(object sender, KeyEventArgs e) {
@@ -47,7 +57,7 @@ namespace Musify.Pages {
             });
         }
 
-        private void artistsFoundListBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+        private void ArtistsFoundListBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             if (artistsFoundListBox.SelectedIndex == -1) {
                 return;
             }
@@ -64,19 +74,28 @@ namespace Musify.Pages {
             artistSearchTextBox.Text = "";
         }
 
+        private void SelectImageButton_Click(object sender, RoutedEventArgs e) {
+            Forms.OpenFileDialog fileExplorer = new Forms.OpenFileDialog();
+            fileExplorer.Filter = "Image Files|*.jpg;*.png";
+            fileExplorer.Multiselect = false;
+            if (fileExplorer.ShowDialog() == Forms.DialogResult.OK) {
+                selectedImage = fileExplorer.FileNames[0];
+                imageNameTextBlock.Text = selectedImage.Split('\\').Last();
+            }
+        }
+
         private void DeleteArtistButton_Click(object sender, RoutedEventArgs e) {
+            artistsList.RemoveAt(artistsListBox.SelectedIndex);
         }
 
         private void AddSongButton_Click(object sender, RoutedEventArgs e) {
+            new AddSongToAlbumWindow().Show();
         }
 
         private void DeleteSongButton_Click(object sender, RoutedEventArgs e) {
         }
 
         private void AcceptButton_Click(object sender, RoutedEventArgs e) {
-        }
-
-        private void CancelButton_Click(object sender, RoutedEventArgs e) {
         }
     }
 }

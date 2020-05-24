@@ -78,11 +78,12 @@ namespace Musify.Pages {
         }
 
         private void AddToPlaylistMenuItem_Click(object sender, RoutedEventArgs e) {
-
+            new AddSongToPlaylistWindow(((SongTable)playHistoryDataGrid.SelectedItem).Song).Show();
+            playHistoryDataGrid.SelectedIndex = -1;
         }
 
         private void GenerateRadioStationMenuItem_Click(object sender, RoutedEventArgs e) {
-
+            playHistoryDataGrid.SelectedIndex = -1;
         }
     }
 }

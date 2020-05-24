@@ -6,8 +6,8 @@
       xmlns:local="clr-namespace:Musify.Pages"
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
-      d:DesignHeight="330" d:DesignWidth="800"
-      Title="Cola de reproducción">
+      d:DesignHeight="350" d:DesignWidth="800"
+      Title="Configuraración del reproductor">
     <Grid Background="#FFFFFF">
         <StackPanel Margin="0,10,0,0">
             <TextBlock TextAlignment="Center" TextWrapping="NoWrap" Text="Calidad de la música" VerticalAlignment="Top" FontSize="20"/>

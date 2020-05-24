@@ -31,6 +31,9 @@ namespace Musify {
         }
 
         public void LoadConfiguration() {
+            if (Session.Account.Artist.ArtisticName != null) {
+                CreateAlbumMenuItem.Visibility = Visibility.Visible;
+            }
             App.CreateDirectories();
             LoadSongsIdPlayQueue();
             LoadSongsIdPlayHistory();
