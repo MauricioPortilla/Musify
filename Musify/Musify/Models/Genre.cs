@@ -40,5 +40,20 @@ namespace Musify.Models {
                 onFailure?.Invoke();
             }
         }
+
+        public static void FetchAll(Action<List<Genre>> onSuccess, Action onFailure) {
+            try {
+                RestSharpTools.GetAsyncMultiple<Genre>("/genres", null, JSON_EQUIVALENTS, (response, genres) => {
+                    if (response.IsSuccessful) {
+                        onSuccess(genres);
+                    } else {
+                        onFailure();
+                    }
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Genre->FetchAll() -> " + exception.Message);
+                onFailure?.Invoke();
+            }
+        }
     }
 }

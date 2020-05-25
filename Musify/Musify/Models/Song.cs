@@ -62,6 +62,11 @@ namespace Musify.Models {
             get => status;
             set => status = value;
         }
+        private List<Artist> artists = new List<Artist>();
+        public List<Artist> Artists {
+            get => artists;
+            set => artists = value;
+        }
 
         public Song() {
         }

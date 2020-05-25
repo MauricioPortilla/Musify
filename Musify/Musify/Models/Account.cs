@@ -131,7 +131,7 @@ namespace Musify {
                     onSuccess();
                 });
             } catch (Exception exception) {
-                Console.WriteLine("Exception@Artist->FetchById() -> " + exception.Message);
+                Console.WriteLine("Exception@Account->FetchArtist() -> " + exception.Message);
                 onFailure?.Invoke();
             }
         }

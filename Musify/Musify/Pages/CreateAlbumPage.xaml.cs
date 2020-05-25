@@ -21,10 +21,14 @@ namespace Musify.Pages {
     /// Lógica de interacción para CreateAlbumPage.xaml
     /// </summary>
     public partial class CreateAlbumPage : Page {
-        private string selectedImage;
+        private string selectedImage = "";
         private readonly ObservableCollection<Artist> artistsList = new ObservableCollection<Artist>();
         public ObservableCollection<Artist> ArtistsList {
             get => artistsList;
+        }
+        private readonly ObservableCollection<Song> songsList = new ObservableCollection<Song>();
+        public ObservableCollection<Song> SongsList {
+            get => songsList;
         }
         private readonly ObservableCollection<int> yearsList = new ObservableCollection<int>();
         public ObservableCollection<int> YearsList {
@@ -89,13 +93,20 @@ namespace Musify.Pages {
         }
 
         private void AddSongButton_Click(object sender, RoutedEventArgs e) {
-            new AddSongToAlbumWindow().Show();
+            new AddSongToAlbumWindow(this).Show();
         }
 
         private void DeleteSongButton_Click(object sender, RoutedEventArgs e) {
+            songsList.RemoveAt(songsListBox.SelectedIndex);
         }
 
         private void AcceptButton_Click(object sender, RoutedEventArgs e) {
+            if (!albumNameTextBox.Text.Equals("") && !discographyTextBox.Text.Equals("") && !launchYearComboBox.Text.Equals("") && !selectedImage.Equals("") 
+                && artistsList.Count > 0 && songsList.Count > 0) {
+                // TODO Create album.
+            } else {
+                MessageBox.Show("Faltan campos por completar.");
+            }
         }
     }
 }
