@@ -17,6 +17,11 @@ namespace Musify.Models {
             { "status", "Status" }
         };
 
+        public static Dictionary<string, string> JSON = new Dictionary<string, string>() {
+            { "name", "SongLocation" },
+            { "duration", "Duration" }
+        };
+
         private int songId;
         public int SongId {
             get => songId;

@@ -56,6 +56,7 @@ namespace Musify.Pages {
         private void AddSongButton_Click(object sender, RoutedEventArgs e) {
             Forms.OpenFileDialog fileExplorer = new Forms.OpenFileDialog();
             fileExplorer.Filter = "MP3 Files|*.mp3|WAV Files|*.wav";
+            fileExplorer.Multiselect = true;
             if (fileExplorer.ShowDialog() == Forms.DialogResult.OK) {
                 var selectedFiles = fileExplorer.FileNames;
                 if (Session.Account.AccountSongs.Count + selectedFiles.Length > Core.MAX_ACCOUNT_SONGS_PER_ACCOUNT) {

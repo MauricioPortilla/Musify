@@ -97,17 +97,17 @@ namespace Musify {
         }
 
         private void AcceptButton_Click(object sender, RoutedEventArgs e) {
-            if (!selectedSong.Equals("") &&!songNameTextBox.Text.Equals("") && !genreComboBox.Text.Equals("") && artistsList.Count > 0) {
-                createAlbumPage.SongsList.Add(new Song {
-                    GenreId = (genreComboBox.SelectedItem as Genre).GenreId,
-                    Title = songNameTextBox.Text,
-                    SongLocation = selectedSong,
-                    Artists = artistsList.ToList()
-                });
-                Close();
-            } else {
+            if (selectedSong.Equals("") || string.IsNullOrWhiteSpace(songNameTextBox.Text) || genreComboBox.Text.Equals("") || artistsList.Count <= 0) {
                 MessageBox.Show("Faltan campos por completar.");
+                return;
             }
+            createAlbumPage.SongsList.Add(new Song {
+                GenreId = (genreComboBox.SelectedItem as Genre).GenreId,
+                Title = songNameTextBox.Text,
+                SongLocation = selectedSong,
+                Artists = artistsList.ToList()
+            });
+            Close();
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e) {

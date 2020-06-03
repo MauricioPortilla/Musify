@@ -19,6 +19,10 @@ namespace Musify.Models {
             { "image_location", "ImageLocation" }
         };
 
+        public static Dictionary<string, string> JSON = new Dictionary<string, string>() {
+            { "name", "ImageLocation" },
+        };
+
         private int albumId;
         public int AlbumId {
             get => albumId;
@@ -61,6 +65,72 @@ namespace Musify.Models {
         }
 
         public Album() {
+        }
+
+        public void Save(Action onSuccess, Action onFailure) {
+            string[] filesRoutes = new string[songs.Count];
+            for (int i = 0; i < songs.Count; i++) {
+                filesRoutes[i] = songs.ElementAt(i).SongLocation;
+            }
+            try {
+                RestSharpTools.PostMultimediaAsync<Song>("album/songs", null, filesRoutes, Song.JSON, (responseSongs, songs_location) => {
+                    if (responseSongs.IsSuccessful) {
+                        filesRoutes = new string[1];
+                        filesRoutes[0] = imageLocation;
+                        RestSharpTools.PostMultimediaAsync<Album>("album/image", null, filesRoutes, JSON, (responseImage, image_location) => {
+                            if (responseImage.IsSuccessful) {
+                                List<object> artists_id = new List<object>();
+                                foreach (Artist artist in artists) {
+                                    artists_id.Add(new {
+                                        artist_id = artist.ArtistId
+                                    });
+                                }
+                                List<object> new_songs = new List<object>();
+                                int i = 0;
+                                foreach (Song song in songs) {
+                                    List<object> song_artists_id = new List<object>();
+                                    foreach (Artist artist in song.Artists) {
+                                        song_artists_id.Add(new {
+                                            artist_id = artist.ArtistId
+                                        });
+                                    }
+                                    new_songs.Add(new {
+                                        genre_id = song.GenreId,
+                                        title = song.Title,
+                                        duration = songs_location.ElementAt(i).Duration,
+                                        song_location = songs_location.ElementAt(i).SongLocation,
+                                        artists_id = song_artists_id
+                                    });
+                                    i++;
+                                }
+                                var albumData = new {
+                                    type,
+                                    name,
+                                    launch_year = launchYear,
+                                    discography,
+                                    image_location = image_location.ElementAt(0).ImageLocation,
+                                    artists_id,
+                                    new_songs
+                                };
+                                RestSharpTools.PostAsync("/album", albumData, (responseAlbum) => {
+                                    if (responseAlbum.IsSuccessful) {
+                                        onSuccess();
+                                    } else {
+                                        onFailure();
+                                    }
+                                });
+                            } else {
+                                onFailure();
+                            }
+                        });
+                    } else {
+                        onFailure();
+                    }
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Album->Save() -> " + exception.Message);
+                onFailure?.Invoke();
+            }
         }
 
         public static void FetchById(int albumId, Action<Album> onSuccess, Action onFailure) {

@@ -80,7 +80,7 @@ namespace Musify.Pages {
 
         private void SelectImageButton_Click(object sender, RoutedEventArgs e) {
             Forms.OpenFileDialog fileExplorer = new Forms.OpenFileDialog();
-            fileExplorer.Filter = "Image Files|*.jpg;*.png";
+            fileExplorer.Filter = "Image Files|*.png";
             fileExplorer.Multiselect = false;
             if (fileExplorer.ShowDialog() == Forms.DialogResult.OK) {
                 selectedImage = fileExplorer.FileNames[0];
@@ -89,6 +89,9 @@ namespace Musify.Pages {
         }
 
         private void DeleteArtistButton_Click(object sender, RoutedEventArgs e) {
+            if (artistsListBox.SelectedIndex == -1) {
+                return;
+            }
             artistsList.RemoveAt(artistsListBox.SelectedIndex);
         }
 
@@ -97,16 +100,36 @@ namespace Musify.Pages {
         }
 
         private void DeleteSongButton_Click(object sender, RoutedEventArgs e) {
+            if (songsListBox.SelectedIndex == -1) {
+                return;
+            }
             songsList.RemoveAt(songsListBox.SelectedIndex);
         }
 
         private void AcceptButton_Click(object sender, RoutedEventArgs e) {
-            if (!albumNameTextBox.Text.Equals("") && !discographyTextBox.Text.Equals("") && !launchYearComboBox.Text.Equals("") && !selectedImage.Equals("") 
-                && artistsList.Count > 0 && songsList.Count > 0) {
-                // TODO Create album.
-            } else {
+            if (string.IsNullOrWhiteSpace(albumNameTextBox.Text) || string.IsNullOrWhiteSpace(discographyTextBox.Text) || launchYearComboBox.Text.Equals("")
+                    || selectedImage.Equals("") || artistsList.Count <= 0 || songsList.Count <= 0) {
                 MessageBox.Show("Faltan campos por completar.");
+                return;
             }
+            string type = "Album";
+            if (songsList.Count == 1) {
+                type = "Single";
+            }
+            Album album = new Album {
+                Type = type,
+                Name = albumNameTextBox.Text,
+                LaunchYear = int.Parse(launchYearComboBox.Text),
+                Discography = discographyTextBox.Text,
+                ImageLocation = selectedImage,
+                Artists = artistsList.ToList(),
+                Songs = songsList.ToList()
+            };
+            album.Save(() => {
+                MessageBox.Show("Se creó el álbum con éxito.");
+            }, () => {
+                MessageBox.Show("Ocurrió un error al crear el álbum.");
+            });
         }
     }
 }
