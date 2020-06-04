@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -201,7 +202,17 @@ namespace Musify.Models {
         }
 
         public BitmapImage FetchImage() {
-            return new BitmapImage(new Uri(Core.SERVER_API_URL + "/album/" + albumId + "/image", UriKind.RelativeOrAbsolute));
+            WebClient webClient = new WebClient();
+            webClient.Headers["Authorization"] = Session.AccessToken ?? "";
+            var image = webClient.DownloadData(Core.SERVER_API_URL + "/album/" + albumId + "/image");
+            using (MemoryStream memoryStream = new MemoryStream(image)) {
+                BitmapImage bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.StreamSource = memoryStream;
+                bitmapImage.EndInit();
+                return bitmapImage;
+            }
         }
 
         public void FetchSongs(Action onSuccess, Action onFailure) {
@@ -211,11 +222,16 @@ namespace Musify.Models {
                         this.songs = songs;
                         foreach (var song in songs) {
                             song.Album = this;
+                            Genre.FetchById(song.GenreId, (genre) => {
+                                song.Genre = genre;
+                                song.FetchArtists(() => {
+                                    onSuccess();
+                                }, null);
+                            }, null);
                         }
-                        onSuccess?.Invoke();
-                        return;
+                    } else {
+                        onFailure?.Invoke();
                     }
-                    onFailure?.Invoke();
                 });
             } catch (Exception exception) {
                 Console.WriteLine("Exception@Album->FetchSongs() -> " + exception.Message);

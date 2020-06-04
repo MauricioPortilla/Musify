@@ -103,7 +103,9 @@ namespace Musify.Models {
                                 song.album = album;
                                 Genre.FetchById(song.genreId, (genre) => {
                                     song.genre = genre;
-                                    onSuccess(songs);
+                                    song.FetchArtists(() => {
+                                        onSuccess(songs);
+                                    }, null);
                                 }, null);
                             }, null);
                         }
@@ -126,7 +128,9 @@ namespace Musify.Models {
                             response.Data.album = album;
                             Genre.FetchById(response.Data.genreId, (genre) => {
                                 response.Data.genre = genre;
-                                onSuccess(response.Data);
+                                response.Data.FetchArtists(() => {
+                                    onSuccess(response.Data);
+                                }, null);
                             }, null);
                         }, null);
                     } else {
@@ -138,6 +142,33 @@ namespace Musify.Models {
                 //onFailure?.Invoke();
                 throw;
             }
+        }
+
+        public void FetchArtists(Action onSuccess, Action onFailure) {
+            try {
+                RestSharpTools.GetAsyncMultiple<Artist>("/song/" + SongId + "/artists", null, Artist.JSON_EQUIVALENTS, (response, artists) => {
+                    if (response.IsSuccessful) {
+                        this.artists = artists;
+                        onSuccess();
+                        return;
+                    }
+                    onFailure?.Invoke();
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Album->FetchArtists() -> " + exception.Message);
+                onFailure?.Invoke();
+            }
+        }
+
+        public string GetArtistsNames() {
+            string names = "";
+            foreach (Artist artist in artists) {
+                if (!string.IsNullOrEmpty(names)) {
+                    names += ", ";
+                }
+                names += artist.ArtisticName;
+            }
+            return names;
         }
 
         public override string ToString() {

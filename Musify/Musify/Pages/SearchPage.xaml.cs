@@ -58,7 +58,7 @@ namespace Musify.Pages {
                         songList.Add(new SongTable {
                             Song = song,
                             Title = song.Title,
-                            ArtistsNames = song.Album.GetArtistsNames(),
+                            ArtistsNames = song.GetArtistsNames(),
                             Album = song.Album,
                             Duration = song.Duration
                         });
@@ -126,7 +126,7 @@ namespace Musify.Pages {
                 return;
             }
             var selectedAlbum = (AlbumTable) albumsListView.SelectedItem;
-            // TODO: Go to ConsultAlbumPage
+            Session.MainWindow.mainFrame.Navigate(new ConsultAlbumPage(selectedAlbum.Album));
             albumsListView.SelectedIndex = -1;
         }
 

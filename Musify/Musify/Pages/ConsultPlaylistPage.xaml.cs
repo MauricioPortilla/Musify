@@ -44,7 +44,7 @@ namespace Musify.Pages {
                         Song = playlistSong,
                         Title = playlistSong.Title,
                         Album = playlistSong.Album,
-                        ArtistsNames = playlistSong.Album.GetArtistsNames(),
+                        ArtistsNames = playlistSong.GetArtistsNames(),
                         Duration = playlistSong.Duration
                     });
                 }

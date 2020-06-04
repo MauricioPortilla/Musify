@@ -50,7 +50,7 @@ namespace Musify.Pages {
                     SongsPlayQueue.Add(new SongTable {
                         Song = song,
                         Title = song.Title,
-                        ArtistsNames = song.Album.GetArtistsNames(),
+                        ArtistsNames = song.GetArtistsNames(),
                         Album = song.Album,
                         Duration = song.Duration
                     });

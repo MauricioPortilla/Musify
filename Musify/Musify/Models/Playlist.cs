@@ -70,7 +70,9 @@ namespace Musify.Models {
                                 song.Album = album;
                                 Genre.FetchById(song.GenreId, (genre) => {
                                     song.Genre = genre;
-                                    onSuccess();
+                                    song.FetchArtists(() => {
+                                        onSuccess();
+                                    }, null);
                                 }, null);
                             }, null);
                         }

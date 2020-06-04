@@ -55,7 +55,7 @@ namespace Musify.Pages {
                     Song = albumSong,
                     Title = albumSong.Title,
                     Duration = albumSong.Duration,
-                    ArtistsNames = album.GetArtistsNames()
+                    ArtistsNames = albumSong.GetArtistsNames()
                 });
             }
             StackPanel mainStackPanel = new StackPanel();
