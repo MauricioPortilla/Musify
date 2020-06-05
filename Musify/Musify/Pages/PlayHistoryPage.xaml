@@ -26,6 +26,7 @@
                 <DataGridTextColumn Binding="{Binding Title}" CanUserResize="False" CanUserSort="False" Header="Título"/>
                 <DataGridTextColumn Binding="{Binding ArtistsNames}" CanUserResize="False" CanUserSort="False" Header="Artista" MaxWidth="200"/>
                 <DataGridTextColumn Binding="{Binding Album}" CanUserResize="False" CanUserSort="False" Header="Álbum"/>
+                <DataGridTextColumn Binding="{Binding Genre}" CanUserResize="False" CanUserSort="False" Header="Género"/>
                 <DataGridTextColumn Binding="{Binding Duration}" CanUserResize="False" CanUserSort="False" Header="Duración"/>
             </DataGrid.Columns>
         </DataGrid>

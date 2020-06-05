@@ -31,6 +31,7 @@ namespace Musify.Pages {
         public ConsultPlaylistPage(Playlist playlist) {
             InitializeComponent();
             DataContext = this;
+            Session.MainWindow.TitleBar.Text = "Lista de reproducción";
             this.playlist = playlist;
             playlistNameTextBlock.Text = playlist.Name;
             LoadPlaylistSongs();
@@ -44,6 +45,7 @@ namespace Musify.Pages {
                         Song = playlistSong,
                         Title = playlistSong.Title,
                         Album = playlistSong.Album,
+                        Genre = playlistSong.Genre,
                         ArtistsNames = playlistSong.GetArtistsNames(),
                         Duration = playlistSong.Duration
                     });

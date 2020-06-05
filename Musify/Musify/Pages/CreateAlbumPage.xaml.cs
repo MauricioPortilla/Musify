@@ -112,9 +112,9 @@ namespace Musify.Pages {
                 MessageBox.Show("Faltan campos por completar.");
                 return;
             }
-            string type = "Album";
+            string type = "Álbum";
             if (songsList.Count == 1) {
-                type = "Single";
+                type = "Sencillo";
             }
             Album album = new Album {
                 Type = type,

@@ -46,6 +46,7 @@ namespace Musify.Pages {
                         Title = albumSong.Title,
                         ArtistsNames = albumSong.GetArtistsNames(),
                         Album = album,
+                        Genre = albumSong.Genre,
                         Duration = albumSong.Duration
                     });
                 }
@@ -77,6 +78,11 @@ namespace Musify.Pages {
         }
 
         private void GenerateRadioStationMenuItem_Click(object sender, RoutedEventArgs e) {
+            if (Session.GenresIdRadioStations.Find(x => x == ((SongTable)songsDataGrid.SelectedItem).Song.Genre.GenreId) == 0) {
+                Session.GenresIdRadioStations.Add(((SongTable)songsDataGrid.SelectedItem).Song.Genre.GenreId);
+            } else {
+                MessageBox.Show("Ya existe la estación de radio de este género.");
+            }
             songsDataGrid.SelectedIndex = -1;
         }
     }

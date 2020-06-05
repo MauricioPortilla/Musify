@@ -105,6 +105,9 @@
     <Compile Include="Pages\ConsultPlaylistPage.xaml.cs">
       <DependentUpon>ConsultPlaylistPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\ConsultRadioStationPage.xaml.cs">
+      <DependentUpon>ConsultRadioStationPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\CreateAlbumPage.xaml.cs">
       <DependentUpon>CreateAlbumPage.xaml</DependentUpon>
     </Compile>
@@ -122,6 +125,9 @@
     </Compile>
     <Compile Include="Pages\PlayQueuePage.xaml.cs">
       <DependentUpon>PlayQueuePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\RadioStationsPage.xaml.cs">
+      <DependentUpon>RadioStationsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\SearchPage.xaml.cs">
       <DependentUpon>SearchPage.xaml</DependentUpon>
@@ -172,6 +178,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\ConsultRadioStationPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\CreateAlbumPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -193,6 +203,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\PlayQueuePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\RadioStationsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

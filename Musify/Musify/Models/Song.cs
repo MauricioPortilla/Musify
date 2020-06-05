@@ -81,6 +81,7 @@ namespace Musify.Models {
             public string Title { get; set; }
             public string ArtistsNames { get; set; }
             public Album Album { get; set; }
+            public Genre Genre { get; set; }
             public string Duration { get; set; }
         }
 

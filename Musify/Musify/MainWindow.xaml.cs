@@ -38,6 +38,7 @@ namespace Musify {
             LoadSongsIdPlayQueue();
             LoadSongsIdPlayHistory();
             LoadConfigurationPlayer();
+            LoadGenresIdRadioStations();
         }
 
         public void LoadSongsIdPlayQueue() {
@@ -93,6 +94,19 @@ namespace Musify {
             }
         }
 
+        public void LoadGenresIdRadioStations() {
+            string file = App.DATA_STATIONS_DIRECTORY + "/stations" + Session.Account.AccountId;
+            if (File.Exists(file)) {
+                FileStream fileStream = new FileStream(file, FileMode.Open, FileAccess.Read);
+                BinaryReader binaryReader = new BinaryReader(fileStream);
+                for (int i = 0; i < fileStream.Length / 4; i++) {
+                    Session.GenresIdRadioStations.Add(binaryReader.ReadInt32());
+                }
+                binaryReader.Close();
+                fileStream.Close();
+            }
+        }
+
         public void MenuButton_Click(object sender, RoutedEventArgs e) {
             MenuItem button = (MenuItem) sender;
             string opcion = button.Name;
@@ -115,6 +129,7 @@ namespace Musify {
                     mainFrame.Source = new Uri("Pages/ConsultAccountSongs.xaml", UriKind.RelativeOrAbsolute);
                     break;
                 case "RadioStationsMenuItem":
+                    mainFrame.Source = new Uri("Pages/RadioStationsPage.xaml", UriKind.RelativeOrAbsolute);
                     break;
                 case "PlayerSettingsMenuItem":
                     mainFrame.Source = new Uri("Pages/PlayerSettingsPage.xaml", UriKind.RelativeOrAbsolute);
@@ -170,6 +185,15 @@ namespace Musify {
                 case "highQuality":
                     binaryWriter.Write(3);
                     break;
+            }
+            binaryWriter.Close();
+            fileStream.Close(); 
+            file = App.DATA_STATIONS_DIRECTORY + "/stations" + Session.Account.AccountId;
+            List<int> genresId = Session.GenresIdRadioStations;
+            fileStream = new FileStream(file, FileMode.Create);
+            binaryWriter = new BinaryWriter(fileStream);
+            foreach (int genreId in genresId) {
+                binaryWriter.Write(genreId);
             }
             binaryWriter.Close();
             fileStream.Close();

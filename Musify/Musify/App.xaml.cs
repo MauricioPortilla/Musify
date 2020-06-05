@@ -14,6 +14,7 @@ namespace Musify {
     public partial class App : Application {
         public static readonly string DATA_SONGS_DIRECTORY = AppDomain.CurrentDomain.BaseDirectory + "/data/songs";
         public static readonly string DATA_PLAYER_DIRECTORY = AppDomain.CurrentDomain.BaseDirectory + "/data/player";
+        public static readonly string DATA_STATIONS_DIRECTORY = AppDomain.CurrentDomain.BaseDirectory + "/data/stations";
 
         public App() {
         }
@@ -35,6 +36,10 @@ namespace Musify {
             if (!Directory.Exists(DATA_PLAYER_DIRECTORY)) {
                 Directory.CreateDirectory(DATA_PLAYER_DIRECTORY);
                 File.Create(DATA_PLAYER_DIRECTORY + "/player" + Session.Account.AccountId).Close();
+            }
+            if (!Directory.Exists(DATA_STATIONS_DIRECTORY)) {
+                Directory.CreateDirectory(DATA_STATIONS_DIRECTORY);
+                File.Create(DATA_STATIONS_DIRECTORY + "/stations" + Session.Account.AccountId).Close();
             }
         }
     }

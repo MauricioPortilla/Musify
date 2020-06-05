@@ -7,9 +7,9 @@
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="ConsultPlaylistPage" Background="White">
+      Title="Consultar lista de reproducción" Background="White">
     <Grid>
-        <StackPanel Orientation="Horizontal" Margin="0,0,10,0" Height="37" VerticalAlignment="Top" HorizontalAlignment="Center">
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,0" Height="37" VerticalAlignment="Top" HorizontalAlignment="Center">
             <TextBlock x:Name="playlistNameTextBlock" TextWrapping="Wrap" Text="PLAYLIST_NAME" VerticalAlignment="Center" FontSize="20" FontWeight="Bold" TextAlignment="Center" HorizontalAlignment="Center"/>
         </StackPanel>
         <DataGrid
@@ -34,6 +34,9 @@
                 <DataGridTextColumn
                     Binding="{Binding Album}"
                     Header="Álbum"/>
+                <DataGridTextColumn
+                    Binding="{Binding Genre}"
+                    Header="Género"/>
                 <DataGridTextColumn
                     Binding="{Binding Duration}"
                     Header="Duración"/>

@@ -16,6 +16,7 @@ namespace Musify {
         public static PlayerPage PlayerPage;
         public static List<int> SongsIdPlayQueue = new List<int>();
         public static List<int> SongsIdPlayHistory = new List<int>();
+        public static List<int> GenresIdRadioStations = new List<int>();
         public static string SongStreamingQuality = "mediumQuality";
         public static string AccessToken = null;
     }

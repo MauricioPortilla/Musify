@@ -19,7 +19,7 @@
         <TextBlock x:Name="songNameTextBlock" TextAlignment="Center" HorizontalAlignment="Left" TextWrapping="NoWrap" Foreground="Blue" VerticalAlignment="Top" Margin="200,55,0,0"/>
         <TextBox x:Name="songNameTextBox" HorizontalAlignment="Left" Height="37" TextWrapping="NoWrap" VerticalAlignment="Top" Width="200" materialDesign:HintAssist.Hint="Nombre de la canción" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="40,80,0,0" MaxLength="255"/>
         <TextBlock TextAlignment="Center" HorizontalAlignment="Left" TextWrapping="NoWrap" Text="Género:" VerticalAlignment="Top" Margin="250,95,0,0"/>
-        <ComboBox x:Name="genreComboBox" ItemsSource="{Binding GenresList}" DisplayMemberPath="Name" HorizontalAlignment="Left" Height="28" VerticalAlignment="Top" Width="200" Margin="300,87,0,0"/>
+        <ComboBox x:Name="genreComboBox" ItemsSource="{Binding GenresList}" HorizontalAlignment="Left" Height="28" VerticalAlignment="Top" Width="200" Margin="300,87,0,0"/>
         <TextBox x:Name="artistSearchTextBox" HorizontalAlignment="Left" Height="37" TextWrapping="NoWrap" VerticalAlignment="Top" Width="200" materialDesign:HintAssist.Hint="Artista" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="96,130,0,0" MaxLength="50" KeyUp="ArtistSearchTextBox_KeyUp"/>
         <ListBox x:Name="artistsListBox" ItemsSource="{Binding ArtistsList}" HorizontalAlignment="Center" Height="132" VerticalAlignment="Top" Width="350" Margin="0,175,0,0" BorderBrush="Black" BorderThickness="1"/>
         <ListBox x:Name="artistsFoundListBox" HorizontalAlignment="Left" MaxHeight="150" VerticalAlignment="Top" Width="200" Margin="96,170,0,0" Background="Gray" Foreground="White" SelectionChanged="ArtistsFoundListBox_SelectionChanged"/>

@@ -55,5 +55,35 @@ namespace Musify.Models {
                 onFailure?.Invoke();
             }
         }
+
+        public void FetchSongs(Action<List<Song>> onSuccess, Action onFailure) {
+            try {
+                RestSharpTools.GetAsyncMultiple<Song>("/genre/" + genreId + "/songs", null, Song.JSON_EQUIVALENTS, (response, objects) => {
+                    if (response.IsSuccessful) {
+                        List<Song> songs = objects;
+                        foreach (var song in songs) {
+                            Album.FetchById(song.AlbumId, (album) => {
+                                song.Album = album;
+                                Genre.FetchById(song.GenreId, (genre) => {
+                                    song.Genre = genre;
+                                    song.FetchArtists(() => {
+                                        onSuccess(songs);
+                                    }, null);
+                                }, null);
+                            }, null);
+                        }
+                    } else {
+                        onFailure?.Invoke();
+                    }
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Playlist->FetchSongs() -> " + exception.Message);
+                onFailure?.Invoke();
+            }
+        }
+
+        public override string ToString() {
+            return name;
+        }
     }
 }

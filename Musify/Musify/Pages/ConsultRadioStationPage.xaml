@@ -1,4 +1,4 @@
-﻿<Page x:Class="Musify.Pages.ConsultAlbumPage"
+﻿<Page x:Class="Musify.Pages.ConsultRadioStationPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,30 +7,26 @@
       xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
       d:DesignHeight="350" d:DesignWidth="800"
-      Title="Consultar album">
+      Title="Consultar estación de radio">
     <Grid Background="#FFFFFF">
-        <TextBlock x:Name="typeTextBlock" TextAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" VerticalAlignment="Top" Margin="0,10,0,0"/>
-        <TextBlock x:Name="launchYearTextBlock" TextAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" VerticalAlignment="Top" Margin="0,30,0,0"/>
-        <TextBlock x:Name="discographyTextBlock" TextAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" VerticalAlignment="Top" Margin="0,50,0,0"/>
-        <TextBlock x:Name="artistTextBlock" TextAlignment="Center" HorizontalAlignment="Center" TextWrapping="NoWrap" VerticalAlignment="Top" Margin="0,80,0,0"/>
-        <Image x:Name="albumImage" HorizontalAlignment="Left" VerticalAlignment="Top" MaxHeight="100" MaxWidth="100" Margin="150,10,0,0"/>
-        <StackPanel Margin="0,80,10,0" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
-            <Menu x:Name="optionsMenu" Height="30" Background="Gray" BorderThickness="0" Visibility="Hidden">
+        <TextBlock x:Name="radioStationNameTextBlock" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20" FontWeight="Bold" TextAlignment="Center" HorizontalAlignment="Center"/>
+        <StackPanel Margin="0,40,10,0" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+            <Button x:Name="deleteRadioStationButton" Content="Eliminar estación" HorizontalAlignment="Right" Width="140" VerticalAlignment="Top" Click="DeleteRadioStationButton_Click"/>
+            <Menu x:Name="optionsMenu" Height="30" Background="Gray" BorderThickness="0" Margin="10,0,0,0" Visibility="Hidden">
                 <MenuItem Header="..." Height="30" Background="Gray" BorderThickness="0" Foreground="White" FontSize="12">
                     <MenuItem Header="Agregar a la cola" Background="Gray" Click="AddToQueueMenuItem_Click"/>
                     <MenuItem Header="Agregar a una lista de reproducción" Background="Gray" Click="AddToPlaylistMenuItem_Click"/>
-                    <MenuItem Header="Generar estación de radio" Background="Gray" Click="GenerateRadioStationMenuItem_Click"/>
                 </MenuItem>
             </Menu>
         </StackPanel>
-        <DataGrid x:Name="songsDataGrid" Margin="10,120,10,10" ItemsSource="{Binding AlbumSongs}" CanUserSortColumns="True" CanUserAddRows="False" 
+        <DataGrid x:Name="songsDataGrid" Margin="10,70,10,10" ItemsSource="{Binding SongsRadioStation}" CanUserSortColumns="True" CanUserAddRows="False" 
                   CanUserReorderColumns="False" AutoGenerateColumns="False" SelectionMode="Single" materialDesign:DataGridAssist.CellPadding="13 8 8 8" 
                   materialDesign:DataGridAssist.ColumnHeaderPadding="8" IsReadOnly="True" MouseDoubleClick="SongsDataGrid_MouseDoubleClick" 
                   SelectionChanged="SongsDataGrid_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Title}" CanUserResize="False" CanUserSort="False" Header="Título"/>
                 <DataGridTextColumn Binding="{Binding ArtistsNames}" CanUserResize="False" CanUserSort="False" Header="Artista" MaxWidth="200"/>
-                <DataGridTextColumn Binding="{Binding Genre}" CanUserResize="False" CanUserSort="False" Header="Género"/>
+                <DataGridTextColumn Binding="{Binding Album}" CanUserResize="False" CanUserSort="False" Header="Álbum"/>
                 <DataGridTextColumn Binding="{Binding Duration}" CanUserResize="False" CanUserSort="False" Header="Duración"/>
             </DataGrid.Columns>
         </DataGrid>

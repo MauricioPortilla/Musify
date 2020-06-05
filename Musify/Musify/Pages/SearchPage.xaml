@@ -38,6 +38,9 @@
                                 Binding="{Binding Album}"
                                 Header="Álbum"/>
                             <DataGridTextColumn
+                                Binding="{Binding Genre}"
+                                Header="Género"/>
+                            <DataGridTextColumn
                                 Binding="{Binding Duration}"
                                 Header="Duración"/>
                         </DataGrid.Columns>
