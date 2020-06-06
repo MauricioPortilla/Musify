@@ -79,13 +79,13 @@ namespace Musify {
                             Session.SongStreamingQuality = "automaticQuality";
                             break;
                         case 1:
-                            Session.SongStreamingQuality = "lowQuality";
+                            Session.SongStreamingQuality = "lowquality";
                             break;
                         case 2:
-                            Session.SongStreamingQuality = "mediumQuality";
+                            Session.SongStreamingQuality = "mediumquality";
                             break;
                         case 3:
-                            Session.SongStreamingQuality = "highQuality";
+                            Session.SongStreamingQuality = "highquality";
                             break;
                     }
                 }

@@ -45,19 +45,19 @@ namespace Musify.Pages {
             string songStreamingQuality = ((CheckBox)sender).Name;
             switch (songStreamingQuality) {
                 case "lowCheckBox":
-                    Session.SongStreamingQuality = "lowQuality";
+                    Session.SongStreamingQuality = "lowquality";
                     mediumCheckBox.IsChecked = false;
                     highCheckBox.IsChecked = false;
                     automaticCheckBox.IsChecked = false;
                     break;
                 case "mediumCheckBox":
-                    Session.SongStreamingQuality = "mediumQuality";
+                    Session.SongStreamingQuality = "mediumquality";
                     lowCheckBox.IsChecked = false;
                     highCheckBox.IsChecked = false;
                     automaticCheckBox.IsChecked = false;
                     break;
                 case "highCheckBox":
-                    Session.SongStreamingQuality = "highQuality";
+                    Session.SongStreamingQuality = "highquality";
                     lowCheckBox.IsChecked = false;
                     mediumCheckBox.IsChecked = false;
                     automaticCheckBox.IsChecked = false;

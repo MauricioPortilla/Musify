@@ -32,8 +32,7 @@ namespace Musify {
                     Session.Account.FetchArtist(() => {
                         new MainWindow().Show();
                         Close();
-                    }, () => {
-                    });
+                    }, null);
                 }, () => {
                     MessageBox.Show("Error al iniciar sesión.");
                 });

@@ -21,7 +21,7 @@ namespace Musify.Models {
         };
 
         public static Dictionary<string, string> JSON = new Dictionary<string, string>() {
-            { "name", "ImageLocation" },
+            { "image_location", "ImageLocation" },
         };
 
         private int albumId;
@@ -76,8 +76,7 @@ namespace Musify.Models {
             try {
                 RestSharpTools.PostMultimediaAsync<Song>("album/songs", null, filesRoutes, Song.JSON, (responseSongs, songs_location) => {
                     if (responseSongs.IsSuccessful) {
-                        filesRoutes = new string[1];
-                        filesRoutes[0] = imageLocation;
+                        filesRoutes = new string[] { imageLocation };
                         RestSharpTools.PostMultimediaAsync<Album>("album/image", null, filesRoutes, JSON, (responseImage, image_location) => {
                             if (responseImage.IsSuccessful) {
                                 List<object> artists_id = new List<object>();
