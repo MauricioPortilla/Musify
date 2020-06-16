@@ -37,11 +37,19 @@ namespace Musify.Pages {
             get => artistList;
         }
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
         public SearchPage() {
             InitializeComponent();
             DataContext = this;
         }
 
+        /// <summary>
+        /// Searches for a song or album or artist that starts with given string.
+        /// </summary>
+        /// <param name="sender">TextBox</param>
+        /// <param name="e">Event</param>
         private void SearchTextBox_KeyUp(object sender, KeyEventArgs e) {
             if (string.IsNullOrWhiteSpace(searchTextBox.Text)) {
                 songList.Clear();
@@ -97,10 +105,20 @@ namespace Musify.Pages {
             }
         }
 
+        /// <summary>
+        /// Attempts to play the double clicked song.
+        /// </summary>
+        /// <param name="sender">DataGrid</param>
+        /// <param name="e">Event</param>
         private void SongsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
             UIFunctions.SongTable_OnDoubleClick(sender, e);
         }
 
+        /// <summary>
+        /// Adds the selected song to the queue.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void AddToQueueButton_Click(object sender, RoutedEventArgs e) {
             if (songsDataGrid.SelectedItem != null) {
                 Session.SongsIdPlayQueue.Add(((SongTable)songsDataGrid.SelectedItem).Song.SongId);
@@ -108,6 +126,11 @@ namespace Musify.Pages {
             }
         }
 
+        /// <summary>
+        /// Shows up a new window to add the selected song to a playlist.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void AddToPlaylistButton_Click(object sender, RoutedEventArgs e) {
             if (songsDataGrid.SelectedItem != null) {
                 new AddSongToPlaylistWindow(((SongTable)songsDataGrid.SelectedItem).Song).Show();
@@ -115,6 +138,11 @@ namespace Musify.Pages {
             }
         }
 
+        /// <summary>
+        /// Generates a radio station with the selected song.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void GenerateRadioStationButton_Click(object sender, RoutedEventArgs e) {
             if (songsDataGrid.SelectedItem != null) {
                 if (Session.GenresIdRadioStations.Find(x => x == ((SongTable)songsDataGrid.SelectedItem).Song.Genre.GenreId) == 0) {
@@ -126,6 +154,11 @@ namespace Musify.Pages {
             }
         }
 
+        /// <summary>
+        /// Shows up an album page with the selected album.
+        /// </summary>
+        /// <param name="sender">ListView</param>
+        /// <param name="e">Event</param>
         private void AlbumsListView_SelectionChanged(object sender, RoutedEventArgs e) {
             if (albumsListView.SelectedIndex == -1) {
                 return;
@@ -135,6 +168,11 @@ namespace Musify.Pages {
             albumsListView.SelectedIndex = -1;
         }
 
+        /// <summary>
+        /// Shows up an artist page with the selected artist.
+        /// </summary>
+        /// <param name="sender">ListView</param>
+        /// <param name="e">Event</param>
         private void ArtistsListView_SelectionChanged(object sender, RoutedEventArgs e) {
             if (artistsListView.SelectedIndex == -1) {
                 return;

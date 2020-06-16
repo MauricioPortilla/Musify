@@ -22,12 +22,19 @@ namespace Musify {
 
         private Song songToAdd;
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
+        /// <param name="songToAdd">Song to add</param>
         public AddSongToPlaylistWindow(Song songToAdd) {
             InitializeComponent();
             this.songToAdd = songToAdd;
             LoadPlaylists();
         }
 
+        /// <summary>
+        /// Loads all account playlists.
+        /// </summary>
         private void LoadPlaylists() {
             playlistsListBox.Items.Clear();
             Playlist.FetchByAccountId(Session.Account.AccountId, (playlists) => {
@@ -39,6 +46,11 @@ namespace Musify {
             });
         }
 
+        /// <summary>
+        /// Adds the song to the selected playlist.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void AddButton_Click(object sender, RoutedEventArgs e) {
             if (playlistsListBox.SelectedItem == null) {
                 MessageBox.Show("Debes seleccionar una lista de reproducción.");
@@ -56,6 +68,11 @@ namespace Musify {
             });
         }
 
+        /// <summary>
+        /// Closes the window.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void CancelButton_Click(object sender, RoutedEventArgs e) {
             Close();
         }

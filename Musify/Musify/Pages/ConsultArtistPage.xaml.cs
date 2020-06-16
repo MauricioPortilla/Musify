@@ -21,12 +21,21 @@ namespace Musify.Pages {
     /// Lógica de interacción para ConsultArtistPage.xaml
     /// </summary>
     public partial class ConsultArtistPage : Page {
+
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
+        /// <param name="artist">Artist to consult</param>
         public ConsultArtistPage(Artist artist) {
             InitializeComponent();
             LoadArtist(artist);
             Session.MainWindow.TitleBar.Text = artist.ArtisticName;
         }
 
+        /// <summary>
+        /// Loads the artist albums and songs.
+        /// </summary>
+        /// <param name="artist">Artist to load</param>
         private void LoadArtist(Artist artist) {
             artist.FetchAlbums(() => {
                 if (artist.Albums == null) {
@@ -44,9 +53,15 @@ namespace Musify.Pages {
                         MessageBox.Show("Ocurrió un error al cargar el artista.");
                     });
                 }
-            }, () => { });
+            }, () => {
+                MessageBox.Show("Ocurrió un error al cargar el artista.");
+            });
         }
 
+        /// <summary>
+        /// Creates the UI for an album.
+        /// </summary>
+        /// <param name="album">Album</param>
         private void CreateAlbumUI(Album album) {
             ObservableCollection<SongTable> albumSongsList = new ObservableCollection<SongTable>();
             foreach (Song albumSong in album.Songs) {

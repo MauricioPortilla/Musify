@@ -338,6 +338,11 @@ namespace Musify.Pages {
             }
         }
 
+        /// <summary>
+        /// Shows up a consult artist page with the current artist.
+        /// </summary>
+        /// <param name="sender">TextBlock</param>
+        /// <param name="e">Event</param>
         private void ArtistNameTextBlock_MouseDown(object sender, MouseButtonEventArgs e) {
             if (string.IsNullOrEmpty(artistNameTextBlock.Text)) {
                 return;
@@ -346,6 +351,11 @@ namespace Musify.Pages {
             Session.MainWindow.TitleBar.Text = latestSongPlayed.Album.Artists[0].ArtisticName;
         }
 
+        /// <summary>
+        /// Likes the current song.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void LikeButton_Click(object sender, RoutedEventArgs e) {
             try {
                 Session.Account.LikeSong(latestSongPlayed, () => {
@@ -359,6 +369,11 @@ namespace Musify.Pages {
             }
         }
 
+        /// <summary>
+        /// Dislikes the current song.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void DislikeButton_Click(object sender, RoutedEventArgs e) {
             try {
                 Session.Account.DislikeSong(latestSongPlayed, () => {

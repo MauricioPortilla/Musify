@@ -42,9 +42,18 @@ namespace Musify.Models {
             set => name = value;
         }
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
         public Playlist() {
         }
 
+        /// <summary>
+        /// Fetches all account playlists.
+        /// </summary>
+        /// <param name="accountId">Account ID</param>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
         public static void FetchByAccountId(int accountId, Action<List<Playlist>> onSuccess, Action onFailure) {
             try {
                 RestSharpTools.GetAsyncMultiple<Playlist>("/account/" + accountId + "/playlists", null, JSON_EQUIVALENTS, (response, objects) => {
@@ -60,6 +69,11 @@ namespace Musify.Models {
             }
         }
 
+        /// <summary>
+        /// Fetches all this playlist songs.
+        /// </summary>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
         public void FetchSongs(Action onSuccess, Action onFailure) {
             try {
                 RestSharpTools.GetAsyncMultiple<Song>("/playlist/" + playlistId + "/songs", null, Song.JSON_EQUIVALENTS, (response, objects) => {
@@ -86,6 +100,12 @@ namespace Musify.Models {
             }
         }
 
+        /// <summary>
+        /// Saves this playlist data. If it does not exist, it will be created; otherwise,
+        /// it will be updated.
+        /// </summary>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
         public void Save(Action<Playlist> onSuccess, Action onFailure) {
             var playlistData = new {
                 playlist_id = playlistId,
@@ -116,6 +136,12 @@ namespace Musify.Models {
             }
         }
 
+        /// <summary>
+        /// Adds a song to this playlist.
+        /// </summary>
+        /// <param name="song">Song to add</param>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
         public void AddSong(Song song, Action onSuccess, Action onFailure) {
             var data = new {
                 song_id = song.SongId
@@ -134,6 +160,12 @@ namespace Musify.Models {
             }
         }
 
+        /// <summary>
+        /// Checks if the song is in this playlist.
+        /// </summary>
+        /// <param name="song">Song to check</param>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
         public void ContainsSong(Song song, Action onSuccess, Action onFailure) {
             var data = new {
                 song_id = song.SongId
@@ -152,6 +184,51 @@ namespace Musify.Models {
             }
         }
 
+        /// <summary>
+        /// Deletes this playlist.
+        /// </summary>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
+        public void Delete(Action onSuccess, Action onFailure) {
+            try {
+                RestSharpTools.DeleteAsync("/playlist/" + playlistId, null, (response) => {
+                    if (response.IsSuccessful) {
+                        onSuccess();
+                    } else {
+                        onFailure?.Invoke();
+                    }
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Playlist->Delete() -> " + exception.Message);
+                onFailure?.Invoke();
+            }
+        }
+
+        /// <summary>
+        /// Deletes the song from this playlist.
+        /// </summary>
+        /// <param name="song">Song to delete</param>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
+        public void DeleteSong(Song song, Action onSuccess, Action onFailure) {
+            try {
+                RestSharpTools.DeleteAsync("/playlist/" + playlistId + "/songs/" + song.SongId, null, (response) => {
+                    if (response.IsSuccessful) {
+                        onSuccess();
+                    } else {
+                        onFailure?.Invoke();
+                    }
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Playlist->DeleteSong() -> " + exception.Message);
+                onFailure?.Invoke();
+            }
+        }
+
+        /// <summary>
+        /// Returns the name of this playlist.
+        /// </summary>
+        /// <returns>Playlist name</returns>
         public override string ToString() {
             return name;
         }

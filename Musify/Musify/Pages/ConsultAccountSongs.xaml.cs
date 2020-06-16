@@ -28,6 +28,9 @@ namespace Musify.Pages {
             get => accountSongList;
         }
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
         public ConsultAccountSongs() {
             InitializeComponent();
             DataContext = this;
@@ -38,6 +41,9 @@ namespace Musify.Pages {
             });
         }
 
+        /// <summary>
+        /// Refreshes the account songs table.
+        /// </summary>
         private void SetAccountSongs() {
             accountSongList.Clear();
             foreach (AccountSong accountSong in Session.Account.AccountSongs) {
@@ -49,10 +55,20 @@ namespace Musify.Pages {
             }
         }
 
+        /// <summary>
+        /// Attempts to play the double clicked account song.
+        /// </summary>
+        /// <param name="sender">DataGrid</param>
+        /// <param name="e">Event</param>
         private void AccountSongsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
             UIFunctions.AccountSongTable_OnDoubleClick(sender, e);
         }
 
+        /// <summary>
+        /// Adds songs to the list.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void AddSongButton_Click(object sender, RoutedEventArgs e) {
             Forms.OpenFileDialog fileExplorer = new Forms.OpenFileDialog();
             fileExplorer.Filter = "MP3 Files|*.mp3|WAV Files|*.wav";
@@ -76,6 +92,11 @@ namespace Musify.Pages {
             }
         }
 
+        /// <summary>
+        /// Deletes the selected account song.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void DeleteSongButton_Click(object sender, RoutedEventArgs e) {
             if (accountSongsDataGrid.SelectedItem == null) {
                 MessageBox.Show("Debes seleccionar una canción de la lista.");

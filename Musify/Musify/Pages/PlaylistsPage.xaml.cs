@@ -24,11 +24,17 @@ namespace Musify {
 
         private DialogOpenedEventArgs dialogOpenEventArgs;
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
         public PlaylistsPage() {
             InitializeComponent();
             LoadPlaylists();
         }
 
+        /// <summary>
+        /// Loads all the account playlists.
+        /// </summary>
         private void LoadPlaylists() {
             playlistsListBox.Items.Clear();
             Playlist.FetchByAccountId(Session.Account.AccountId, (playlists) => {
@@ -40,6 +46,11 @@ namespace Musify {
             });
         }
 
+        /// <summary>
+        /// Opens up a dialog to create a new playlist.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void NewPlaylistButton_Click(object sender, RoutedEventArgs e) {
             DialogHost.Show(mainStackPanel, "PlaylistPage_WindowDialogHost", (openSender, openEventArgs) => {
                 dialogOpenEventArgs = openEventArgs;
@@ -47,6 +58,11 @@ namespace Musify {
             }, null);
         }
 
+        /// <summary>
+        /// Creates a new playlist.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void CreatePlaylistButton_Click(object sender, RoutedEventArgs e) {
             if (string.IsNullOrWhiteSpace(dialogPlaylistNameTextBox.Text)) {
                 MessageBox.Show("Debes ingresar un nombre.");
@@ -65,6 +81,11 @@ namespace Musify {
             });
         }
 
+        /// <summary>
+        /// Shows up a consult playlist page with the selected playlist.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void PlaylistsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             ConsultPlaylistPage consultPlaylistPage = new ConsultPlaylistPage(playlistsListBox.SelectedItem as Playlist);
             Session.MainFrame.Navigate(consultPlaylistPage);

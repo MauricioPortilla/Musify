@@ -11,7 +11,7 @@
     <Grid Background="LightGray">
         <StackPanel Orientation="Vertical">
             <StackPanel Orientation="Horizontal">
-                <TextBlock x:Name="songNameTextBlock" TextWrapping="NoWrap" Text="" FontSize="14" Height="19" Margin="15,15,0,0"/>
+                <TextBlock x:Name="songNameTextBlock" TextWrapping="NoWrap" Text="" FontSize="14" Height="19" Margin="15,15,0,0" MaxWidth="300"/>
                 <Button x:Name="likeButton" Style="{StaticResource MaterialDesignFloatingActionMiniDarkButton}" Width="20" MinWidth="20" Height="20" Background="DarkGreen" Margin="10,15,0,0" Visibility="Hidden" Click="LikeButton_Click">
                     <materialDesign:PackIcon Name="likeButtonIcon" Kind="Like" Width="10" />
                 </Button>

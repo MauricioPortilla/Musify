@@ -46,7 +46,11 @@
             <ToggleButton x:Name="downloadToggleButton" Style="{StaticResource MaterialDesignSwitchToggleButton}" ToolTip="Descargar canciones" VerticalAlignment="Center" ToggleButton.Checked="DownloadToggleButton_Checked" ToggleButton.Unchecked="DownloadToggleButton_Unchecked"/>
             <TextBlock Text="Descargar" VerticalAlignment="Center" Margin="0,0,10,0"></TextBlock>
             <Button x:Name="deletePlaylistButton" Content="Eliminar lista" HorizontalAlignment="Left" VerticalAlignment="Center" Width="142" Margin="0,0,8,0" Click="DeletePlaylistButton_Click"/>
-            <Button Content="..." HorizontalAlignment="Left" VerticalAlignment="Center" Width="46"/>
+            <Menu Height="30" BorderThickness="0">
+                <MenuItem Header="..." Height="30" Background="#FF607D8B" Foreground="White" FontSize="12">
+                    <MenuItem x:Name="DeleteSongMenuItem" Header="Eliminar canción" Background="#FF607D8B" Click="DeleteSongMenuItem_Click"/>
+                </MenuItem>
+            </Menu>
         </StackPanel>
 
     </Grid>

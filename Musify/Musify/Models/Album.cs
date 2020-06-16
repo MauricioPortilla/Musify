@@ -11,6 +11,9 @@ using System.Windows.Media.Imaging;
 namespace Musify.Models {
     public class Album {
 
+        /// <summary>
+        /// Explains how to pass JSON data to an object of this type.
+        /// </summary>
         public static Dictionary<string, string> JSON_EQUIVALENTS = new Dictionary<string, string>() {
             { "album_id", "AlbumId" },
             { "type", "Type" },
@@ -20,7 +23,10 @@ namespace Musify.Models {
             { "image_location", "ImageLocation" }
         };
 
-        public static Dictionary<string, string> JSON = new Dictionary<string, string>() {
+        /// <summary>
+        /// Explains how to pass JSON image location data to an object of this type.
+        /// </summary>
+        public static Dictionary<string, string> JSON_IMAGE_EQUIVALENT = new Dictionary<string, string>() {
             { "image_location", "ImageLocation" },
         };
 
@@ -65,19 +71,27 @@ namespace Musify.Models {
             set => songs = value;
         }
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
         public Album() {
         }
 
+        /// <summary>
+        /// Creates this album with its songs.
+        /// </summary>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
         public void Save(Action onSuccess, Action onFailure) {
             string[] filesRoutes = new string[songs.Count];
             for (int i = 0; i < songs.Count; i++) {
                 filesRoutes[i] = songs.ElementAt(i).SongLocation;
             }
             try {
-                RestSharpTools.PostMultimediaAsync<Song>("album/songs", null, filesRoutes, Song.JSON, (responseSongs, songs_location) => {
+                RestSharpTools.PostMultimediaAsync<Song>("album/songs", null, filesRoutes, Song.JSON_MIN_EQUIVALENTS, (responseSongs, songs_location) => {
                     if (responseSongs.IsSuccessful) {
                         filesRoutes = new string[] { imageLocation };
-                        RestSharpTools.PostMultimediaAsync<Album>("album/image", null, filesRoutes, JSON, (responseImage, image_location) => {
+                        RestSharpTools.PostMultimediaAsync<Album>("album/image", null, filesRoutes, JSON_IMAGE_EQUIVALENT, (responseImage, image_location) => {
                             if (responseImage.IsSuccessful) {
                                 List<object> artists_id = new List<object>();
                                 foreach (Artist artist in artists) {
@@ -133,6 +147,12 @@ namespace Musify.Models {
             }
         }
 
+        /// <summary>
+        /// Fetches an album by its ID.
+        /// </summary>
+        /// <param name="albumId">Album ID</param>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
         public static void FetchById(int albumId, Action<Album> onSuccess, Action onFailure) {
             try {
                 RestSharpTools.GetAsync<Album>("/album/" + albumId, null, JSON_EQUIVALENTS, (response) => {
@@ -150,6 +170,12 @@ namespace Musify.Models {
             }
         }
 
+        /// <summary>
+        /// Fetches an album by its starting name.
+        /// </summary>
+        /// <param name="name">Album name</param>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
         public static void FetchByNameCoincidences(string name, Action<List<Album>> onSuccess, Action onFailure) {
             try {
                 RestSharpTools.GetAsyncMultiple<Album>("/album/search/" + name, null, JSON_EQUIVALENTS, (response, albums) => {
@@ -173,6 +199,11 @@ namespace Musify.Models {
             }
         }
 
+        /// <summary>
+        /// Fetches all artists attached to this album.
+        /// </summary>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
         public void FetchArtists(Action onSuccess, Action onFailure) {
             try {
                 RestSharpTools.GetAsyncMultiple<Artist>("/album/" + albumId + "/artists", null, Artist.JSON_EQUIVALENTS, (response, artists) => {
@@ -189,6 +220,10 @@ namespace Musify.Models {
             }
         }
 
+        /// <summary>
+        /// Returns all artistic names of each artist attached to this album.
+        /// </summary>
+        /// <returns>Artistic names of each artist attached to this album</returns>
         public string GetArtistsNames() {
             string names = "";
             foreach (Artist artist in artists) {
@@ -200,6 +235,10 @@ namespace Musify.Models {
             return names;
         }
 
+        /// <summary>
+        /// Fetches this album image.
+        /// </summary>
+        /// <returns>Album image</returns>
         public BitmapImage FetchImage() {
             WebClient webClient = new WebClient();
             webClient.Headers["Authorization"] = Session.AccessToken ?? "";
@@ -214,6 +253,11 @@ namespace Musify.Models {
             }
         }
 
+        /// <summary>
+        /// Fetches all this album songs.
+        /// </summary>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
         public void FetchSongs(Action onSuccess, Action onFailure) {
             try {
                 RestSharpTools.GetAsyncMultiple<Song>("/album/" + albumId + "/songs", null, Song.JSON_EQUIVALENTS, (response, songs) => {
@@ -238,6 +282,10 @@ namespace Musify.Models {
             }
         }
 
+        /// <summary>
+        /// Returns this album name.
+        /// </summary>
+        /// <returns>Album name</returns>
         public override string ToString() {
             return name;
         }

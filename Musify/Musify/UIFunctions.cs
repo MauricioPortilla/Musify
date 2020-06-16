@@ -12,6 +12,11 @@ using static Musify.Models.Song;
 
 namespace Musify {
     class UIFunctions {
+        /// <summary>
+        /// Plays the double clicked song.
+        /// </summary>
+        /// <param name="sender">DataGridCell</param>
+        /// <param name="e">Event</param>
         public static void SongTable_OnDoubleClick(object sender, MouseButtonEventArgs e) {
             IInputElement element = e.MouseDevice.DirectlyOver;
             if (element != null && element is FrameworkElement) {
@@ -26,6 +31,11 @@ namespace Musify {
             }
         }
 
+        /// <summary>
+        /// Plays the double clicked account song.
+        /// </summary>
+        /// <param name="sender">DataGridCell</param>
+        /// <param name="e">Event</param>
         public static void AccountSongTable_OnDoubleClick(object sender, MouseButtonEventArgs e) {
             IInputElement element = e.MouseDevice.DirectlyOver;
             if (element != null && element is FrameworkElement) {

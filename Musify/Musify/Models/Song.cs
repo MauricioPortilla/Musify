@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 namespace Musify.Models {
     public class Song {
 
+        /// <summary>
+        /// Explains how to pass JSON data to an object of this type.
+        /// </summary>
         public static Dictionary<string, string> JSON_EQUIVALENTS = new Dictionary<string, string>() {
             { "song_id", "SongId" },
             { "album_id", "AlbumId" },
@@ -17,7 +20,10 @@ namespace Musify.Models {
             { "status", "Status" }
         };
 
-        public static Dictionary<string, string> JSON = new Dictionary<string, string>() {
+        /// <summary>
+        /// Explains how to pass JSON minimum data to an object of this type.
+        /// </summary>
+        public static Dictionary<string, string> JSON_MIN_EQUIVALENTS = new Dictionary<string, string>() {
             { "name", "SongLocation" },
             { "duration", "Duration" }
         };
@@ -73,9 +79,15 @@ namespace Musify.Models {
             set => artists = value;
         }
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
         public Song() {
         }
 
+        /// <summary>
+        /// Represents a song in a table.
+        /// </summary>
         public struct SongTable {
             public Song Song;
             public string Title { get; set; }
@@ -121,6 +133,12 @@ namespace Musify.Models {
             }
         }
 
+        /// <summary>
+        /// Fetches a song by its ID.
+        /// </summary>
+        /// <param name="SongId">Song ID</param>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
         public static void FetchById(int SongId, Action<Song> onSuccess, Action onFailure) {
             try {
                 RestSharpTools.GetAsync<Song>("/song/" + SongId, null, JSON_EQUIVALENTS, (response) => {
@@ -145,6 +163,11 @@ namespace Musify.Models {
             }
         }
 
+        /// <summary>
+        /// Fetches 
+        /// </summary>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
         public void FetchArtists(Action onSuccess, Action onFailure) {
             try {
                 RestSharpTools.GetAsyncMultiple<Artist>("/song/" + SongId + "/artists", null, Artist.JSON_EQUIVALENTS, (response, artists) => {
@@ -161,6 +184,10 @@ namespace Musify.Models {
             }
         }
 
+        /// <summary>
+        /// Gets a string with the artistic name of each artist attached to this song.
+        /// </summary>
+        /// <returns>Artistic name of each artist attached to this song</returns>
         public string GetArtistsNames() {
             string names = "";
             foreach (Artist artist in artists) {
@@ -172,6 +199,10 @@ namespace Musify.Models {
             return names;
         }
 
+        /// <summary>
+        /// Returns this song title.
+        /// </summary>
+        /// <returns>Song title</returns>
         public override string ToString() {
             return title;
         }

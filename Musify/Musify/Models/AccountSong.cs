@@ -50,9 +50,15 @@ namespace Musify.Models {
             set => uploadDate = value;
         }
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
         public AccountSong() {
         }
 
+        /// <summary>
+        /// Represents an account song in a table.
+        /// </summary>
         public struct AccountSongTable {
             public AccountSong AccountSong { get; set; }
             public string Title { get; set; }

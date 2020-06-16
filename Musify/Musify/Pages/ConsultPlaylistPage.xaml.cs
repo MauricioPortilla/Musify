@@ -28,6 +28,10 @@ namespace Musify.Pages {
             get => songsObservableCollection;
         }
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
+        /// <param name="playlist">Playlist to consult</param>
         public ConsultPlaylistPage(Playlist playlist) {
             InitializeComponent();
             DataContext = this;
@@ -37,6 +41,9 @@ namespace Musify.Pages {
             LoadPlaylistSongs();
         }
 
+        /// <summary>
+        /// Loads all the playlist songs.
+        /// </summary>
         private void LoadPlaylistSongs() {
             playlist.FetchSongs(() => {
                 songsObservableCollection.Clear();
@@ -55,20 +62,61 @@ namespace Musify.Pages {
             });
         }
 
+        /// <summary>
+        /// Attempts to play the double clicked song.
+        /// </summary>
+        /// <param name="sender">DataGrid</param>
+        /// <param name="e">Event</param>
         private void SongsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
             UIFunctions.SongTable_OnDoubleClick(sender, e);
         }
 
+        /// <summary>
+        /// Attempts to download all the playlist songs.
+        /// </summary>
+        /// <param name="sender">ToggleButton</param>
+        /// <param name="e">Event</param>
         private void DownloadToggleButton_Checked(object sender, RoutedEventArgs e) {
 
         }
 
+        /// <summary>
+        /// Attempts to delete all the downloaded playlist songs.
+        /// </summary>
+        /// <param name="sender">ToggleButton</param>
+        /// <param name="e">Event</param>
         private void DownloadToggleButton_Unchecked(object sender, RoutedEventArgs e) {
 
         }
 
+        /// <summary>
+        /// Deletes the playlist.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void DeletePlaylistButton_Click(object sender, RoutedEventArgs e) {
+            playlist.Delete(() => {
+                Session.MainFrame.Source = new Uri("Pages/PlaylistsPage.xaml", UriKind.RelativeOrAbsolute);
+            }, () => {
+                MessageBox.Show("Ocurrió un error al eliminar esta lista de reproducción.");
+            });
+        }
 
+        /// <summary>
+        /// Deletes the selected song from playlist.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
+        private void DeleteSongMenuItem_Click(object sender, RoutedEventArgs e) {
+            if (songsDataGrid.SelectedItem == null) {
+                MessageBox.Show("Debes seleccionar una canción.");
+                return;
+            }
+            playlist.DeleteSong(((SongTable) songsDataGrid.SelectedItem).Song, () => {
+                songsObservableCollection.Remove((SongTable) songsDataGrid.SelectedItem);
+            }, () => {
+                MessageBox.Show("Ocurrió un error al eliminar esta canción.");
+            });
         }
     }
 }

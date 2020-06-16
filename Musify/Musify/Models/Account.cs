@@ -67,9 +67,19 @@ namespace Musify {
             set => likedSongs = value;
         }
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
         public Account() {
         }
 
+        /// <summary>
+        /// Creates a new instance with given data.
+        /// </summary>
+        /// <param name="email">Email</param>
+        /// <param name="password">Password</param>
+        /// <param name="name">Name</param>
+        /// <param name="lastName">Last name</param>
         public Account(string email, string password, string name, string lastName) {
             this.email = email;
             this.password = password;
@@ -77,6 +87,13 @@ namespace Musify {
             this.lastName = lastName;
         }
 
+        /// <summary>
+        /// Attempts to log in with given credentials.
+        /// </summary>
+        /// <param name="email">Email</param>
+        /// <param name="password">Hashed password</param>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
         public static void Login(string email, string password, Action<Account> onSuccess, Action onFailure) {
             var accountData = new {
                 email,
@@ -98,6 +115,13 @@ namespace Musify {
             
         }
 
+        /// <summary>
+        /// Registers this new account.
+        /// </summary>
+        /// <param name="isArtist">Register as an artist too</param>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
+        /// <param name="artisticName">Artistic name if should be registered as an artist too</param>
         public void Register(bool isArtist, Action onSuccess, Action onFailure, string artisticName = null) {
             var accountData = new {
                 email,
@@ -122,6 +146,11 @@ namespace Musify {
             
         }
 
+        /// <summary>
+        /// Fetches artist data attached to this account.
+        /// </summary>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
         public void FetchArtist(Action onSuccess, Action onFailure) {
             try {
                 RestSharpTools.GetAsync<Artist>("/account/" + accountId + "/artist", null, Artist.JSON_EQUIVALENTS, (response) => {
@@ -136,6 +165,11 @@ namespace Musify {
             }
         }
 
+        /// <summary>
+        /// Fetches all account songs of this account.
+        /// </summary>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
         public void FetchAccountSongs(Action onSuccess, Action onFailure) {
             try {
                 RestSharpTools.GetAsyncMultiple<AccountSong>("/account/" + accountId + "/accountsongs", null, AccountSong.JSON_EQUIVALENTS, (response, accountSongs) => {
@@ -152,6 +186,12 @@ namespace Musify {
             }
         }
 
+        /// <summary>
+        /// Adds new account songs.
+        /// </summary>
+        /// <param name="fileRoutes">Files to add</param>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
         public void AddAccountSongs(string[] fileRoutes, Action onSuccess, Action onFailure) {
             try {
                 RestSharpTools.PostMultimediaAsync<AccountSong>(
@@ -170,6 +210,12 @@ namespace Musify {
             }
         }
 
+        /// <summary>
+        /// Deletes an account song.
+        /// </summary>
+        /// <param name="accountSong">Account song to delete</param>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
         public void DeleteAccountSong(AccountSong accountSong, Action onSuccess, Action onFailure) {
             try {
                 RestSharpTools.DeleteAsync("/account/" + accountId + "/accountsong/" + accountSong.AccountSongId, null, (response) => {
@@ -186,6 +232,12 @@ namespace Musify {
             }
         }
 
+        /// <summary>
+        /// Likes a song.
+        /// </summary>
+        /// <param name="song">Song to like</param>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
         public void LikeSong(Song song, Action onSuccess, Action onFailure) {
             try {
                 var data = new {
@@ -204,6 +256,12 @@ namespace Musify {
             }
         }
 
+        /// <summary>
+        /// Dislikes a song.
+        /// </summary>
+        /// <param name="song">Song to dislike</param>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
         public void DislikeSong(Song song, Action onSuccess, Action onFailure) {
             try {
                 var data = new {

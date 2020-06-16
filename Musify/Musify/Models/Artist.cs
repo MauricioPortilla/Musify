@@ -39,9 +39,18 @@ namespace Musify.Models {
             set => albums = value;
         }
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
         public Artist() {
         }
 
+        /// <summary>
+        /// Fetches an artist by its ID.
+        /// </summary>
+        /// <param name="artistId">Artist ID</param>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
         public static void FetchById(int artistId, Action<Artist> onSuccess, Action onFailure) {
             try {
                 RestSharpTools.GetAsync<Artist>("/artist/" + artistId, null, JSON_EQUIVALENTS, (response) => {
@@ -57,6 +66,12 @@ namespace Musify.Models {
             }
         }
 
+        /// <summary>
+        /// Fetches an artist by its starting artistic name.
+        /// </summary>
+        /// <param name="artisticName">Artist artistic name</param>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
         public static void FetchByArtisticNameCoincidences(string artisticName, Action<List<Artist>> onSuccess, Action onFailure) {
             try {
                 RestSharpTools.GetAsyncMultiple<Artist>("/artist/search/" + artisticName, null, JSON_EQUIVALENTS, (response, artists) => {
@@ -72,6 +87,11 @@ namespace Musify.Models {
             }
         }
 
+        /// <summary>
+        /// Fetches all this artist albums.
+        /// </summary>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
         public void FetchAlbums(Action onSuccess, Action onFailure) {
             try {
                 RestSharpTools.GetAsyncMultiple<Album>("/artist/" + artistId + "/albums", null, Album.JSON_EQUIVALENTS, (response, albums) => {
@@ -80,7 +100,7 @@ namespace Musify.Models {
                         onSuccess();
                         return;
                     }
-                    onFailure();
+                    onFailure?.Invoke();
                 });
             } catch (Exception exception) {
                 Console.WriteLine("Exception@Artist->FetchAlbums() -> " + exception.Message);
@@ -88,6 +108,10 @@ namespace Musify.Models {
             }
         }
 
+        /// <summary>
+        /// Returns this artist artistic name.
+        /// </summary>
+        /// <returns>Artist artistic name</returns>
         public override string ToString() {
             return artisticName;
         }
