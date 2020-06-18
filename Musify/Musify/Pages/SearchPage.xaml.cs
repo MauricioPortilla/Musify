@@ -56,8 +56,6 @@ namespace Musify.Pages {
                 albumList.Clear();
                 artistList.Clear();
                 return;
-            } else if (searchTextBox.Text.Length < 3) {
-                return;
             }
             if (searchTabControl.SelectedIndex == 0) {
                 Song.FetchByTitleCoincidences(searchTextBox.Text, (songs) => {

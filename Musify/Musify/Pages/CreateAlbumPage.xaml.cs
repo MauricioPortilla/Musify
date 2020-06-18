@@ -127,6 +127,7 @@ namespace Musify.Pages {
             };
             album.Save(() => {
                 MessageBox.Show("Se creó el álbum con éxito.");
+                Session.MainFrame.Source = new Uri("Pages/PlaylistsPage.xaml", UriKind.RelativeOrAbsolute);
             }, () => {
                 MessageBox.Show("Ocurrió un error al crear el álbum.");
             });
