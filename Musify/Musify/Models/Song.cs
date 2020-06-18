@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -197,6 +198,23 @@ namespace Musify.Models {
                 names += artist.ArtisticName;
             }
             return names;
+        }
+
+        /// <summary>
+        /// Checks if this song has been downloaded before.
+        /// </summary>
+        /// <returns>true if is downloaded; false if not</returns>
+        public bool IsDownloaded() {
+            return File.Exists(App.DATA_DOWNLOADS_DIRECTORY + "/" + songId + ".bin");
+        }
+
+        /// <summary>
+        /// Creates a stream from downloaded song file.
+        /// </summary>
+        /// <returns>Stream with song file bytes</returns>
+        public Stream CreateDownloadedFileStream() {
+            Stream stream = new MemoryStream(File.ReadAllBytes(App.DATA_DOWNLOADS_DIRECTORY + "/" + songId + ".bin"));
+            return stream;
         }
 
         /// <summary>

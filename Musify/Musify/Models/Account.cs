@@ -112,7 +112,6 @@ namespace Musify {
                 Console.WriteLine("Exception@Account->Login() -> " + exception.Message);
                 onFailure();
             }
-            
         }
 
         /// <summary>
@@ -268,6 +267,102 @@ namespace Musify {
                     account_id = accountId
                 };
                 RestSharpTools.PostAsync("/song/" + song.SongId + "/songdislike", data, (response) => {
+                    if (response.IsSuccessful) {
+                        onSuccess();
+                        return;
+                    }
+                    onFailure();
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Account->DislikeSong() -> " + exception.Message);
+                onFailure();
+            }
+        }
+
+        /// <summary>
+        /// Checks if the song was liked before.
+        /// </summary>
+        /// <param name="song">Song</param>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
+        public void HasLikedSong(Song song, Action onSuccess, Action onFailure) {
+            try {
+                var data = new {
+                    account_id = accountId
+                };
+                RestSharpTools.GetAsync("/song/" + song.SongId + "/songlike", data, (response) => {
+                    if (response.IsSuccessful) {
+                        onSuccess();
+                        return;
+                    }
+                    onFailure();
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Account->HasLikedSong() -> " + exception.Message);
+                onFailure();
+            }
+        }
+
+        /// <summary>
+        /// Checks if song was disliked before.
+        /// </summary>
+        /// <param name="song">Song</param>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
+        public void HasDislikedSong(Song song, Action onSuccess, Action onFailure) {
+            try {
+                var data = new {
+                    account_id = accountId
+                };
+                RestSharpTools.GetAsync("/song/" + song.SongId + "/songdislike", data, (response) => {
+                    if (response.IsSuccessful) {
+                        onSuccess();
+                        return;
+                    }
+                    onFailure();
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Account->HasDislikedSong() -> " + exception.Message);
+                onFailure();
+            }
+        }
+
+        /// <summary>
+        /// Unlikes a song.
+        /// </summary>
+        /// <param name="song">Song to unlike</param>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
+        public void UnlikeSong(Song song, Action onSuccess, Action onFailure) {
+            try {
+                var data = new {
+                    account_id = accountId
+                };
+                RestSharpTools.DeleteAsync("/song/" + song.SongId + "/songlike", data, (response) => {
+                    if (response.IsSuccessful) {
+                        onSuccess();
+                        return;
+                    }
+                    onFailure();
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Account->LikeSong() -> " + exception.Message);
+                onFailure();
+            }
+        }
+
+        /// <summary>
+        /// Undislikes a song.
+        /// </summary>
+        /// <param name="song">Song to undislike</param>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
+        public void UndislikeSong(Song song, Action onSuccess, Action onFailure) {
+            try {
+                var data = new {
+                    account_id = accountId
+                };
+                RestSharpTools.DeleteAsync("/song/" + song.SongId + "/songdislike", data, (response) => {
                     if (response.IsSuccessful) {
                         onSuccess();
                         return;

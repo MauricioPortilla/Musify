@@ -78,17 +78,34 @@ namespace Musify.Pages {
                 Session.SongsIdPlayHistory.Add(latestSongPlayed.SongId);
             }
             latestAccountSongPlayed = null;
-            if (latestSongPlayed != null && latestSongPlayed.SongId == song.SongId) {
+            if (latestSongPlayed != null && latestSongPlayed.SongId == song.SongId && latestStream != null) {
                 PlayMemoryStream(new MemoryStream(latestStream.ToArray()));
                 return;
             }
             latestSongPlayed = song;
             songNameTextBlock.Text = song.Title;
             artistNameTextBlock.Text = song.Album.GetArtistsNames();
-            MakeRequestStreamSong(Core.SERVER_API_URL + "/stream/song/" + song.SongId + "/" + Session.SongStreamingQuality);
-            // TODO: Mostrar solamente si no se ha seleccionado ninguna anteriormente con respecto a la canción actual.
+            if (song.IsDownloaded()) {
+                Task.Run(() => {
+                    PlayMemoryStream(song.CreateDownloadedFileStream());
+                });
+            } else {
+                MakeRequestStreamSong(Core.SERVER_API_URL + "/stream/song/" + song.SongId + "/" + Session.SongStreamingQuality);
+            }
             likeButton.Visibility = Visibility.Visible;
             dislikeButton.Visibility = Visibility.Visible;
+            Session.Account.HasLikedSong(song, () => {
+                dislikeButton.IsEnabled = false;
+                likeButton.IsEnabled = true;
+            }, () => {
+                Session.Account.HasDislikedSong(song, () => {
+                    likeButton.IsEnabled = false;
+                    dislikeButton.IsEnabled = true;
+                }, () => {
+                    likeButton.IsEnabled = true;
+                    dislikeButton.IsEnabled = true;
+                });
+            });
         }
 
         /// <summary>
@@ -122,9 +139,6 @@ namespace Musify.Pages {
                     continue;
                 }
                 try {
-                    isPlayerWaveOutAvailable = false;
-                    isStreamSongLocked = true;
-                    isPlayerStopped = false;
                     latestStream = new List<byte>();
                     using (Stream memoryStream = new MemoryStream()) {
                         WebRequest webRequest = WebRequest.Create(streamUrl);
@@ -153,7 +167,13 @@ namespace Musify.Pages {
         /// <param name="memoryStream">Audio stream to play</param>
         private void PlayMemoryStream(Stream memoryStream) {
             try {
+                isPlayerWaveOutAvailable = false;
+                isStreamSongLocked = true;
+                isPlayerStopped = false;
                 memoryStream.Position = 0;
+                if (memoryStream.Length != latestStream.Count) {
+                    latestStream = (memoryStream as MemoryStream).ToArray().ToList();
+                }
                 reader = new WaveFileReader(memoryStream);
                 SetPlayerData(reader);
                 Application.Current.Dispatcher.Invoke(delegate {
@@ -352,36 +372,50 @@ namespace Musify.Pages {
         }
 
         /// <summary>
-        /// Likes the current song.
+        /// Likes or unlikes the current song.
         /// </summary>
         /// <param name="sender">Button</param>
         /// <param name="e">Event</param>
         private void LikeButton_Click(object sender, RoutedEventArgs e) {
             try {
-                Session.Account.LikeSong(latestSongPlayed, () => {
-                    likeButton.IsEnabled = false;
-                    dislikeButton.IsEnabled = false;
-                }, () => {
-                    MessageBox.Show("Ocurrió un error al procesar tu solicitud.");
-                });
+                if (dislikeButton.IsEnabled) {
+                    Session.Account.LikeSong(latestSongPlayed, () => {
+                        dislikeButton.IsEnabled = false;
+                    }, () => {
+                        MessageBox.Show("Ocurrió un error al procesar tu solicitud.");
+                    });
+                } else {
+                    Session.Account.UnlikeSong(latestSongPlayed, () => {
+                        dislikeButton.IsEnabled = true;
+                    }, () => {
+                        MessageBox.Show("Ocurrió un error al procesar tu solicitud.");
+                    });
+                }
             } catch (Exception) {
                 MessageBox.Show("Ocurrió un error al procesar tu solicitud.");
             }
         }
 
         /// <summary>
-        /// Dislikes the current song.
+        /// Dislikes or undislikes the current song.
         /// </summary>
         /// <param name="sender">Button</param>
         /// <param name="e">Event</param>
         private void DislikeButton_Click(object sender, RoutedEventArgs e) {
             try {
-                Session.Account.DislikeSong(latestSongPlayed, () => {
-                    likeButton.IsEnabled = false;
-                    dislikeButton.IsEnabled = false;
-                }, () => {
-                    MessageBox.Show("Ocurrió un error al procesar tu solicitud.");
-                });
+                if (likeButton.IsEnabled) {
+                    Session.Account.DislikeSong(latestSongPlayed, () => {
+                        likeButton.IsEnabled = false;
+                    }, () => {
+                        MessageBox.Show("Ocurrió un error al procesar tu solicitud.");
+                    });
+                } else {
+                    Session.Account.UndislikeSong(latestSongPlayed, () => {
+                        likeButton.IsEnabled = true;
+                    }, () => {
+                        MessageBox.Show("Ocurrió un error al procesar tu solicitud.");
+                    });
+                }
             } catch (Exception) {
                 MessageBox.Show("Ocurrió un error al procesar tu solicitud.");
             }

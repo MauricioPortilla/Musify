@@ -15,8 +15,13 @@ namespace Musify {
         public static readonly string DATA_SONGS_DIRECTORY = AppDomain.CurrentDomain.BaseDirectory + "/data/songs";
         public static readonly string DATA_PLAYER_DIRECTORY = AppDomain.CurrentDomain.BaseDirectory + "/data/player";
         public static readonly string DATA_STATIONS_DIRECTORY = AppDomain.CurrentDomain.BaseDirectory + "/data/stations";
+        public static readonly string DATA_DOWNLOADS_DIRECTORY = AppDomain.CurrentDomain.BaseDirectory + "/data/downloads";
 
         public App() {
+            var downloadedPlaylists = Musify.Properties.Settings.Default.DownloadedPlaylists;
+            if (downloadedPlaylists == null) {
+                Musify.Properties.Settings.Default.DownloadedPlaylists = new System.Collections.Specialized.StringCollection();
+            }
         }
 
         /// <summary>
@@ -40,6 +45,9 @@ namespace Musify {
             if (!Directory.Exists(DATA_STATIONS_DIRECTORY)) {
                 Directory.CreateDirectory(DATA_STATIONS_DIRECTORY);
                 File.Create(DATA_STATIONS_DIRECTORY + "/stations" + Session.Account.AccountId).Close();
+            }
+            if (!Directory.Exists(DATA_DOWNLOADS_DIRECTORY)) {
+                Directory.CreateDirectory(DATA_DOWNLOADS_DIRECTORY);
             }
         }
     }

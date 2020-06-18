@@ -173,16 +173,16 @@ namespace Musify {
             fileStream = new FileStream(file, FileMode.Create);
             binaryWriter = new BinaryWriter(fileStream);
             switch (configurationPlayer) {
-                case "automaticQuality":
+                case "automaticquality":
                     binaryWriter.Write(0);
                     break;
-                case "lowQuality":
+                case "lowquality":
                     binaryWriter.Write(1);
                     break;
-                case "mediumQuality":
+                case "mediumquality":
                     binaryWriter.Write(2);
                     break;
-                case "highQuality":
+                case "highquality":
                     binaryWriter.Write(3);
                     break;
             }

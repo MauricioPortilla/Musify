@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -39,6 +41,18 @@ namespace Musify.Pages {
             this.playlist = playlist;
             playlistNameTextBlock.Text = playlist.Name;
             LoadPlaylistSongs();
+            CheckIfIsDownloaded();
+        }
+
+        /// <summary>
+        /// Checks if this playlist is already downloaded. If so,
+        /// changes download toggle button to true
+        /// </summary>
+        private void CheckIfIsDownloaded() {
+            var downloadedPlaylists = Properties.Settings.Default.DownloadedPlaylists;
+            if (downloadedPlaylists.Contains(playlist.PlaylistId.ToString())) {
+                downloadToggleButton.IsChecked = true;
+            }
         }
 
         /// <summary>
@@ -77,7 +91,28 @@ namespace Musify.Pages {
         /// <param name="sender">ToggleButton</param>
         /// <param name="e">Event</param>
         private void DownloadToggleButton_Checked(object sender, RoutedEventArgs e) {
-
+            foreach (var song in playlist.Songs) {
+                try {
+                    if (!File.Exists(App.DATA_DOWNLOADS_DIRECTORY + "/" + song.SongId + ".bin")) {
+                        using (BinaryWriter songFileWriter = new BinaryWriter(new FileStream(App.DATA_DOWNLOADS_DIRECTORY + "/" + song.SongId + ".bin", FileMode.Create))) {
+                            WebRequest webRequest = WebRequest.Create(Core.SERVER_API_URL + "/stream/song/" + song.SongId + "/" + Session.SongStreamingQuality);
+                            webRequest.Headers["Authorization"] = Session.AccessToken ?? "";
+                            using (Stream stream = webRequest.GetResponse().GetResponseStream()) {
+                                byte[] buffer = new byte[1024 * 1024];
+                                int read;
+                                while ((read = stream.Read(buffer, 0, buffer.Length)) > 0) {
+                                    songFileWriter.Write(buffer, 0, read);
+                                }
+                            }
+                            songFileWriter.Close();
+                            Properties.Settings.Default.DownloadedPlaylists.Add(playlist.PlaylistId.ToString());
+                            Properties.Settings.Default.Save();
+                        }
+                    }
+                } catch (Exception) {
+                    MessageBox.Show("Ocurrió un error al intentar descargar " + song.Title);
+                }
+            }
         }
 
         /// <summary>
@@ -86,7 +121,13 @@ namespace Musify.Pages {
         /// <param name="sender">ToggleButton</param>
         /// <param name="e">Event</param>
         private void DownloadToggleButton_Unchecked(object sender, RoutedEventArgs e) {
-
+            foreach (var song in playlist.Songs) {
+                if (File.Exists(App.DATA_DOWNLOADS_DIRECTORY + "/" + song.SongId + ".bin")) {
+                    File.Delete(App.DATA_DOWNLOADS_DIRECTORY + "/" + song.SongId + ".bin");
+                }
+            }
+            Properties.Settings.Default.DownloadedPlaylists.Remove(playlist.PlaylistId.ToString());
+            Properties.Settings.Default.Save();
         }
 
         /// <summary>

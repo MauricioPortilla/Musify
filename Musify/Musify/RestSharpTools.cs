@@ -13,6 +13,22 @@ using System.IO;
 namespace Musify {
     class RestSharpTools {
 
+        public static async void GetAsync(
+            string resource, dynamic parameters, Action<IRestResponse> callback
+        ) {
+            try {
+                var request = new RestRequest(resource, DataFormat.Json);
+                if (parameters != null) {
+                    request.AddParameter("data", JsonConvert.SerializeObject(parameters));
+                }
+                request.AddHeader("Authorization", Session.AccessToken ?? "");
+                var response = await Session.REST_CLIENT.ExecuteGetAsync(request, new CancellationTokenSource().Token);
+                callback(response);
+            } catch (Exception) {
+                throw;
+            }
+        }
+
         /// <summary>
         /// Sends a GET request to receive a new model with fetched data.
         /// </summary>
