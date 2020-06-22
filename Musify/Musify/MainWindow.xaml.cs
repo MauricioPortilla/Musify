@@ -28,6 +28,10 @@ namespace Musify {
             Session.PlayerPage = new PlayerPage();
             playerFrame.Navigate(Session.PlayerPage);
             LoadConfiguration();
+            if (Session.Account.Subscription != null) {
+                subscribeButton.IsEnabled = false;
+                subscribeButton.Content = "Suscrito";
+            }
         }
 
         public void LoadConfiguration() {
@@ -76,7 +80,7 @@ namespace Musify {
                     int configurationPlayer = binaryReader.ReadInt32();
                     switch (configurationPlayer) {
                         case 0:
-                            Session.SongStreamingQuality = "automaticQuality";
+                            Session.SongStreamingQuality = "automaticquality";
                             break;
                         case 1:
                             Session.SongStreamingQuality = "lowquality";
@@ -149,8 +153,8 @@ namespace Musify {
                 songsId.Add(Session.PlayerPage.LatestSongPlayed.SongId);
             }
             int start = 0;
-            if (songsId.Count > 50) {
-                start = songsId.Count - 50;
+            if (songsId.Count > Core.MAX_SONGS_IN_HISTORY) {
+                start = songsId.Count - Core.MAX_SONGS_IN_HISTORY;
             }
             FileStream fileStream = new FileStream(file, FileMode.Create);
             BinaryWriter binaryWriter = new BinaryWriter(fileStream);
@@ -197,6 +201,24 @@ namespace Musify {
             }
             binaryWriter.Close();
             fileStream.Close();
+        }
+
+        /// <summary>
+        /// Attempts to subscribe.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
+        private void SubscribeButton_Click(object sender, RoutedEventArgs e) {
+            var messageDialog = MessageBox.Show("¿Desea suscribirse?", "Confirmar", MessageBoxButton.YesNo);
+            if (messageDialog == MessageBoxResult.Yes) {
+                Session.Account.Subscribe((subscription) => {
+                    MessageBox.Show("Cuenta suscrita.");
+                }, () => {
+                    MessageBox.Show("Ocurrió un error al intentar suscribirse.");
+                }, () => {
+                    MessageBox.Show("Ocurrió un error al intentar suscribirse.");
+                });
+            }
         }
     }
 }

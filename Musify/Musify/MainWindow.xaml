@@ -28,7 +28,7 @@
                     <TextBlock x:Name="TitleBar" VerticalAlignment="Center" FontSize="16" Text="Menú principal"/>
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Width="119">
-                    <Button x:Name="subscribeButton" Content="Suscribirse" HorizontalAlignment="Right" VerticalAlignment="Top" Width="114"/>
+                    <Button x:Name="subscribeButton" Content="Suscribirse" HorizontalAlignment="Right" VerticalAlignment="Top" Width="114" Click="SubscribeButton_Click"/>
                 </StackPanel>
             </Grid>
         </materialDesign:ColorZone>

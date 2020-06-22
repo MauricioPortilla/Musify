@@ -66,6 +66,11 @@ namespace Musify {
             get => likedSongs;
             set => likedSongs = value;
         }
+        private Subscription subscription;
+        public Subscription Subscription {
+            get => subscription;
+            set => subscription = value;
+        }
 
         /// <summary>
         /// Creates a new instance.
@@ -372,6 +377,43 @@ namespace Musify {
             } catch (Exception exception) {
                 Console.WriteLine("Exception@Account->DislikeSong() -> " + exception.Message);
                 onFailure();
+            }
+        }
+
+        public void FetchSubscription(Action<Subscription> onSuccess, Action onFailure, Action onError) {
+            try {
+                RestSharpTools.GetAsync<Subscription>("/subscription", null, Subscription.JSON_EQUIVALENTS, (response) => {
+                    if (response.IsSuccessful) {
+                        onSuccess(response.Data);
+                        return;
+                    }
+                    onFailure?.Invoke();
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Account->FetchSubscription() -> " + exception.Message);
+                onError?.Invoke();
+            }
+        }
+
+        /// <summary>
+        /// Gets a new subscription.
+        /// </summary>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
+        /// <param name="onError">On error</param>
+        public void Subscribe(Action<Subscription> onSuccess, Action onFailure, Action onError) {
+            try {
+                RestSharpTools.PostAsync<Subscription>("/subscription", null, Subscription.JSON_EQUIVALENTS, (response) => {
+                    if (response.IsSuccessful) {
+                        subscription = response.Data;
+                        onSuccess(response.Data);
+                        return;
+                    }
+                    onFailure?.Invoke();
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Account->Subscribe() -> " + exception.Message);
+                onError?.Invoke();
             }
         }
     }

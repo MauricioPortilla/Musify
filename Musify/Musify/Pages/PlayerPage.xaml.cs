@@ -278,8 +278,25 @@ namespace Musify.Pages {
                         SetPlayerData(reader);
                     }
                 }
+            } else {
+                List<int> songsIdPlayHistory = Session.SongsIdPlayHistory;
+                if (songsIdPlayHistory.Count > 0) {
+                    try {
+                        // TODO: Check if next song in queue is an account song and play it.
+                        Song.FetchById(songsIdPlayHistory.Last(), (song) => {
+                            Session.PlayerPage.PlaySong(song);
+                            if (Session.MainFrame.ToString().Split('/').Last().Equals("PlayHistoryPage.xaml")) {
+                                PlayHistoryPage currentPage = Session.MainFrame.Content as PlayHistoryPage;
+                                currentPage.LoadPlayHistory();
+                            }
+                        }, () => {
+                            MessageBox.Show("Ocurrió un error al cargar la canción.");
+                        });
+                    } catch (Exception) {
+                        MessageBox.Show("Ocurrió un error al cargar la canción.");
+                    }
+                }
             }
-            // TODO: Go to previous song functionality
         }
 
         /// <summary>
@@ -319,6 +336,7 @@ namespace Musify.Pages {
             List<int> songsIdPlayQueue = Session.SongsIdPlayQueue;
             if (songsIdPlayQueue.Count > 0) {
                 try {
+                    // TODO: Check if next song in queue is an account song and play it.
                     Song.FetchById(songsIdPlayQueue.ElementAt(0), (song) => {
                         Session.PlayerPage.PlaySong(song);
                         Session.SongsIdPlayQueue.RemoveAt(0);

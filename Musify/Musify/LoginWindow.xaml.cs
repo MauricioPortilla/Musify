@@ -63,6 +63,9 @@ namespace Musify {
             try {
                 Account.Login(emailTextBox.Text, passwordPasswordBox.Password, (account) => {
                     Session.Account = account;
+                    Session.Account.FetchSubscription((subscription) => {
+                        Session.Account.Subscription = subscription;
+                    }, null, null);
                     Session.Account.FetchArtist(() => {
                         new MainWindow().Show();
                         Close();

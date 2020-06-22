@@ -91,6 +91,11 @@ namespace Musify.Pages {
         /// <param name="sender">ToggleButton</param>
         /// <param name="e">Event</param>
         private void DownloadToggleButton_Checked(object sender, RoutedEventArgs e) {
+            if (Session.Account.Subscription == null) {
+                MessageBox.Show("No tienes una suscripción activa.");
+                downloadToggleButton.IsChecked = false;
+                return;
+            }
             foreach (var song in playlist.Songs) {
                 try {
                     if (!File.Exists(App.DATA_DOWNLOADS_DIRECTORY + "/" + song.SongId + ".bin")) {
