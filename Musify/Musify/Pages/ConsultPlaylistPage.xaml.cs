@@ -83,6 +83,10 @@ namespace Musify.Pages {
         /// <param name="e">Event</param>
         private void SongsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
             UIFunctions.SongTable_OnDoubleClick(sender, e);
+            Session.SongsIdSongList.Clear();
+            for (int i = songsDataGrid.SelectedIndex + 1; i < songsObservableCollection.Count; i++) {
+                Session.SongsIdSongList.Add(songsObservableCollection.ElementAt(i).Song.SongId);
+            }
         }
 
         /// <summary>

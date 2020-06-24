@@ -268,7 +268,9 @@ namespace Musify.Models {
                             Genre.FetchById(song.GenreId, (genre) => {
                                 song.Genre = genre;
                                 song.FetchArtists(() => {
-                                    onSuccess();
+                                    if (song.SongId == songs.Last().SongId) {
+                                        onSuccess();
+                                    }
                                 }, null);
                             }, null);
                         }

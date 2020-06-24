@@ -13,10 +13,10 @@
             <Button x:Name="deletePlayQueueButton" Content="Eliminar cola" HorizontalAlignment="Right" Width="120" VerticalAlignment="Top" Visibility="Hidden" Click="DeletePlayQueueButton_Click"/>
             <Menu x:Name="optionsMenu" Height="30" Background="Gray" BorderThickness="0" Margin="10,0,0,0" Visibility="Hidden">
                 <MenuItem Header="..." Height="30" Background="Gray" BorderThickness="0" Foreground="White" FontSize="12">
-                    <MenuItem Header="Agregar a la cola" Background="Gray" Click="AddToQueueMenuItem_Click"/>
-                    <MenuItem Header="Agregar a una lista de reproducción" Background="Gray" Click="AddToPlaylistMenuItem_Click"/>
-                    <MenuItem Header="Generar estación de radio" Background="Gray" Click="GenerateRadioStationMenuItem_Click"/>
-                    <MenuItem Header="Eliminar canción de la cola" Background="Gray" Click="RemoveFromQueueMenuItem_Click"/>
+                    <MenuItem x:Name="addToQueueMenuItem" Header="Agregar a la cola" Background="Gray" Click="AddToQueueMenuItem_Click"/>
+                    <MenuItem x:Name="addToPlaylistMenuItem" Header="Agregar a una lista de reproducción" Background="Gray" Click="AddToPlaylistMenuItem_Click" Visibility="Collapsed"/>
+                    <MenuItem x:Name="generateRadioStationMenuItem" Header="Generar estación de radio" Background="Gray" Click="GenerateRadioStationMenuItem_Click" Visibility="Collapsed"/>
+                    <MenuItem x:Name="removeFromQueueMenuItem" Header="Eliminar canción de la cola" Background="Gray" Click="RemoveFromQueueMenuItem_Click"/>
                 </MenuItem>
             </Menu>
         </StackPanel>

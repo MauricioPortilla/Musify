@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static Musify.Models.AccountSong;
 using static Musify.Models.Song;
 
 namespace Musify.Pages {
@@ -22,8 +23,8 @@ namespace Musify.Pages {
     /// Lógica de interacción para PlayQueuePage.xaml
     /// </summary>
     public partial class PlayQueuePage : Page {
-        private readonly ObservableCollection<SongTable> songsPlayQueue = new ObservableCollection<SongTable>();
-        public ObservableCollection<SongTable> SongsPlayQueue {
+        private readonly ObservableCollection<object> songsPlayQueue = new ObservableCollection<object>();
+        public ObservableCollection<object> SongsPlayQueue {
             get => songsPlayQueue;
         }
 
@@ -35,7 +36,13 @@ namespace Musify.Pages {
 
         public void LoadPlayQueue() {
             songsPlayQueue.Clear();
-            List<int> songsIdPlayQueue = Session.SongsIdPlayQueue;
+            List<int> songsIdPlayQueue = new List<int>();
+            foreach (int songId in Session.SongsIdPlayQueue) {
+                songsIdPlayQueue.Add(songId);
+            }
+            foreach (int songId in Session.SongsIdSongList) {
+                songsIdPlayQueue.Add(songId);
+            }
             if (songsIdPlayQueue.Count > 0) {
                 deletePlayQueueButton.Visibility = Visibility.Visible;
             } else {
@@ -46,26 +53,47 @@ namespace Musify.Pages {
 
         public void LoadSong(int i, int limit, List<int> songsIdPlayQueue) {
             if (i < limit) {
-                Song.FetchById(songsIdPlayQueue.ElementAt(i), (song) => {
-                    SongsPlayQueue.Add(new SongTable {
-                        Song = song,
-                        Title = song.Title,
-                        ArtistsNames = song.GetArtistsNames(),
-                        Album = song.Album,
-                        Genre = song.Genre,
-                        Duration = song.Duration
+                if (songsIdPlayQueue.ElementAt(i) > 0) {
+                    Song.FetchById(songsIdPlayQueue.ElementAt(i), (song) => {
+                        SongsPlayQueue.Add(new SongTable {
+                            Song = song,
+                            Title = song.Title,
+                            ArtistsNames = song.GetArtistsNames(),
+                            Album = song.Album,
+                            Genre = song.Genre,
+                            Duration = song.Duration
+                        });
+                        LoadSong(i + 1, limit, songsIdPlayQueue);
+                    }, () => {
+                        MessageBox.Show("Ocurrió un error al cargar las canciones.");
                     });
-                    LoadSong(i + 1, limit, songsIdPlayQueue);
-                }, () => {
-                    MessageBox.Show("Ocurrió un error al cargar las canciones.");
-                });
+                } else {
+                    AccountSong.FetchById(songsIdPlayQueue.ElementAt(i) * -1, (accountSong) => {
+                        SongsPlayQueue.Add(new AccountSongTable {
+                            AccountSong = accountSong,
+                            Title = accountSong.Title,
+                            Duration = accountSong.Duration
+                        });
+                        LoadSong(i + 1, limit, songsIdPlayQueue);
+                    }, () => {
+                        MessageBox.Show("Ocurrió un error al cargar las canciones.");
+                    });
+                }
             }
         }
 
         private void PlayQueueDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
-            UIFunctions.SongTable_OnDoubleClick(sender, e);
+            if (playQueueDataGrid.SelectedItem is SongTable) {
+                UIFunctions.SongTable_OnDoubleClick(sender, e);
+            } else {
+                UIFunctions.AccountSongTable_OnDoubleClick(sender, e);
+            }
             for (int i = 0; i <= playQueueDataGrid.SelectedIndex; i++) {
-                Session.SongsIdPlayQueue.RemoveAt(0);
+                if (Session.SongsIdPlayQueue.Count > 0) {
+                    Session.SongsIdPlayQueue.RemoveAt(0);
+                } else {
+                    Session.SongsIdSongList.RemoveAt(0);
+                }
             }
             LoadPlayQueue();
         }
@@ -73,8 +101,17 @@ namespace Musify.Pages {
         private void PlayQueueDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             if (playQueueDataGrid.SelectedIndex >= 0) {
                 optionsMenu.Visibility = Visibility.Visible;
+                if (playQueueDataGrid.SelectedItem is SongTable) {
+                    addToPlaylistMenuItem.Visibility = Visibility.Visible;
+                    generateRadioStationMenuItem.Visibility = Visibility.Visible;
+                } else {
+                    addToPlaylistMenuItem.Visibility = Visibility.Collapsed;
+                    generateRadioStationMenuItem.Visibility = Visibility.Collapsed;
+                }
             } else {
                 optionsMenu.Visibility = Visibility.Hidden;
+                addToPlaylistMenuItem.Visibility = Visibility.Collapsed;
+                generateRadioStationMenuItem.Visibility = Visibility.Collapsed;
             }
         }
 

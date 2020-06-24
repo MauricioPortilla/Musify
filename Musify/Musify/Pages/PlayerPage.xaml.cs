@@ -49,6 +49,10 @@ namespace Musify.Pages {
         /// Stores the latest account song played.
         /// </summary>
         private AccountSong latestAccountSongPlayed;
+        public AccountSong LatestAccountSongPlayed {
+            get => latestAccountSongPlayed;
+            set => latestAccountSongPlayed = value;
+        }
         /// <summary>
         /// Checks if player was stopped or not.
         /// </summary>
@@ -113,6 +117,9 @@ namespace Musify.Pages {
         /// </summary>
         /// <param name="accountSong">Account song to play</param>
         public void PlayAccountSong(AccountSong accountSong) {
+            if (latestAccountSongPlayed != null) {
+                Session.SongsIdPlayHistory.Add(latestAccountSongPlayed.AccountSongId * -1);
+            }
             latestSongPlayed = null;
             if (latestAccountSongPlayed != null && latestAccountSongPlayed.AccountSongId == accountSong.AccountSongId) {
                 PlayMemoryStream(new MemoryStream(latestStream.ToArray()));

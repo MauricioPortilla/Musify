@@ -54,7 +54,11 @@ namespace Musify {
             if (fileExplorer.ShowDialog() == Forms.DialogResult.OK) {
                 selectedSong = fileExplorer.FileNames[0];
                 songNameTextBlock.Text = selectedSong.Split('\\').Last();
-                songNameTextBox.Text = songNameTextBlock.Text.Split('.').First();
+                if (songNameTextBlock.Text.Split('.').First().Length > 255) {
+                    songNameTextBox.Text = songNameTextBlock.Text.Split('.').First().Substring(0,255);
+                } else {
+                    songNameTextBox.Text = songNameTextBlock.Text.Split('.').First();
+                }
             }
         }
 

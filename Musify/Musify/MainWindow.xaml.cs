@@ -151,6 +151,10 @@ namespace Musify {
             List<int> songsId = Session.SongsIdPlayHistory;
             if (Session.PlayerPage.LatestSongPlayed != null) {
                 songsId.Add(Session.PlayerPage.LatestSongPlayed.SongId);
+            } else {
+                if (Session.PlayerPage.LatestAccountSongPlayed != null) {
+                    songsId.Add(Session.PlayerPage.LatestAccountSongPlayed.AccountSongId * -1);
+                }
             }
             int start = 0;
             if (songsId.Count > Core.MAX_SONGS_IN_HISTORY) {

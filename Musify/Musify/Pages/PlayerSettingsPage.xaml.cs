@@ -26,13 +26,13 @@ namespace Musify.Pages {
         public void LoadPlayerSettings() {
             string songStreamingQuality = Session.SongStreamingQuality;
             switch (songStreamingQuality) {
-                case "lowQuality":
+                case "lowquality":
                     lowCheckBox.IsChecked = true;
                     break;
-                case "mediumQuality":
+                case "mediumquality":
                     mediumCheckBox.IsChecked = true;
                     break;
-                case "highQuality":
+                case "highquality":
                     highCheckBox.IsChecked = true;
                     break;
                 default:

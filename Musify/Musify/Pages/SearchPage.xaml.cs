@@ -110,6 +110,7 @@ namespace Musify.Pages {
         /// <param name="e">Event</param>
         private void SongsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
             UIFunctions.SongTable_OnDoubleClick(sender, e);
+            Session.SongsIdSongList.Clear();
         }
 
         /// <summary>

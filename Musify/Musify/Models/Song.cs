@@ -140,9 +140,9 @@ namespace Musify.Models {
         /// <param name="SongId">Song ID</param>
         /// <param name="onSuccess">On success</param>
         /// <param name="onFailure">On failure</param>
-        public static void FetchById(int SongId, Action<Song> onSuccess, Action onFailure) {
+        public static void FetchById(int songId, Action<Song> onSuccess, Action onFailure) {
             try {
-                RestSharpTools.GetAsync<Song>("/song/" + SongId, null, JSON_EQUIVALENTS, (response) => {
+                RestSharpTools.GetAsync<Song>("/song/" + songId, null, JSON_EQUIVALENTS, (response) => {
                     if (response.IsSuccessful) {
                         Album.FetchById(response.Data.albumId, (album) => {
                             response.Data.album = album;

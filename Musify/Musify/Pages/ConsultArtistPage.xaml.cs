@@ -116,6 +116,10 @@ namespace Musify.Pages {
             albumSongsDataGrid.IsReadOnly = true;
             albumSongsDataGrid.MouseDoubleClick += (sender, e) => {
                 UIFunctions.SongTable_OnDoubleClick(sender, e);
+                Session.SongsIdSongList.Clear();
+                for (int i = albumSongsDataGrid.SelectedIndex + 1; i < albumSongsList.Count; i++) {
+                    Session.SongsIdSongList.Add(albumSongsList.ElementAt(i).Song.SongId);
+                }
             };
             Dictionary<string, string> columns = new Dictionary<string, string>() {
                 { "Title", "Title" }, { "Duration", "Duración" }

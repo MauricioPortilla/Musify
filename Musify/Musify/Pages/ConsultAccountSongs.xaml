@@ -30,6 +30,7 @@
                     Header="Duración"/>
             </DataGrid.Columns>
         </DataGrid>
+        <Button x:Name="addToQueueButton" Content="Agregar a la cola" HorizontalAlignment="Right" Margin="0,0,360,15" VerticalAlignment="Bottom" Width="148" Click="AddToQueueButton_Click"/>
         <Button x:Name="addSongButton" Content="Agregar canción" HorizontalAlignment="Right" Margin="0,0,197,15" VerticalAlignment="Bottom" Width="148" Click="AddSongButton_Click"/>
         <Button x:Name="deleteSongButton" Content="Eliminar canción" HorizontalAlignment="Right" Margin="0,0,34,15" VerticalAlignment="Bottom" Width="148" Click="DeleteSongButton_Click"/>
     </Grid>

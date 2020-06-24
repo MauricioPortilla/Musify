@@ -40,6 +40,7 @@ namespace Musify.Pages {
 
         private void LoadSongs(Album album) {
             album.FetchSongs(() => {
+                albumSongs.Clear();
                 foreach (Song albumSong in album.Songs) {
                     AlbumSongs.Add(new SongTable {
                         Song = albumSong,
@@ -57,6 +58,10 @@ namespace Musify.Pages {
 
         private void SongsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
             UIFunctions.SongTable_OnDoubleClick(sender, e);
+            Session.SongsIdSongList.Clear();
+            for (int i = songsDataGrid.SelectedIndex + 1; i < albumSongs.Count; i++) {
+                Session.SongsIdSongList.Add(albumSongs.ElementAt(i).Song.SongId);
+            }
         }
 
         private void SongsDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) {

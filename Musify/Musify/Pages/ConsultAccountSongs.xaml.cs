@@ -62,6 +62,24 @@ namespace Musify.Pages {
         /// <param name="e">Event</param>
         private void AccountSongsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
             UIFunctions.AccountSongTable_OnDoubleClick(sender, e);
+            Session.SongsIdSongList.Clear();
+            for (int i = accountSongsDataGrid.SelectedIndex + 1; i < accountSongList.Count; i++) {
+                Session.SongsIdSongList.Add(accountSongList.ElementAt(i).AccountSong.AccountSongId * -1);
+            }
+        }
+
+        /// <summary>
+        /// Adds the selected account song to the queue.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
+        private void AddToQueueButton_Click(object sender, RoutedEventArgs e) {
+            if (accountSongsDataGrid.SelectedItem == null) {
+                MessageBox.Show("Debes seleccionar una canción de la lista.");
+                return;
+            }
+            Session.SongsIdPlayQueue.Add(((AccountSongTable)accountSongsDataGrid.SelectedItem).AccountSong.AccountSongId * -1);
+            accountSongsDataGrid.SelectedIndex = -1;
         }
 
         /// <summary>

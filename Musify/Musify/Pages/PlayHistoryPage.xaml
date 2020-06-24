@@ -12,9 +12,9 @@
         <StackPanel Margin="0,10,10,0" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
             <Menu x:Name="optionsMenu" Height="30" Background="Gray" BorderThickness="0" Visibility="Hidden">
                 <MenuItem Header="..." Height="30" Background="Gray" BorderThickness="0" Foreground="White" FontSize="12">
-                    <MenuItem Header="Agregar a la cola" Background="Gray" Click="AddToQueueMenuItem_Click"/>
-                    <MenuItem Header="Agregar a una lista de reproducción" Background="Gray" Click="AddToPlaylistMenuItem_Click"/>
-                    <MenuItem Header="Generar estación de radio" Background="Gray" Click="GenerateRadioStationMenuItem_Click"/>
+                    <MenuItem x:Name="addToQueueMenuItem" Header="Agregar a la cola" Background="Gray" Click="AddToQueueMenuItem_Click"/>
+                    <MenuItem x:Name="addToPlaylistMenuItem" Header="Agregar a una lista de reproducción" Background="Gray" Click="AddToPlaylistMenuItem_Click" Visibility="Collapsed"/>
+                    <MenuItem x:Name="generateRadioStationMenuItem" Header="Generar estación de radio" Background="Gray" Click="GenerateRadioStationMenuItem_Click" Visibility="Collapsed"/>
                 </MenuItem>
             </Menu>
         </StackPanel>

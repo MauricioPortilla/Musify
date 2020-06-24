@@ -64,5 +64,27 @@ namespace Musify.Models {
             public string Title { get; set; }
             public string Duration { get; set; }
         }
+
+        /// <summary>
+        /// Fetches a account song by its ID.
+        /// </summary>
+        /// <param name="SongId">Song ID</param>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
+        public static void FetchById(int accountSongId, Action<AccountSong> onSuccess, Action onFailure) {
+            try {
+                RestSharpTools.GetAsync<AccountSong>("/account/" + Session.Account.AccountId + "/accountsong/" + accountSongId, null, JSON_EQUIVALENTS, (response) => {
+                    if (response.IsSuccessful) {
+                        onSuccess(response.Data);
+                    } else {
+                        onFailure();
+                    }
+                });
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@Song->FetchById() -> " + exception.Message);
+                //onFailure?.Invoke();
+                throw;
+            }
+        }
     }
 }

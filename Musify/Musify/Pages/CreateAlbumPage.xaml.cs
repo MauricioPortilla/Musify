@@ -126,8 +126,14 @@ namespace Musify.Pages {
                 Songs = songsList.ToList()
             };
             album.Save(() => {
-                MessageBox.Show("Se creó el álbum con éxito.");
-                Session.MainFrame.Source = new Uri("Pages/PlaylistsPage.xaml", UriKind.RelativeOrAbsolute);
+                albumNameTextBox.Text = "";
+                discographyTextBox.Text = "";
+                launchYearComboBox.Text = "";
+                imageNameTextBlock.Text = "";
+                artistSearchTextBox.Text = "";
+                artistsList.Clear();
+                songsList.Clear();
+                MessageBox.Show("Se creó el álbum con éxito. Las canciones se están procesando.");
             }, () => {
                 MessageBox.Show("Ocurrió un error al crear el álbum.");
             });
