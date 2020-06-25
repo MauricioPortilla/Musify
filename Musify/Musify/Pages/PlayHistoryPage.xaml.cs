@@ -1,4 +1,5 @@
-﻿using Musify.Models;
+﻿using MaterialDesignThemes.Wpf;
+using Musify.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -22,6 +23,7 @@ namespace Musify.Pages {
     /// Lógica de interacción para PlayHistoryPage.xaml
     /// </summary>
     public partial class PlayHistoryPage : Page {
+        private DialogOpenedEventArgs dialogOpenEventArgs;
         private readonly ObservableCollection<object> songsPlayHistory = new ObservableCollection<object>();
         public ObservableCollection<object> SongsPlayHistory {
             get => songsPlayHistory;
@@ -36,15 +38,15 @@ namespace Musify.Pages {
         public void LoadPlayHistory() {
             songsPlayHistory.Clear();
             List<int> songsIdPlayHistory = Session.SongsIdPlayHistory;
-            int limit = 0;
+            /*int limit = 0;
             if (songsIdPlayHistory.Count > Core.MAX_SONGS_IN_HISTORY) {
                 limit = songsIdPlayHistory.Count - Core.MAX_SONGS_IN_HISTORY;
-            }
-            LoadSong(songsIdPlayHistory.Count - 1, limit, songsIdPlayHistory);
+            }*/
+            LoadSong(songsIdPlayHistory.Count - 1, songsIdPlayHistory);
         }
 
-        public void LoadSong(int i, int limit, List<int> songsIdPlayHistory) {
-            if (i >= limit) {
+        public void LoadSong(int i, List<int> songsIdPlayHistory) {
+            if (i >= 0) {
                 if (songsIdPlayHistory.ElementAt(i) > 0) {
                     Song.FetchById(songsIdPlayHistory.ElementAt(i), (song) => {
                         SongsPlayHistory.Add(new SongTable {
@@ -55,7 +57,7 @@ namespace Musify.Pages {
                             Genre = song.Genre,
                             Duration = song.Duration
                         });
-                        LoadSong(i - 1, limit, songsIdPlayHistory);
+                        LoadSong(i - 1, songsIdPlayHistory);
                     }, () => {
                         MessageBox.Show("Ocurrió un error al cargar las canciones.");
                     });
@@ -66,7 +68,7 @@ namespace Musify.Pages {
                             Title = accountSong.Title,
                             Duration = accountSong.Duration
                         });
-                        LoadSong(i - 1, limit, songsIdPlayHistory);
+                        LoadSong(i - 1, songsIdPlayHistory);
                     }, () => {
                         MessageBox.Show("Ocurrió un error al cargar las canciones.");
                     });
@@ -75,6 +77,7 @@ namespace Musify.Pages {
         }
 
         private void PlayHistoryDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
+            Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
             if (playHistoryDataGrid.SelectedItem is SongTable) {
                 UIFunctions.SongTable_OnDoubleClick(sender, e);
             } else {
@@ -102,8 +105,35 @@ namespace Musify.Pages {
         }
 
         private void AddToQueueMenuItem_Click(object sender, RoutedEventArgs e) {
-            Session.SongsIdPlayQueue.Add(((SongTable)playHistoryDataGrid.SelectedItem).Song.SongId);
+            DialogHost.Show(mainStackPanel, "PlayHistoryPage_WindowDialogHost", (openSender, openEventArgs) => {
+                dialogOpenEventArgs = openEventArgs;
+                dialogAddToQueueGrid.Visibility = Visibility.Visible;
+            }, null);
+        }
+
+        private void AddToBelowButton_Click(object sender, RoutedEventArgs e) {
+            List<int> songsIdPlayQueue = new List<int>();
+            if (playHistoryDataGrid.SelectedItem is SongTable) {
+                songsIdPlayQueue.Add(((SongTable)playHistoryDataGrid.SelectedItem).Song.SongId);
+            } else {
+                songsIdPlayQueue.Add(((AccountSongTable)playHistoryDataGrid.SelectedItem).AccountSong.AccountSongId * -1);
+            }
+            songsIdPlayQueue.AddRange(Session.SongsIdPlayQueue);
+            Session.SongsIdPlayQueue = songsIdPlayQueue;
             playHistoryDataGrid.SelectedIndex = -1;
+            dialogOpenEventArgs.Session.Close(true);
+            dialogAddToQueueGrid.Visibility = Visibility.Collapsed;
+        }
+
+        private void AddToTheEndButton_Click(object sender, RoutedEventArgs e) {
+            if (playHistoryDataGrid.SelectedItem is SongTable) {
+                Session.SongsIdPlayQueue.Add(((SongTable)playHistoryDataGrid.SelectedItem).Song.SongId);
+            } else {
+                Session.SongsIdPlayQueue.Add(((AccountSongTable)playHistoryDataGrid.SelectedItem).AccountSong.AccountSongId * -1);
+            }
+            playHistoryDataGrid.SelectedIndex = -1;
+            dialogOpenEventArgs.Session.Close(true);
+            dialogAddToQueueGrid.Visibility = Visibility.Collapsed;
         }
 
         private void AddToPlaylistMenuItem_Click(object sender, RoutedEventArgs e) {

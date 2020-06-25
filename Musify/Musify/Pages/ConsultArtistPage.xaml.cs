@@ -115,6 +115,7 @@ namespace Musify.Pages {
             albumSongsDataGrid.AutoGenerateColumns = false;
             albumSongsDataGrid.IsReadOnly = true;
             albumSongsDataGrid.MouseDoubleClick += (sender, e) => {
+                Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
                 UIFunctions.SongTable_OnDoubleClick(sender, e);
                 Session.SongsIdSongList.Clear();
                 for (int i = albumSongsDataGrid.SelectedIndex + 1; i < albumSongsList.Count; i++) {

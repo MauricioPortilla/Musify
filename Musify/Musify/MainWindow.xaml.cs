@@ -69,6 +69,7 @@ namespace Musify {
                 binaryReader.Close();
                 fileStream.Close();
             }
+            Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
         }
 
         public void LoadConfigurationPlayer() {
@@ -150,20 +151,22 @@ namespace Musify {
             string file = App.DATA_SONGS_DIRECTORY + "/playHistory" + Session.Account.AccountId;
             List<int> songsId = Session.SongsIdPlayHistory;
             if (Session.PlayerPage.LatestSongPlayed != null) {
+                if (Session.SongsIdPlayHistory.Count == Core.MAX_SONGS_IN_HISTORY) {
+                    Session.SongsIdPlayHistory.RemoveAt(0);
+                }
                 songsId.Add(Session.PlayerPage.LatestSongPlayed.SongId);
             } else {
                 if (Session.PlayerPage.LatestAccountSongPlayed != null) {
+                    if (Session.SongsIdPlayHistory.Count == Core.MAX_SONGS_IN_HISTORY) {
+                        Session.SongsIdPlayHistory.RemoveAt(0);
+                    }
                     songsId.Add(Session.PlayerPage.LatestAccountSongPlayed.AccountSongId * -1);
                 }
             }
-            int start = 0;
-            if (songsId.Count > Core.MAX_SONGS_IN_HISTORY) {
-                start = songsId.Count - Core.MAX_SONGS_IN_HISTORY;
-            }
             FileStream fileStream = new FileStream(file, FileMode.Create);
             BinaryWriter binaryWriter = new BinaryWriter(fileStream);
-            for (int i = start; i < songsId.Count; i++) {
-                binaryWriter.Write(songsId.ElementAt(i));
+            foreach (int songId in songsId) {
+                binaryWriter.Write(songId);
             }
             binaryWriter.Close();
             fileStream.Close();

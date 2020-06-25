@@ -1,4 +1,5 @@
-﻿using Musify.Models;
+﻿using MaterialDesignThemes.Wpf;
+using Musify.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -24,6 +25,7 @@ namespace Musify.Pages {
     /// </summary>
     public partial class SearchPage : Page {
 
+        private DialogOpenedEventArgs dialogOpenEventArgs;
         private readonly ObservableCollection<SongTable> songList = new ObservableCollection<SongTable>();
         public ObservableCollection<SongTable> SongList {
             get => songList;
@@ -109,20 +111,51 @@ namespace Musify.Pages {
         /// <param name="sender">DataGrid</param>
         /// <param name="e">Event</param>
         private void SongsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
+            Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
             UIFunctions.SongTable_OnDoubleClick(sender, e);
             Session.SongsIdSongList.Clear();
         }
 
         /// <summary>
-        /// Adds the selected song to the queue.
+        /// Opens up a dialog to add to play queue.
         /// </summary>
         /// <param name="sender">Button</param>
         /// <param name="e">Event</param>
         private void AddToQueueButton_Click(object sender, RoutedEventArgs e) {
-            if (songsDataGrid.SelectedItem != null) {
-                Session.SongsIdPlayQueue.Add(((SongTable)songsDataGrid.SelectedItem).Song.SongId);
-                songsDataGrid.SelectedIndex = -1;
+            if (songsDataGrid.SelectedItem == null) {
+                MessageBox.Show("Debes seleccionar una canción de la lista.");
+                return;
             }
+            DialogHost.Show(mainStackPanel, "SearchPage_WindowDialogHost", (openSender, openEventArgs) => {
+                dialogOpenEventArgs = openEventArgs;
+                dialogAddToQueueGrid.Visibility = Visibility.Visible;
+            }, null);
+        }
+
+        /// <summary>
+        /// Adds the selected song to the beginning of the queue.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
+        private void AddToBelowButton_Click(object sender, RoutedEventArgs e) {
+            List<int> songsIdPlayQueue = new List<int> { ((SongTable)songsDataGrid.SelectedItem).Song.SongId };
+            songsIdPlayQueue.AddRange(Session.SongsIdPlayQueue);
+            Session.SongsIdPlayQueue = songsIdPlayQueue;
+            songsDataGrid.SelectedIndex = -1;
+            dialogOpenEventArgs.Session.Close(true);
+            dialogAddToQueueGrid.Visibility = Visibility.Collapsed;
+        }
+
+        /// <summary>
+        /// Adds the selected song to the end of the queue.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
+        private void AddToTheEndButton_Click(object sender, RoutedEventArgs e) {
+            Session.SongsIdPlayQueue.Add(((SongTable)songsDataGrid.SelectedItem).Song.SongId);
+            songsDataGrid.SelectedIndex = -1;
+            dialogOpenEventArgs.Session.Close(true);
+            dialogAddToQueueGrid.Visibility = Visibility.Collapsed;
         }
 
         /// <summary>

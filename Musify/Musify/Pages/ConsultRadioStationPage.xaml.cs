@@ -1,4 +1,5 @@
-﻿using Musify.Models;
+﻿using MaterialDesignThemes.Wpf;
+using Musify.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -21,6 +22,7 @@ namespace Musify.Pages {
     /// Lógica de interacción para ConsultRadioStationPage.xaml
     /// </summary>
     public partial class ConsultRadioStationPage : Page {
+        private DialogOpenedEventArgs dialogOpenEventArgs;
         private Genre genre;
         private ObservableCollection<SongTable> songsRadioStation = new ObservableCollection<SongTable>();
         public ObservableCollection<SongTable> SongsRadioStation {
@@ -55,6 +57,7 @@ namespace Musify.Pages {
         }
 
         private void SongsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
+            Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
             UIFunctions.SongTable_OnDoubleClick(sender, e);
             Session.SongsIdSongList.Clear();
             for (int i = songsDataGrid.SelectedIndex + 1; i < songsRadioStation.Count; i++) {
@@ -78,8 +81,26 @@ namespace Musify.Pages {
         }
 
         private void AddToQueueMenuItem_Click(object sender, RoutedEventArgs e) {
+            DialogHost.Show(mainStackPanel, "ConsultRadioStationPage_WindowDialogHost", (openSender, openEventArgs) => {
+                dialogOpenEventArgs = openEventArgs;
+                dialogAddToQueueGrid.Visibility = Visibility.Visible;
+            }, null);
+        }
+
+        private void AddToBelowButton_Click(object sender, RoutedEventArgs e) {
+            List<int> songsIdPlayQueue = new List<int> { ((SongTable)songsDataGrid.SelectedItem).Song.SongId };
+            songsIdPlayQueue.AddRange(Session.SongsIdPlayQueue);
+            Session.SongsIdPlayQueue = songsIdPlayQueue;
+            songsDataGrid.SelectedIndex = -1;
+            dialogOpenEventArgs.Session.Close(true);
+            dialogAddToQueueGrid.Visibility = Visibility.Collapsed;
+        }
+
+        private void AddToTheEndButton_Click(object sender, RoutedEventArgs e) {
             Session.SongsIdPlayQueue.Add(((SongTable)songsDataGrid.SelectedItem).Song.SongId);
             songsDataGrid.SelectedIndex = -1;
+            dialogOpenEventArgs.Session.Close(true);
+            dialogAddToQueueGrid.Visibility = Visibility.Collapsed;
         }
 
         private void AddToPlaylistMenuItem_Click(object sender, RoutedEventArgs e) {

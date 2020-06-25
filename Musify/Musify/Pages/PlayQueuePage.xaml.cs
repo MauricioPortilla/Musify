@@ -23,6 +23,7 @@ namespace Musify.Pages {
     /// Lógica de interacción para PlayQueuePage.xaml
     /// </summary>
     public partial class PlayQueuePage : Page {
+        private DialogOpenedEventArgs dialogOpenEventArgs;
         private readonly ObservableCollection<object> songsPlayQueue = new ObservableCollection<object>();
         public ObservableCollection<object> SongsPlayQueue {
             get => songsPlayQueue;
@@ -83,6 +84,7 @@ namespace Musify.Pages {
         }
 
         private void PlayQueueDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
+            Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
             if (playQueueDataGrid.SelectedItem is SongTable) {
                 UIFunctions.SongTable_OnDoubleClick(sender, e);
             } else {
@@ -121,8 +123,35 @@ namespace Musify.Pages {
         }
 
         private void AddToQueueMenuItem_Click(object sender, RoutedEventArgs e) {
-            Session.SongsIdPlayQueue.Add(((SongTable)playQueueDataGrid.SelectedItem).Song.SongId);
+            DialogHost.Show(mainStackPanel, "PlayQueuePage_WindowDialogHost", (openSender, openEventArgs) => {
+                dialogOpenEventArgs = openEventArgs;
+                dialogAddToQueueGrid.Visibility = Visibility.Visible;
+            }, null);
+        }
+
+        private void AddToBelowButton_Click(object sender, RoutedEventArgs e) {
+            List<int> songsIdPlayQueue = new List<int>();
+            if (playQueueDataGrid.SelectedItem is SongTable) {
+                songsIdPlayQueue.Add(((SongTable)playQueueDataGrid.SelectedItem).Song.SongId);
+            } else {
+                songsIdPlayQueue.Add(((AccountSongTable)playQueueDataGrid.SelectedItem).AccountSong.AccountSongId * -1);
+            }
+            songsIdPlayQueue.AddRange(Session.SongsIdPlayQueue);
+            Session.SongsIdPlayQueue = songsIdPlayQueue;
             LoadPlayQueue();
+            dialogOpenEventArgs.Session.Close(true);
+            dialogAddToQueueGrid.Visibility = Visibility.Collapsed;
+        }
+
+        private void AddToTheEndButton_Click(object sender, RoutedEventArgs e) {
+            if (playQueueDataGrid.SelectedItem is SongTable) {
+                Session.SongsIdPlayQueue.Add(((SongTable)playQueueDataGrid.SelectedItem).Song.SongId);
+            } else {
+                Session.SongsIdPlayQueue.Add(((AccountSongTable)playQueueDataGrid.SelectedItem).AccountSong.AccountSongId * -1);
+            }
+            LoadPlayQueue();
+            dialogOpenEventArgs.Session.Close(true);
+            dialogAddToQueueGrid.Visibility = Visibility.Collapsed;
         }
 
         private void AddToPlaylistMenuItem_Click(object sender, RoutedEventArgs e) {

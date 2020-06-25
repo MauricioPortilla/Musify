@@ -9,6 +9,25 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="SearchSongPage" Background="White">
     <Grid>
+        <materialDesign:DialogHost Identifier="SearchPage_WindowDialogHost" IsOpen="False" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <materialDesign:DialogHost.DialogContent>
+                <StackPanel Margin="16" x:Name="mainStackPanel">
+                    <Grid x:Name="dialogLoadingGrid" Visibility="Collapsed">
+                        <ProgressBar Style="{DynamicResource MaterialDesignCircularProgressBar}" HorizontalAlignment="Center" Margin="16" IsIndeterminate="True" Value="0" />
+                    </Grid>
+                    <Grid x:Name="dialogAddToQueueGrid" Visibility="Collapsed">
+                        <StackPanel>
+                            <TextBlock TextAlignment="Center" TextWrapping="NoWrap" Text="Agregar ..." VerticalAlignment="Top" FontSize="20" Margin="0,0,0,15"/>
+                            <StackPanel Orientation="Horizontal">
+                                <Button x:Name="dialogAddToBelowButton" Content="A continuación" Margin="0,0,15,0" Click="AddToBelowButton_Click"/>
+                                <Button x:Name="dialogAddToTheEndButton" Content="Al final" Margin="0,0,15,0" Click="AddToTheEndButton_Click"/>
+                                <Button x:Name="dialogCancelButton" Content="Cancelar" Style="{StaticResource MaterialDesignFlatButton}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </materialDesign:DialogHost.DialogContent>
+        </materialDesign:DialogHost>
         <TextBox x:Name="searchTextBox" HorizontalAlignment="Left" Height="37" Margin="28,26,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="228" materialDesign:HintAssist.Hint="Buscar" Style="{StaticResource MaterialDesignFloatingHintTextBox}" KeyUp="SearchTextBox_KeyUp" />
         <Button x:Name="addToQueueButton" Content="Agregar a la cola" HorizontalAlignment="Right" Margin="0,0,388,20" VerticalAlignment="Bottom" Width="151" Click="AddToQueueButton_Click"/>
         <Button x:Name="addToPlaylistButton" Content="Agregar a una lista" HorizontalAlignment="Right" Margin="0,0,223,20" VerticalAlignment="Bottom" Width="151" Click="AddToPlaylistButton_Click"/>

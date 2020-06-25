@@ -132,6 +132,7 @@ namespace Musify.Pages {
                 imageNameTextBlock.Text = "";
                 artistSearchTextBox.Text = "";
                 artistsList.Clear();
+                artistsList.Add(Session.Account.Artist);
                 songsList.Clear();
                 MessageBox.Show("Se creó el álbum con éxito. Las canciones se están procesando.");
             }, () => {
