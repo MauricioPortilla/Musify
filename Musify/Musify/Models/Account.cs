@@ -380,6 +380,12 @@ namespace Musify {
             }
         }
 
+        /// <summary>
+        /// Fetches an active subscription.
+        /// </summary>
+        /// <param name="onSuccess">On success</param>
+        /// <param name="onFailure">On failure</param>
+        /// <param name="onError">On error</param>
         public void FetchSubscription(Action<Subscription> onSuccess, Action onFailure, Action onError) {
             try {
                 RestSharpTools.GetAsync<Subscription>("/subscription", null, Subscription.JSON_EQUIVALENTS, (response) => {

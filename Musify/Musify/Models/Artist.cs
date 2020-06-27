@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 namespace Musify.Models {
     public class Artist {
 
+        /// <summary>
+        /// Explains how to pass JSON data to an object of this type.
+        /// </summary>
         public static Dictionary<string, string> JSON_EQUIVALENTS = new Dictionary<string, string>() {
             { "artist_id", "ArtistId" },
             { "account_id", "AccountId" },

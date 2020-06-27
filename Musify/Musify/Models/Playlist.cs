@@ -122,7 +122,7 @@ namespace Musify.Models {
                         }
                     });
                 } else {
-                    RestSharpTools.PutAsync<Playlist>("/playlist", playlistData, JSON_EQUIVALENTS, (response) => {
+                    RestSharpTools.PutAsync<Playlist>("/playlist/" + playlistId, playlistData, JSON_EQUIVALENTS, (response) => {
                         if (response.IsSuccessful) {
                             onSuccess(response.Data);
                         } else {

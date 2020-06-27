@@ -9,6 +9,22 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Consultar lista de reproducción" Background="White">
     <Grid>
+        <materialDesign:DialogHost Identifier="ConsultPlaylistPage_WindowDialogHost" IsOpen="False" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <materialDesign:DialogHost.DialogContent>
+                <StackPanel Margin="16" x:Name="mainStackPanel">
+                    <Grid x:Name="dialogLoadingGrid" Visibility="Collapsed">
+                        <ProgressBar Style="{DynamicResource MaterialDesignCircularProgressBar}" HorizontalAlignment="Center" Margin="16" IsIndeterminate="True" Value="0" />
+                    </Grid>
+                    <Grid x:Name="dialogRenamePlaylistGrid" Visibility="Collapsed">
+                        <StackPanel>
+                            <TextBox x:Name="dialogPlaylistNameTextBox" HorizontalAlignment="Left" Height="37" TextWrapping="NoWrap" VerticalAlignment="Top" Width="228" materialDesign:HintAssist.Hint="Nuevo nombre de la lista" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="0,0,0,15" />
+                            <Button x:Name="dialogRenamePlaylistButton" Content="Renombrar" Click="RenamePlaylistButton_Click"/>
+                            <Button x:Name="dialogCancelButton" Content="Cancelar" Style="{StaticResource MaterialDesignFlatButton}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </materialDesign:DialogHost.DialogContent>
+        </materialDesign:DialogHost>
         <StackPanel Orientation="Horizontal" Margin="0,0,0,0" Height="37" VerticalAlignment="Top" HorizontalAlignment="Center">
             <TextBlock x:Name="playlistNameTextBlock" TextWrapping="Wrap" Text="PLAYLIST_NAME" VerticalAlignment="Center" FontSize="20" FontWeight="Bold" TextAlignment="Center" HorizontalAlignment="Center"/>
         </StackPanel>
@@ -47,7 +63,8 @@
             <TextBlock Text="Descargar" VerticalAlignment="Center" Margin="0,0,10,0"></TextBlock>
             <Button x:Name="deletePlaylistButton" Content="Eliminar lista" HorizontalAlignment="Left" VerticalAlignment="Center" Width="142" Margin="0,0,8,0" Click="DeletePlaylistButton_Click"/>
             <Menu Height="30" BorderThickness="0">
-                <MenuItem Header="..." Height="30" Background="#FF607D8B" Foreground="White" FontSize="12">
+                <MenuItem Header="..." Height="30" Background="#FF607D8B" Foreground="White" FontSize="12" Width="40">
+                    <MenuItem x:Name="RenamePlaylistMenuItem" Header="Renombrar lista" Background="#FF607D8B" Click="RenamePlaylistMenuItem_Click"/>
                     <MenuItem x:Name="DeleteSongMenuItem" Header="Eliminar canción" Background="#FF607D8B" Click="DeleteSongMenuItem_Click"/>
                 </MenuItem>
             </Menu>

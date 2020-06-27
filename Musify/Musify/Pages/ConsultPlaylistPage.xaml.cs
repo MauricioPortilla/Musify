@@ -1,4 +1,5 @@
-﻿using Musify.Models;
+﻿using MaterialDesignThemes.Wpf;
+using Musify.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -23,7 +24,8 @@ namespace Musify.Pages {
     /// Lógica de interacción para ConsultPlaylistPage.xaml
     /// </summary>
     public partial class ConsultPlaylistPage : Page {
-        
+
+        private DialogOpenedEventArgs dialogOpenEventArgs;
         private Playlist playlist;
         private ObservableCollection<SongTable> songsObservableCollection = new ObservableCollection<SongTable>();
         public ObservableCollection<SongTable> SongsObservableCollection {
@@ -143,7 +145,7 @@ namespace Musify.Pages {
         /// <summary>
         /// Deletes the playlist.
         /// </summary>
-        /// <param name="sender">Button</param>
+        /// <param name="sender">MenuItem</param>
         /// <param name="e">Event</param>
         private void DeletePlaylistButton_Click(object sender, RoutedEventArgs e) {
             playlist.Delete(() => {
@@ -167,6 +169,38 @@ namespace Musify.Pages {
                 songsObservableCollection.Remove((SongTable) songsDataGrid.SelectedItem);
             }, () => {
                 MessageBox.Show("Ocurrió un error al eliminar esta canción.");
+            });
+        }
+
+        /// <summary>
+        /// Shows up a window to rename this playlist.
+        /// </summary>
+        /// <param name="sender">MenuItem</param>
+        /// <param name="e">Event</param>
+        private void RenamePlaylistMenuItem_Click(object sender, RoutedEventArgs e) {
+            DialogHost.Show(mainStackPanel, "ConsultPlaylistPage_WindowDialogHost", (openSender, openEventArgs) => {
+                dialogOpenEventArgs = openEventArgs;
+                dialogRenamePlaylistGrid.Visibility = Visibility.Visible;
+            }, null);
+        }
+
+        /// <summary>
+        /// Attempts to rename this playlist.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
+        private void RenamePlaylistButton_Click(object sender, RoutedEventArgs e) {
+            if (string.IsNullOrWhiteSpace(dialogPlaylistNameTextBox.Text)) {
+                MessageBox.Show("Debes ingresar un nombre.");
+                return;
+            }
+            playlist.Name = dialogPlaylistNameTextBox.Text;
+            playlist.Save((updatedPlaylist) => {
+                playlistNameTextBlock.Text = updatedPlaylist.Name;
+                dialogOpenEventArgs.Session.Close(true);
+                dialogRenamePlaylistGrid.Visibility = Visibility.Collapsed;
+            }, () => {
+                MessageBox.Show("Ocurrió un error al renombrar la lista.");
             });
         }
     }

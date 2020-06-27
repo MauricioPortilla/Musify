@@ -52,7 +52,7 @@ namespace Musify {
         /// <param name="sender">Button</param>
         /// <param name="e">Event</param>
         private void NewPlaylistButton_Click(object sender, RoutedEventArgs e) {
-            DialogHost.Show(mainStackPanel, "PlaylistPage_WindowDialogHost", (openSender, openEventArgs) => {
+            DialogHost.Show(mainStackPanel, "PlaylistsPage_WindowDialogHost", (openSender, openEventArgs) => {
                 dialogOpenEventArgs = openEventArgs;
                 dialogCreatePlaylistGrid.Visibility = Visibility.Visible;
             }, null);
