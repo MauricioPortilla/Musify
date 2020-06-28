@@ -39,8 +39,8 @@ namespace Musify.Models {
         }
         private DateTime endDate;
         public DateTime EndDate {
-            get => startDate;
-            set => startDate = value;
+            get => endDate;
+            set => endDate = value;
         }
 
         /// <summary>
