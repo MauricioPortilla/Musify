@@ -9,7 +9,7 @@ namespace MusifyTests {
     [TestClass]
     public class AccountTests {
         /// <summary>
-        /// Attempts to log in with an existent account and correct credentials.
+        /// Test to prove that is possible log in with an existent account and correct credentials.
         /// </summary>
         [TestMethod]
         public void LoginWithExistentAccountTest() {
@@ -26,7 +26,7 @@ namespace MusifyTests {
         }
 
         /// <summary>
-        /// Attempts to log in with a non-existent account.
+        /// Test to prove that is not possible log in with a non-existent account.
         /// </summary>
         [TestMethod]
         public void LoginWithNonExistentAccountTest() {
@@ -43,7 +43,7 @@ namespace MusifyTests {
         }
 
         /// <summary>
-        /// Attempts to register a new account with no artist data.
+        /// Test to prove that is possible register a new account with no artist data.
         /// </summary>
         [TestMethod]
         public void RegisterNewAccountWithNoArtistDataTest() {
@@ -66,7 +66,7 @@ namespace MusifyTests {
         }
 
         /// <summary>
-        /// Attempts to register an existent account with no artist data.
+        /// Test to prove that is not possible register an existent account with no artist data.
         /// </summary>
         [TestMethod]
         public void RegisterExistentAccountWithNoArtistDataTest() {
@@ -89,7 +89,7 @@ namespace MusifyTests {
         }
 
         /// <summary>
-        /// Attempts to register a new account with artist data.
+        /// Test to prove that is possible register a new account with artist data.
         /// </summary>
         [TestMethod]
         public void RegisterNewAccountWithArtistDataTest() {
@@ -112,7 +112,7 @@ namespace MusifyTests {
         }
 
         /// <summary>
-        /// Attempts to register a new account with artist data.
+        /// Test to prove that is not possible register a new account with existent artist data.
         /// </summary>
         [TestMethod]
         public void RegisterNewAccountWithExistentArtistTest() {
@@ -135,7 +135,7 @@ namespace MusifyTests {
         }
 
         /// <summary>
-        /// Attempts to fetch artist data from account.
+        /// Test to prove that is possible fetch artist data from account.
         /// </summary>
         [TestMethod]
         public void FetchAccountArtistTest() {
@@ -156,7 +156,7 @@ namespace MusifyTests {
         }
 
         /// <summary>
-        /// Attempts to fetch account songs data from account.
+        /// Test to prove that is possible fetch account songs data from account.
         /// </summary>
         [TestMethod]
         public void FetchAccountSongsTest() {
@@ -177,7 +177,7 @@ namespace MusifyTests {
         }
 
         /// <summary>
-        /// Attempts to add account songs to account.
+        /// Test to prove that is possible add account songs to account.
         /// </summary>
         [TestMethod]
         public void AddAccountSongsTest() {
@@ -201,7 +201,7 @@ namespace MusifyTests {
         }
 
         /// <summary>
-        /// Attempts to delete the first account song from account.
+        /// Test to prove that is delete the first account song from account.
         /// </summary>
         [TestMethod]
         public void DeleteAccountSongTest() {
@@ -226,7 +226,7 @@ namespace MusifyTests {
         }
 
         /// <summary>
-        /// Attempts to like an existent song. An existent rate must not exist.
+        /// Test to prove that is possible like an existent song. An existent rate must not exist.
         /// </summary>
         [TestMethod]
         public void LikeSongTest() {
@@ -250,7 +250,7 @@ namespace MusifyTests {
         }
 
         /// <summary>
-        /// Attempts to dislike an existent song. An existent rate must not exist.
+        /// Test to prove that is possible dislike an existent song. An existent rate must not exist.
         /// </summary>
         [TestMethod]
         public void DislikeSongTest() {
@@ -274,7 +274,7 @@ namespace MusifyTests {
         }
 
         /// <summary>
-        /// Attempts to unlike an existent song.
+        /// Test to prove that is possible unlike an existent song.
         /// </summary>
         [TestMethod]
         public void UnlikeSongTest() {
@@ -298,7 +298,7 @@ namespace MusifyTests {
         }
 
         /// <summary>
-        /// Attempts to undislike an existent song.
+        /// Test to prove that is possible undislike an existent song.
         /// </summary>
         [TestMethod]
         public void UndislikeSongTest() {
@@ -322,7 +322,7 @@ namespace MusifyTests {
         }
 
         /// <summary>
-        /// Attempts to fetch active subscription from account.
+        /// Test to prove that is possible fetch active subscription from account.
         /// </summary>
         [TestMethod]
         public void FetchSubscriptionTest() {
@@ -345,7 +345,7 @@ namespace MusifyTests {
         }
 
         /// <summary>
-        /// Attempts to subscribe.
+        /// Test to prove that is possible subscribe.
         /// </summary>
         [TestMethod]
         public void SubscribeTest() {

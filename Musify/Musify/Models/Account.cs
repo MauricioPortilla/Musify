@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Musify.Models;
 using Newtonsoft.Json.Linq;
 
-namespace Musify {
+namespace Musify.Models {
     public class Account {
 
         /// <summary>
@@ -108,6 +108,7 @@ namespace Musify {
                 RestSharpTools.PostAsync<Account>("/auth/login", accountData, JSON_EQUIVALENTS, (response) => {
                     if (response.IsSuccessful) {
                         Session.AccessToken = ((dynamic) JObject.Parse(response.Content))["access_token"];
+                        Session.Account = response.Data;
                         onSuccess(response.Data);
                     } else {
                         onFailure();

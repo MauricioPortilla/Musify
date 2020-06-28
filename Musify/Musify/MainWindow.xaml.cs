@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,6 +21,8 @@ namespace Musify {
     /// Lógica de interacción para MainMenuWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
+        private Timer calculateDownloadSpeedTimer;
+
         public MainWindow() {
             InitializeComponent();
             Session.MainWindow = this;
@@ -32,6 +35,19 @@ namespace Musify {
                 subscribeButton.IsEnabled = false;
                 subscribeButton.Content = "Suscrito";
             }
+            SetCalculateDownloadSpeedTimer();
+        }
+
+        /// <summary>
+        /// Creates a timer that executes a method every 1 minute to calculate
+        /// download speed.
+        /// </summary>
+        private void SetCalculateDownloadSpeedTimer() {
+            calculateDownloadSpeedTimer = new Timer((timerEvent) => {
+                if (Session.SongStreamingQuality == "automaticquality") {
+                    Session.SetSongStreamingQualityAutomatically();
+                }
+            }, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
         }
 
         public void LoadConfiguration() {

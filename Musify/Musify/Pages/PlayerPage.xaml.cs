@@ -103,7 +103,11 @@ namespace Musify.Pages {
                     PlayMemoryStream(song.CreateDownloadedFileStream());
                 });
             } else {
-                MakeRequestStreamSong(Core.SERVER_API_URL + "/stream/song/" + song.SongId + "/" + Session.SongStreamingQuality);
+                if (Session.SongStreamingQuality == "automaticquality") {
+                    MakeRequestStreamSong(Core.SERVER_API_URL + "/stream/song/" + song.SongId + "/" + Session.SongStreamingQualitySelected);
+                } else {
+                    MakeRequestStreamSong(Core.SERVER_API_URL + "/stream/song/" + song.SongId + "/" + Session.SongStreamingQuality);
+                }
             }
             likeButton.Visibility = Visibility.Visible;
             dislikeButton.Visibility = Visibility.Visible;
@@ -259,6 +263,7 @@ namespace Musify.Pages {
                     songSlider.Value = 0;
                     songSlider.IsEnabled = false;
                 });
+                PlayNextSong();
                 isPlayerWaveOutAvailable = true;
             }
         }
@@ -310,6 +315,9 @@ namespace Musify.Pages {
             }
         }
 
+        /// <summary>
+        /// Attempts to play the previous played song.
+        /// </summary>
         public void PreviousSong() {
             if (Session.historyIndex >= 0) {
                 try {
@@ -376,47 +384,56 @@ namespace Musify.Pages {
         /// <param name="sender">Forward button</param>
         /// <param name="e">Button event</param>
         private void ForwardButton_Click(object sender, RoutedEventArgs e) {
-            if (reader != null && !isPlayerWaveOutAvailable) {
-                if (Session.SongsIdPlayQueue.Count > 0 || Session.SongsIdSongList.Count > 0) {
-                    int id;
-                    if (Session.SongsIdPlayQueue.Count > 0) {
-                        id = Session.SongsIdPlayQueue.First();
-                    } else {
-                        id = Session.SongsIdSongList.First();
-                    }
-                    try {
-                        if (id > 0) {
-                            Song.FetchById(id, (song) => {
-                                Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
-                                Session.PlayerPage.PlaySong(song);
-                                if (Session.SongsIdPlayQueue.Count > 0) {
-                                    Session.SongsIdPlayQueue.RemoveAt(0);
-                                } else {
-                                    Session.SongsIdSongList.RemoveAt(0);
-                                }
-                                RefreshPage(true);
-                            }, () => {
-                                MessageBox.Show("Ocurrió un error al cargar la canción.");
-                            });
+            PlayNextSong();
+        }
+
+        /// <summary>
+        /// Attempts to play the next song in queue.
+        /// </summary>
+        private void PlayNextSong() {
+            Application.Current.Dispatcher.Invoke(() => {
+                if (reader != null && !isPlayerWaveOutAvailable) {
+                    if (Session.SongsIdPlayQueue.Count > 0 || Session.SongsIdSongList.Count > 0) {
+                        int id;
+                        if (Session.SongsIdPlayQueue.Count > 0) {
+                            id = Session.SongsIdPlayQueue.First();
                         } else {
-                            AccountSong.FetchById(id * -1, (accountSong) => {
-                                Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
-                                Session.PlayerPage.PlayAccountSong(accountSong);
-                                if (Session.SongsIdPlayQueue.Count > 0) {
-                                    Session.SongsIdPlayQueue.RemoveAt(0);
-                                } else {
-                                    Session.SongsIdSongList.RemoveAt(0);
-                                }
-                                RefreshPage(true);
-                            }, () => {
-                                MessageBox.Show("Ocurrió un error al cargar la canción.");
-                            });
+                            id = Session.SongsIdSongList.First();
                         }
-                    } catch (Exception) {
-                        MessageBox.Show("Ocurrió un error al cargar la canción.");
+                        try {
+                            if (id > 0) {
+                                Song.FetchById(id, (song) => {
+                                    Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
+                                    Session.PlayerPage.PlaySong(song);
+                                    if (Session.SongsIdPlayQueue.Count > 0) {
+                                        Session.SongsIdPlayQueue.RemoveAt(0);
+                                    } else {
+                                        Session.SongsIdSongList.RemoveAt(0);
+                                    }
+                                    RefreshPage(true);
+                                }, () => {
+                                    MessageBox.Show("Ocurrió un error al cargar la canción.");
+                                });
+                            } else {
+                                AccountSong.FetchById(id * -1, (accountSong) => {
+                                    Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
+                                    Session.PlayerPage.PlayAccountSong(accountSong);
+                                    if (Session.SongsIdPlayQueue.Count > 0) {
+                                        Session.SongsIdPlayQueue.RemoveAt(0);
+                                    } else {
+                                        Session.SongsIdSongList.RemoveAt(0);
+                                    }
+                                    RefreshPage(true);
+                                }, () => {
+                                    MessageBox.Show("Ocurrió un error al cargar la canción.");
+                                });
+                            }
+                        } catch (Exception) {
+                            MessageBox.Show("Ocurrió un error al cargar la canción.");
+                        }
                     }
                 }
-            }
+            });
         }
 
         /// <summary>

@@ -4,8 +4,10 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Musify.Models;
 using Musify.Pages;
 using RestSharp;
+using SpeedTest.Net;
 
 namespace Musify {
     class Session {
@@ -20,6 +22,23 @@ namespace Musify {
         public static List<int> SongsIdSongList= new List<int>();
         public static int historyIndex;
         public static string SongStreamingQuality = "highquality";
+        public static string SongStreamingQualitySelected = "lowquality";
         public static string AccessToken = null;
+
+        /// <summary>
+        /// Gets download speed in megabits and sets song streaming quality.
+        /// </summary>
+        public static async void SetSongStreamingQualityAutomatically() {
+            try {
+                var speedMb = await SpeedTestClient.GetDownloadSpeed(unit: SpeedTest.Net.Enums.SpeedTestUnit.MegaBitsPerSecond);
+                if (speedMb.Speed >= 20 && speedMb.Speed <= 40) {
+                    SongStreamingQualitySelected = "mediumquality";
+                } else if (speedMb.Speed > 40) {
+                    SongStreamingQualitySelected = "highquality";
+                }
+            } catch (Exception exception) {
+                Console.WriteLine("Exception@SetSongStreamingQualityAutomatically -> " + exception);
+            }
+        }
     }
 }
