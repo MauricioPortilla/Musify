@@ -1,22 +1,13 @@
 ﻿using MaterialDesignThemes.Wpf;
 using Musify.Models;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using static Musify.Models.Song;
 
 namespace Musify.Pages {
@@ -73,6 +64,8 @@ namespace Musify.Pages {
                         Duration = playlistSong.Duration
                     });
                 }
+            }, (errorMessage) => {
+                MessageBox.Show(errorMessage.Message);
             }, () => {
                 MessageBox.Show("Ocurrió un error al cargar la lista de reproducción.");
             });
@@ -150,6 +143,8 @@ namespace Musify.Pages {
         private void DeletePlaylistButton_Click(object sender, RoutedEventArgs e) {
             playlist.Delete(() => {
                 Session.MainFrame.Source = new Uri("Pages/PlaylistsPage.xaml", UriKind.RelativeOrAbsolute);
+            }, (errorResponse) => {
+                MessageBox.Show(errorResponse.Message);
             }, () => {
                 MessageBox.Show("Ocurrió un error al eliminar esta lista de reproducción.");
             });
@@ -167,6 +162,8 @@ namespace Musify.Pages {
             }
             playlist.DeleteSong(((SongTable) songsDataGrid.SelectedItem).Song, () => {
                 songsObservableCollection.Remove((SongTable) songsDataGrid.SelectedItem);
+            }, (errorResponse) => {
+                MessageBox.Show(errorResponse.Message);
             }, () => {
                 MessageBox.Show("Ocurrió un error al eliminar esta canción.");
             });
@@ -199,6 +196,8 @@ namespace Musify.Pages {
                 playlistNameTextBlock.Text = updatedPlaylist.Name;
                 dialogOpenEventArgs.Session.Close(true);
                 dialogRenamePlaylistGrid.Visibility = Visibility.Collapsed;
+            }, (errorResponse) => {
+                MessageBox.Show(errorResponse.Message);
             }, () => {
                 MessageBox.Show("Ocurrió un error al renombrar la lista.");
             });

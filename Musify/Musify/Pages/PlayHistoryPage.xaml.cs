@@ -1,20 +1,11 @@
 ﻿using MaterialDesignThemes.Wpf;
 using Musify.Models;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using static Musify.Models.AccountSong;
 using static Musify.Models.Song;
 
@@ -58,6 +49,8 @@ namespace Musify.Pages {
                             Duration = song.Duration
                         });
                         LoadSong(i - 1, songsIdPlayHistory);
+                    }, (errorResponse) => {
+                        MessageBox.Show(errorResponse.Message);
                     }, () => {
                         MessageBox.Show("Ocurrió un error al cargar las canciones.");
                     });
@@ -69,6 +62,8 @@ namespace Musify.Pages {
                             Duration = accountSong.Duration
                         });
                         LoadSong(i - 1, songsIdPlayHistory);
+                    }, (errorResponse) => {
+                        MessageBox.Show(errorResponse.Message);
                     }, () => {
                         MessageBox.Show("Ocurrió un error al cargar las canciones.");
                     });

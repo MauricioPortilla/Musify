@@ -52,15 +52,20 @@ namespace Musify {
                     Account.Login(emailTextBox.Text, passwordPasswordBox.Password, (account) => {
                         Session.Account.FetchSubscription((subscription) => {
                             Session.Account.Subscription = subscription;
-                        }, null, null);
-                        Session.Account.FetchArtist(() => {
-                            openEventArgs.Session.Close(true);
-                            new MainWindow().Show();
-                            Close();
-                        }, null);
+                        }, null, null, onFinish: () => {
+                            Session.Account.FetchArtist(() => {
+                            }, null, null, onFinish: () => {
+                                openEventArgs.Session.Close(true);
+                                new MainWindow().Show();
+                                Close();
+                            });
+                        });
+                    }, (errorResponse) => {
+                        openEventArgs.Session.Close(true);
+                        MessageBox.Show(errorResponse.Message);
                     }, () => {
                         openEventArgs.Session.Close(true);
-                        MessageBox.Show("Error al iniciar sesión.");
+                        MessageBox.Show("Ocurrió un error al momento de iniciar sesión.");
                     });
                 }, null);
             } catch (Exception) {

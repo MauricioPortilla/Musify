@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Musify.Models {
     public class Song {
@@ -104,34 +101,30 @@ namespace Musify.Models {
         /// <param name="title">Song title</param>
         /// <param name="onSuccess">On success</param>
         /// <param name="onFailure">On failure</param>
-        public static void FetchByTitleCoincidences(string title, Action<List<Song>> onSuccess, Action onFailure) {
-            try {
-                RestSharpTools.GetAsyncMultiple<Song>("/song/search/" + title, null, JSON_EQUIVALENTS, (response, songs) => {
-                    if (response.IsSuccessful) {
-                        if (songs.Count == 0) {
-                            onSuccess(songs);
-                            return;
-                        }
-                        foreach (var song in songs) {
-                            Album.FetchById(song.albumId, (album) => {
-                                song.album = album;
-                                Genre.FetchById(song.genreId, (genre) => {
-                                    song.genre = genre;
-                                    song.FetchArtists(() => {
-                                        onSuccess(songs);
-                                    }, null);
-                                }, null);
-                            }, null);
-                        }
-                    } else {
-                        onFailure();
-                    }
-                });
-            } catch (Exception exception) {
-                Console.WriteLine("Exception@Song->FetchByTitleCoincidences() -> " + exception.Message);
-                //onFailure?.Invoke();
-                throw;
-            }
+        /// <param name="onError">On error</param>
+        public static void FetchByTitleCoincidences(
+            string title, Action<List<Song>> onSuccess, Action<NetworkResponse> onFailure, Action onError
+        ) {
+            RestSharpTools.GetAsyncMultiple<Song>("/song/search/" + title, null, JSON_EQUIVALENTS, (response) => {
+                if (response.Model.Count == 0) {
+                    onSuccess(response.Model);
+                    return;
+                }
+                foreach (var song in response.Model) {
+                    Album.FetchById(song.albumId, (album) => {
+                        song.album = album;
+                        Genre.FetchById(song.genreId, (genre) => {
+                            song.genre = genre;
+                            song.FetchArtists(() => {
+                                onSuccess(response.Model);
+                            }, null, null);
+                        }, null, null);
+                    }, null, null);
+                }
+            }, onFailure, () => {
+                Console.WriteLine("Exception@Song->FetchByTitleCoincidences()");
+                onError?.Invoke();
+            });
         }
 
         /// <summary>
@@ -140,49 +133,40 @@ namespace Musify.Models {
         /// <param name="SongId">Song ID</param>
         /// <param name="onSuccess">On success</param>
         /// <param name="onFailure">On failure</param>
-        public static void FetchById(int songId, Action<Song> onSuccess, Action onFailure) {
-            try {
-                RestSharpTools.GetAsync<Song>("/song/" + songId, null, JSON_EQUIVALENTS, (response) => {
-                    if (response.IsSuccessful) {
-                        Album.FetchById(response.Data.albumId, (album) => {
-                            response.Data.album = album;
-                            Genre.FetchById(response.Data.genreId, (genre) => {
-                                response.Data.genre = genre;
-                                response.Data.FetchArtists(() => {
-                                    onSuccess(response.Data);
-                                }, null);
-                            }, null);
-                        }, null);
-                    } else {
-                        onFailure();
-                    }
-                });
-            } catch (Exception exception) {
-                Console.WriteLine("Exception@Song->FetchById() -> " + exception.Message);
-                //onFailure?.Invoke();
-                throw;
-            }
+        /// <param name="onError">On error</param>
+        public static void FetchById(int songId, Action<Song> onSuccess, Action<NetworkResponse> onFailure, Action onError) {
+            RestSharpTools.GetAsync<Song>("/song/" + songId, null, JSON_EQUIVALENTS, (response) => {
+                Album.FetchById(response.Model.albumId, (album) => {
+                    response.Model.album = album;
+                    Genre.FetchById(response.Model.genreId, (genre) => {
+                        response.Model.genre = genre;
+                        response.Model.FetchArtists(() => {
+                            onSuccess(response.Model);
+                        }, null, null);
+                    }, null, null);
+                }, null, null);
+            }, (errorResponse) => {
+                onFailure?.Invoke(errorResponse);
+            }, () => {
+                Console.WriteLine("Exception@Song->FetchById()");
+                onError?.Invoke();
+            });
         }
 
         /// <summary>
-        /// Fetches 
+        /// Fetches this song artists.
         /// </summary>
         /// <param name="onSuccess">On success</param>
         /// <param name="onFailure">On failure</param>
-        public void FetchArtists(Action onSuccess, Action onFailure) {
-            try {
-                RestSharpTools.GetAsyncMultiple<Artist>("/song/" + SongId + "/artists", null, Artist.JSON_EQUIVALENTS, (response, artists) => {
-                    if (response.IsSuccessful) {
-                        this.artists = artists;
-                        onSuccess();
-                        return;
-                    }
-                    onFailure?.Invoke();
-                });
-            } catch (Exception exception) {
-                Console.WriteLine("Exception@Album->FetchArtists() -> " + exception.Message);
-                onFailure?.Invoke();
-            }
+        /// <param name="onError">On error</param>
+        public void FetchArtists(Action onSuccess, Action<NetworkResponse> onFailure, Action onError) {
+            RestSharpTools.GetAsyncMultiple<Artist>("/song/" + SongId + "/artists", null, Artist.JSON_EQUIVALENTS, (response) => {
+                this.artists = response.Model;
+                onSuccess();
+            }, onFailure, () => {
+                Console.WriteLine("Exception@Album->FetchArtists()");
+                onError?.Invoke();
+            });
         }
 
         /// <summary>

@@ -1,18 +1,5 @@
 ﻿using Musify.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Musify {
     /// <summary>
@@ -41,6 +28,8 @@ namespace Musify {
                 foreach (var playlist in playlists) {
                     playlistsListBox.Items.Add(playlist);
                 }
+            }, (errorResponse) => {
+                MessageBox.Show(errorResponse.Message);
             }, () => {
                 MessageBox.Show("Ocurrió un error al cargar las listas de reproducción.");
             });
@@ -59,12 +48,16 @@ namespace Musify {
             Playlist playlistSelected = playlistsListBox.SelectedItem as Playlist;
             playlistSelected.ContainsSong(songToAdd, () => {
                 MessageBox.Show("Esta canción ya existe en esta lista de reproducción.");
-            }, () => {
+            }, (errorResponse) => {
                 playlistSelected.AddSong(songToAdd, () => {
                     Close();
+                }, (errorResponse2) => {
+                    MessageBox.Show(errorResponse2.Message);
                 }, () => {
                     MessageBox.Show("Ocurrió un error al guardar la canción en la lista de reproducción.");
                 });
+            }, () => {
+                MessageBox.Show("Ocurrió un error al guardar la canción en la lista de reproducción.");
             });
         }
 

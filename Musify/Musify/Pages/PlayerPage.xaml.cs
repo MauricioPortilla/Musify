@@ -1,23 +1,14 @@
 ﻿using Musify.Models;
 using NAudio.Wave;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.Caching;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Musify.Pages {
     /// <summary>
@@ -65,6 +56,10 @@ namespace Musify.Pages {
         /// True if player is playing a song; false if not.
         /// </summary>
         private bool isPlayerWaveOutAvailable = true;
+        /// <summary>
+        /// True if should play next song in queue when a song or an account song is about to be played; false if not.
+        /// </summary>
+        private bool shouldPlayNextSong = true;
 
         /// <summary>
         /// Creates a new player instance.
@@ -77,7 +72,8 @@ namespace Musify.Pages {
         /// Plays a Song.
         /// </summary>
         /// <param name="song">Song to play</param>
-        public void PlaySong(Song song) {
+        public void PlaySong(Song song, bool shouldPlayNextSong = true) {
+            this.shouldPlayNextSong = shouldPlayNextSong;
             if (latestSongPlayed != null) {
                 if (Session.SongsIdPlayHistory.Count == Core.MAX_SONGS_IN_HISTORY) {
                     Session.SongsIdPlayHistory.RemoveAt(0);
@@ -114,22 +110,23 @@ namespace Musify.Pages {
             Session.Account.HasLikedSong(song, () => {
                 dislikeButton.IsEnabled = false;
                 likeButton.IsEnabled = true;
-            }, () => {
+            }, (errorResponse) => {
                 Session.Account.HasDislikedSong(song, () => {
                     likeButton.IsEnabled = false;
                     dislikeButton.IsEnabled = true;
-                }, () => {
+                }, (errorResponse2) => {
                     likeButton.IsEnabled = true;
                     dislikeButton.IsEnabled = true;
-                });
-            });
+                }, null);
+            }, null);
         }
 
         /// <summary>
         /// Plays an AccountSong.
         /// </summary>
         /// <param name="accountSong">Account song to play</param>
-        public void PlayAccountSong(AccountSong accountSong) {
+        public void PlayAccountSong(AccountSong accountSong, bool shouldPlayNextSong = true) {
+            this.shouldPlayNextSong = shouldPlayNextSong;
             if (latestAccountSongPlayed != null) {
                 if (Session.SongsIdPlayHistory.Count == Core.MAX_SONGS_IN_HISTORY) {
                     Session.SongsIdPlayHistory.RemoveAt(0);
@@ -232,39 +229,46 @@ namespace Musify.Pages {
         /// </summary>
         /// <param name="reader">Reader that stores the song data</param>
         private void PlayStreamSong(IWaveProvider reader) {
-            if (playerWaveOut != null && playerWaveOut.PlaybackState == PlaybackState.Playing) {
-                playerWaveOut.Stop();
-                playerWaveOut.Dispose();
-                Application.Current.Dispatcher.Invoke(delegate {
-                    playButtonIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Play;
-                    songSlider.IsEnabled = false;
-                });
-            }
-            using (playerWaveOut = new WaveOut(WaveCallbackInfo.FunctionCallback())) {
-                playerWaveOut.Init(reader);
-                playerWaveOut.Play();
-                Application.Current.Dispatcher.Invoke(delegate {
-                    playButtonIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Pause;
-                    songSlider.IsEnabled = true;
-                });
-                while (playerWaveOut.PlaybackState == PlaybackState.Playing || isPlayerStopped) {
-                    System.Threading.Thread.Sleep(1000);
-                    if (!isStreamSongLocked) {
-                        break;
-                    }
-                    if (!isPlayerStopped) {
-                        SetPlayerData(reader);
-                    }
+            try {
+                if (playerWaveOut != null && playerWaveOut.PlaybackState == PlaybackState.Playing) {
+                    playerWaveOut.Stop();
+                    playerWaveOut.Dispose();
+                    Application.Current.Dispatcher.Invoke(delegate {
+                        playButtonIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Play;
+                        songSlider.IsEnabled = false;
+                    });
                 }
-                Application.Current.Dispatcher.Invoke(delegate {
-                    playButtonIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Play;
-                    songCurrentTimeTextBlock.Text = "00:00";
-                    songDurationTimeTextBlock.Text = "00:00";
-                    songSlider.Value = 0;
-                    songSlider.IsEnabled = false;
-                });
-                PlayNextSong();
-                isPlayerWaveOutAvailable = true;
+                using (playerWaveOut = new WaveOut(WaveCallbackInfo.FunctionCallback())) {
+                    playerWaveOut.Init(reader);
+                    playerWaveOut.Play();
+                    Application.Current.Dispatcher.Invoke(delegate {
+                        playButtonIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Pause;
+                        songSlider.IsEnabled = true;
+                    });
+                    while (playerWaveOut.PlaybackState == PlaybackState.Playing || isPlayerStopped) {
+                        System.Threading.Thread.Sleep(1000);
+                        if (!isStreamSongLocked) {
+                            break;
+                        }
+                        if (!isPlayerStopped) {
+                            SetPlayerData(reader);
+                        }
+                    }
+                    Application.Current.Dispatcher.Invoke(delegate {
+                        playButtonIcon.Kind = MaterialDesignThemes.Wpf.PackIconKind.Play;
+                        songCurrentTimeTextBlock.Text = "00:00";
+                        songDurationTimeTextBlock.Text = "00:00";
+                        songSlider.Value = 0;
+                        songSlider.IsEnabled = false;
+                    });
+                    if (shouldPlayNextSong) {
+                        PlayNextSong();
+                    }
+                    shouldPlayNextSong = true;
+                    isPlayerWaveOutAvailable = true;
+                }
+            } catch (Exception) {
+                MessageBox.Show("Error al reproducir la canción.");
             }
         }
 
@@ -329,6 +333,8 @@ namespace Musify.Pages {
                             }
                             Session.PlayerPage.PlaySong(song);
                             RefreshPage(false);
+                        }, (errorResponse) => {
+                            MessageBox.Show(errorResponse.Message);
                         }, () => {
                             MessageBox.Show("Ocurrió un error al cargar la canción.");
                         });
@@ -340,6 +346,8 @@ namespace Musify.Pages {
                             }
                             Session.PlayerPage.PlayAccountSong(accountSong);
                             RefreshPage(true);
+                        }, (errorResponse) => {
+                            MessageBox.Show(errorResponse.Message);
                         }, () => {
                             MessageBox.Show("Ocurrió un error al cargar la canción.");
                         });
@@ -411,6 +419,8 @@ namespace Musify.Pages {
                                         Session.SongsIdSongList.RemoveAt(0);
                                     }
                                     RefreshPage(true);
+                                }, (errorResponse) => {
+                                    MessageBox.Show(errorResponse.Message);
                                 }, () => {
                                     MessageBox.Show("Ocurrió un error al cargar la canción.");
                                 });
@@ -424,6 +434,8 @@ namespace Musify.Pages {
                                         Session.SongsIdSongList.RemoveAt(0);
                                     }
                                     RefreshPage(true);
+                                }, (errorResponse) => {
+                                    MessageBox.Show(errorResponse.Message);
                                 }, () => {
                                     MessageBox.Show("Ocurrió un error al cargar la canción.");
                                 });
@@ -492,12 +504,16 @@ namespace Musify.Pages {
                 if (dislikeButton.IsEnabled) {
                     Session.Account.LikeSong(latestSongPlayed, () => {
                         dislikeButton.IsEnabled = false;
+                    }, (errorResponse) => {
+                        MessageBox.Show(errorResponse.Message);
                     }, () => {
                         MessageBox.Show("Ocurrió un error al procesar tu solicitud.");
                     });
                 } else {
                     Session.Account.UnlikeSong(latestSongPlayed, () => {
                         dislikeButton.IsEnabled = true;
+                    }, (errorResponse) => {
+                        MessageBox.Show(errorResponse.Message);
                     }, () => {
                         MessageBox.Show("Ocurrió un error al procesar tu solicitud.");
                     });
@@ -517,12 +533,16 @@ namespace Musify.Pages {
                 if (likeButton.IsEnabled) {
                     Session.Account.DislikeSong(latestSongPlayed, () => {
                         likeButton.IsEnabled = false;
+                    }, (errorResponse) => {
+                        MessageBox.Show(errorResponse.Message);
                     }, () => {
                         MessageBox.Show("Ocurrió un error al procesar tu solicitud.");
                     });
                 } else {
                     Session.Account.UndislikeSong(latestSongPlayed, () => {
                         likeButton.IsEnabled = true;
+                    }, (errorResponse) => {
+                        MessageBox.Show(errorResponse.Message);
                     }, () => {
                         MessageBox.Show("Ocurrió un error al procesar tu solicitud.");
                     });

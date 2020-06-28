@@ -16,6 +16,8 @@ namespace MusifyTests {
             Account.Login("frey@arkanapp.com", "1230", (account) => {
                 pass = true;
                 autoResetEvent.Set();
+            }, (errorResponse) => {
+                autoResetEvent.Set();
             }, () => {
                 autoResetEvent.Set();
             });
@@ -32,8 +34,9 @@ namespace MusifyTests {
             bool pass = false;
             Account.Login("mlum@arkanapp.com", "123123", (account) => {
                 autoResetEvent.Set();
+            }, (errorResponse) => {
+                autoResetEvent.Set();
             }, () => {
-                pass = true;
                 autoResetEvent.Set();
             });
             autoResetEvent.WaitOne();
@@ -55,6 +58,8 @@ namespace MusifyTests {
             };
             account.Register(false, () => {
                 pass = true;
+                autoResetEvent.Set();
+            }, (errorResponse) => {
                 autoResetEvent.Set();
             }, () => {
                 autoResetEvent.Set();
@@ -78,8 +83,9 @@ namespace MusifyTests {
             };
             account.Register(false, () => {
                 autoResetEvent.Set();
+            }, (errorResponse) => {
+                autoResetEvent.Set();
             }, () => {
-                pass = true;
                 autoResetEvent.Set();
             });
             autoResetEvent.WaitOne();
@@ -101,6 +107,8 @@ namespace MusifyTests {
             };
             account.Register(true, () => {
                 pass = true;
+                autoResetEvent.Set();
+            }, (errorResponse) => {
                 autoResetEvent.Set();
             }, () => {
                 autoResetEvent.Set();
@@ -124,8 +132,10 @@ namespace MusifyTests {
             };
             account.Register(true, () => {
                 autoResetEvent.Set();
-            }, () => {
+            }, (errorResponse) => {
                 pass = true;
+                autoResetEvent.Set();
+            }, () => {
                 autoResetEvent.Set();
             }, "Freya Stroud");
             autoResetEvent.WaitOne();
@@ -143,9 +153,13 @@ namespace MusifyTests {
                 account.FetchArtist(() => {
                     pass = true;
                     autoResetEvent.Set();
+                }, (errorResponse) => {
+                    autoResetEvent.Set();
                 }, () => {
                     autoResetEvent.Set();
                 });
+            }, (errorResponse) => {
+                autoResetEvent.Set();
             }, () => {
                 autoResetEvent.Set();
             });
@@ -164,9 +178,13 @@ namespace MusifyTests {
                 account.FetchAccountSongs(() => {
                     pass = true;
                     autoResetEvent.Set();
+                }, (errorResponse) => {
+                    autoResetEvent.Set();
                 }, () => {
                     autoResetEvent.Set();
                 });
+            }, (errorResponse) => {
+                autoResetEvent.Set();
             }, () => {
                 autoResetEvent.Set();
             });
@@ -188,9 +206,13 @@ namespace MusifyTests {
                 account.AddAccountSongs(fileSongsPath, () => {
                     pass = true;
                     autoResetEvent.Set();
+                }, (errorResponse) => {
+                    autoResetEvent.Set();
                 }, () => {
                     autoResetEvent.Set();
                 });
+            }, (errorResponse) => {
+                autoResetEvent.Set();
             }, () => {
                 autoResetEvent.Set();
             });
@@ -210,12 +232,18 @@ namespace MusifyTests {
                     account.DeleteAccountSong(account.AccountSongs.FirstOrDefault(), () => {
                         pass = true;
                         autoResetEvent.Set();
+                    }, (errorResponse) => {
+                        autoResetEvent.Set();
                     }, () => {
                         autoResetEvent.Set();
                     });
+                }, (errorResponse) => {
+                    autoResetEvent.Set();
                 }, () => {
                     autoResetEvent.Set();
                 });
+            }, (errorResponse) => {
+                autoResetEvent.Set();
             }, () => {
                 autoResetEvent.Set();
             });
@@ -237,9 +265,13 @@ namespace MusifyTests {
                 account.LikeSong(song, () => {
                     pass = true;
                     autoResetEvent.Set();
+                }, (errorResponse) => {
+                    autoResetEvent.Set();
                 }, () => {
                     autoResetEvent.Set();
                 });
+            }, (errorResponse) => {
+                autoResetEvent.Set();
             }, () => {
                 autoResetEvent.Set();
             });
@@ -261,9 +293,13 @@ namespace MusifyTests {
                 account.DislikeSong(song, () => {
                     pass = true;
                     autoResetEvent.Set();
+                }, (errorResponse) => {
+                    autoResetEvent.Set();
                 }, () => {
                     autoResetEvent.Set();
                 });
+            }, (errorResponse) => {
+                autoResetEvent.Set();
             }, () => {
                 autoResetEvent.Set();
             });
@@ -285,9 +321,13 @@ namespace MusifyTests {
                 account.UnlikeSong(song, () => {
                     pass = true;
                     autoResetEvent.Set();
+                }, (errorResponse) => {
+                    autoResetEvent.Set();
                 }, () => {
                     autoResetEvent.Set();
                 });
+            }, (errorResponse) => {
+                autoResetEvent.Set();
             }, () => {
                 autoResetEvent.Set();
             });
@@ -309,9 +349,13 @@ namespace MusifyTests {
                 account.UndislikeSong(song, () => {
                     pass = true;
                     autoResetEvent.Set();
+                }, (errorResponse) => {
+                    autoResetEvent.Set();
                 }, () => {
                     autoResetEvent.Set();
                 });
+            }, (errorResponse) => {
+                autoResetEvent.Set();
             }, () => {
                 autoResetEvent.Set();
             });
@@ -330,11 +374,13 @@ namespace MusifyTests {
                 account.FetchSubscription((subscription) => {
                     pass = true;
                     autoResetEvent.Set();
-                }, () => {
+                }, (errorResponse) => {
                     autoResetEvent.Set();
                 }, () => {
                     autoResetEvent.Set();
                 });
+            }, (errorResponse) => {
+                autoResetEvent.Set();
             }, () => {
                 autoResetEvent.Set();
             });
@@ -353,11 +399,13 @@ namespace MusifyTests {
                 account.Subscribe((subscription) => {
                     pass = true;
                     autoResetEvent.Set();
-                }, () => {
+                }, (errorResponse) => {
                     autoResetEvent.Set();
                 }, () => {
                     autoResetEvent.Set();
                 });
+            }, (errorResponse) => {
+                autoResetEvent.Set();
             }, () => {
                 autoResetEvent.Set();
             });

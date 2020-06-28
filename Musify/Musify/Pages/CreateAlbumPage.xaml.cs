@@ -1,20 +1,11 @@
 ﻿using Forms = System.Windows.Forms;
 using Musify.Models;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Musify.Pages {
     /// <summary>
@@ -56,6 +47,8 @@ namespace Musify.Pages {
                 foreach (var artist in artists) {
                     artistsFoundListBox.Items.Add(artist);
                 }
+            }, (errorResponse) => {
+                MessageBox.Show(errorResponse.Message);
             }, () => {
                 MessageBox.Show("Ocurrió un error al cargar los artistas.");
             });
@@ -135,6 +128,8 @@ namespace Musify.Pages {
                 artistsList.Add(Session.Account.Artist);
                 songsList.Clear();
                 MessageBox.Show("Se creó el álbum con éxito. Las canciones se están procesando.");
+            }, (errorResponse) => {
+                MessageBox.Show(errorResponse.Message);
             }, () => {
                 MessageBox.Show("Ocurrió un error al crear el álbum.");
             });

@@ -18,9 +18,13 @@ namespace MusifyTests {
                 Playlist.FetchByAccountId(account.AccountId, (playlists) => {
                     pass = true;
                     autoResetEvent.Set();
+                }, (errorResponse) => {
+                    autoResetEvent.Set();
                 }, () => {
                     autoResetEvent.Set();
                 });
+            }, (errorResponse) => {
+                autoResetEvent.Set();
             }, () => {
                 autoResetEvent.Set();
             });
@@ -44,12 +48,18 @@ namespace MusifyTests {
                     playlists.FirstOrDefault().FetchSongs(() => {
                         pass = true;
                         autoResetEvent.Set();
+                    }, (errorMessage) => {
+                        autoResetEvent.Set();
                     }, () => {
                         autoResetEvent.Set();
                     });
+                }, (errorResponse) => {
+                    autoResetEvent.Set();
                 }, () => {
                     autoResetEvent.Set();
                 });
+            }, (errorResponse) => {
+                autoResetEvent.Set();
             }, () => {
                 autoResetEvent.Set();
             });
@@ -72,9 +82,13 @@ namespace MusifyTests {
                 playlist.Save((createdPlaylist) => {
                     pass = true;
                     autoResetEvent.Set();
+                }, (errorResponse) => {
+                    autoResetEvent.Set();
                 }, () => {
                     autoResetEvent.Set();
                 });
+            }, (errorResponse) => {
+                autoResetEvent.Set();
             }, () => {
                 autoResetEvent.Set();
             });
@@ -100,12 +114,18 @@ namespace MusifyTests {
                     playlist.Save((renamedPlaylist) => {
                         pass = true;
                         autoResetEvent.Set();
+                    }, (errorResponse) => {
+                        autoResetEvent.Set();
                     }, () => {
                         autoResetEvent.Set();
                     });
+                }, (errorResponse) => {
+                    autoResetEvent.Set();
                 }, () => {
                     autoResetEvent.Set();
                 });
+            }, (errorResponse) => {
+                autoResetEvent.Set();
             }, () => {
                 autoResetEvent.Set();
             });
@@ -133,12 +153,18 @@ namespace MusifyTests {
                     playlist.AddSong(song, () => {
                         pass = true;
                         autoResetEvent.Set();
+                    }, (errorResponse) => {
+                        autoResetEvent.Set();
                     }, () => {
                         autoResetEvent.Set();
                     });
+                }, (errorResponse) => {
+                    autoResetEvent.Set();
                 }, () => {
                     autoResetEvent.Set();
                 });
+            }, (errorResponse) => {
+                autoResetEvent.Set();
             }, () => {
                 autoResetEvent.Set();
             });
@@ -166,12 +192,18 @@ namespace MusifyTests {
                     playlist.DeleteSong(song, () => {
                         pass = true;
                         autoResetEvent.Set();
+                    }, (errorResponse) => {
+                        autoResetEvent.Set();
                     }, () => {
                         autoResetEvent.Set();
                     });
+                }, (errorResponse) => {
+                    autoResetEvent.Set();
                 }, () => {
                     autoResetEvent.Set();
                 });
+            }, (errorResponse) => {
+                autoResetEvent.Set();
             }, () => {
                 autoResetEvent.Set();
             });
@@ -196,12 +228,18 @@ namespace MusifyTests {
                     playlist.Delete(() => {
                         pass = true;
                         autoResetEvent.Set();
+                    }, (errorResponse) => {
+                        autoResetEvent.Set();
                     }, () => {
                         autoResetEvent.Set();
                     });
+                }, (errorResponse) => {
+                    autoResetEvent.Set();
                 }, () => {
                     autoResetEvent.Set();
                 });
+            }, (errorResponse) => {
+                autoResetEvent.Set();
             }, () => {
                 autoResetEvent.Set();
             });

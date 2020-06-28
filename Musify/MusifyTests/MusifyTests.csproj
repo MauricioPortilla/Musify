@@ -53,6 +53,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AccountSongTests.cs" />
     <Compile Include="PlaylistTests.cs" />
+    <Compile Include="SongTests.cs" />
+    <Compile Include="ArtistTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -1,20 +1,10 @@
 ﻿using MaterialDesignThemes.Wpf;
 using Musify.Models;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using static Musify.Models.Album;
 using static Musify.Models.Artist;
 using static Musify.Models.Song;
@@ -72,8 +62,10 @@ namespace Musify.Pages {
                             Duration = song.Duration
                         });
                     }
+                }, (errorMessage) => {
+                    MessageBox.Show(errorMessage.Message);
                 }, () => {
-                    MessageBox.Show("Ocurrió un error al cargar las canciones.");
+                    MessageBox.Show("Ocurrió un error al cargar la información.");
                 });
             } else if (searchTabControl.SelectedIndex == 1) {
                 Album.FetchByNameCoincidences(searchTextBox.Text, (albums) => {
@@ -87,8 +79,10 @@ namespace Musify.Pages {
                             LaunchYear = album.LaunchYear
                         });
                     }
+                }, (errorResponse) => {
+                    MessageBox.Show(errorResponse.Message);
                 }, () => {
-                    MessageBox.Show("Ocurrió un error al cargar los álbumes.");
+                    MessageBox.Show("Ocurrió un error al cargar la información.");
                 });
             } else if (searchTabControl.SelectedIndex == 2) {
                 Artist.FetchByArtisticNameCoincidences(searchTextBox.Text, (artists) => {
@@ -99,8 +93,10 @@ namespace Musify.Pages {
                             ArtisticName = artist.ArtisticName
                         });
                     }
+                }, (errorResponse) => {
+                    MessageBox.Show(errorResponse.Message);
                 }, () => {
-                    MessageBox.Show("Ocurrió un error al cargar los artistas.");
+                    MessageBox.Show("Ocurrió un error al cargar la información.");
                 });
             }
         }

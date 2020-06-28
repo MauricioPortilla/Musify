@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using System.Reflection;
@@ -13,8 +10,19 @@ using System.IO;
 namespace Musify {
     class RestSharpTools {
 
+        /// <summary>
+        /// Sends a GET request.
+        /// </summary>
+        /// <param name="resource">API Resource</param>
+        /// <param name="parameters">Query parameters</param>
+        /// <param name="onSuccess">On response code is success</param>
+        /// <param name="onFailure">On response code is failure</param>
+        /// <param name="onError">On raised exception</param>
         public static async void GetAsync(
-            string resource, dynamic parameters, Action<IRestResponse> callback
+            string resource, dynamic parameters, 
+            Action<NetworkResponse> onSuccess,
+            Action<NetworkResponse> onFailure,
+            Action onError
         ) {
             try {
                 var request = new RestRequest(resource, DataFormat.Json);
@@ -23,9 +31,13 @@ namespace Musify {
                 }
                 request.AddHeader("Authorization", Session.AccessToken ?? "");
                 var response = await Session.REST_CLIENT.ExecuteGetAsync(request, new CancellationTokenSource().Token);
-                callback(response);
+                if (response.IsSuccessful) {
+                    onSuccess(new NetworkResponse(JObject.Parse(response.Content)));
+                } else {
+                    onFailure(new NetworkResponse(JObject.Parse(response.Content)));
+                }
             } catch (Exception) {
-                throw;
+                onError();
             }
         }
 
@@ -36,10 +48,14 @@ namespace Musify {
         /// <param name="resource">API Resource</param>
         /// <param name="parameters">Query parameters</param>
         /// <param name="jsonEquivalents">JSON attributes equivalent to Model attributes</param>
-        /// <param name="callback">Callback with response received from request</param>
+        /// <param name="onSuccess">On response code is success</param>
+        /// <param name="onFailure">On response code is failure</param>
+        /// <param name="onError">On raised exception</param>
         public static async void GetAsync<TModel>(
             string resource, dynamic parameters, Dictionary<string, string> jsonEquivalents,
-            Action<IRestResponse<TModel>> callback
+            Action<NetworkResponse<TModel>> onSuccess,
+            Action<NetworkResponse> onFailure,
+            Action onError
         ) where TModel : new() {
             try {
                 var request = new RestRequest(resource, DataFormat.Json);
@@ -51,10 +67,16 @@ namespace Musify {
                 dynamic json = JObject.Parse(response.Content);
                 if (json["status"] != null && json["status"] == "success") {
                     response.Data = FromJsonToObject<TModel>(response.Content, jsonEquivalents);
+                    if (response.IsSuccessful) {
+                        onSuccess(new NetworkResponse<TModel>(json, response.Data));
+                    } else {
+                        onFailure(new NetworkResponse(json));
+                    }
+                } else {
+                    onFailure(new NetworkResponse(json));
                 }
-                callback(response);
             } catch (Exception) {
-                throw;
+                onError();
             }
         }
 
@@ -65,10 +87,14 @@ namespace Musify {
         /// <param name="resource">API Resource</param>
         /// <param name="parameters">Query parameters</param>
         /// <param name="jsonEquivalents">JSON attributes equivalent to Model attributes</param>
-        /// <param name="callback">Callback with response received from request</param>
+        /// <param name="onSuccess">On response code is success</param>
+        /// <param name="onFailure">On response code is failure</param>
+        /// <param name="onError">On raised exception</param>
         public static async void GetAsyncMultiple<TModel>(
             string resource, dynamic parameters, Dictionary<string, string> jsonEquivalents,
-            Action<IRestResponse, List<TModel>> callback
+            Action<NetworkResponse<List<TModel>>> onSuccess,
+            Action<NetworkResponse> onFailure,
+            Action onError
         ) where TModel : new() {
             try {
                 var request = new RestRequest(resource, DataFormat.Json);
@@ -77,13 +103,16 @@ namespace Musify {
                 }
                 request.AddHeader("Authorization", Session.AccessToken ?? "");
                 var response = await Session.REST_CLIENT.ExecuteGetAsync(request, new CancellationTokenSource().Token);
+                dynamic json = JObject.Parse(response.Content);
                 List<TModel> objects = new List<TModel>();
                 if (response.IsSuccessful) {
                     objects = FromJsonToObjectsList<TModel>(response.Content, jsonEquivalents);
+                    onSuccess(new NetworkResponse<List<TModel>>(json, objects));
+                } else {
+                    onFailure(new NetworkResponse(json));
                 }
-                callback(response, objects);
             } catch (Exception) {
-                throw;
+                onError();
             }
         }
 
@@ -94,10 +123,14 @@ namespace Musify {
         /// <param name="resource">API Resource</param>
         /// <param name="parameters">JSON body struct</param>
         /// <param name="jsonEquivalents">JSON attributes equivalent to Model attributes</param>
-        /// <param name="callback">Callback with response received from request</param>
+        /// <param name="onSuccess">On response code is success</param>
+        /// <param name="onFailure">On response code is failure</param>
+        /// <param name="onError">On raised exception</param>
         public static async void PostAsync<TModel>(
-            string resource, dynamic parameters, Dictionary<string, string> jsonEquivalents, 
-            Action<IRestResponse<TModel>> callback
+            string resource, dynamic parameters, Dictionary<string, string> jsonEquivalents,
+            Action<NetworkResponse<TModel>> onSuccess,
+            Action<NetworkResponse> onFailure,
+            Action onError
         ) where TModel : new() {
             try {
                 var request = new RestRequest(resource, DataFormat.Json);
@@ -107,10 +140,16 @@ namespace Musify {
                 dynamic json = JObject.Parse(response.Content);
                 if (json["status"] != null && json["status"] == "success") {
                     response.Data = FromJsonToObject<TModel>(response.Content, jsonEquivalents);
+                    if (response.IsSuccessful) {
+                        onSuccess(new NetworkResponse<TModel>(json, response.Data));
+                    } else {
+                        onFailure(new NetworkResponse(json));
+                    }
+                } else {
+                    onFailure(new NetworkResponse(json));
                 }
-                callback(response);
             } catch (Exception) {
-                throw;
+                onError();
             }
         }
 
@@ -119,17 +158,28 @@ namespace Musify {
         /// </summary>
         /// <param name="resource">API Resource</param>
         /// <param name="parameters">JSON body struct</param>
-        /// <param name="callback">Callback with response received from request</param>
-        public static async void PostAsync(string resource, dynamic parameters, Action<IRestResponse> callback) {
+        /// <param name="onSuccess">On response code is success</param>
+        /// <param name="onFailure">On response code is failure</param>
+        /// <param name="onError">On raised exception</param>
+        public static async void PostAsync(
+            string resource, dynamic parameters,
+            Action<NetworkResponse> onSuccess,
+            Action<NetworkResponse> onFailure,
+            Action onError
+        ) {
             try {
                 var request = new RestRequest(resource);
                 request.RequestFormat = DataFormat.Json;
                 request.AddJsonBody(parameters);
                 request.AddHeader("Authorization", Session.AccessToken ?? "");
                 var response = await Session.REST_CLIENT.ExecutePostAsync(request, new CancellationTokenSource().Token);
-                callback(response);
+                if (response.IsSuccessful) {
+                    onSuccess(new NetworkResponse(JObject.Parse(response.Content)));
+                } else {
+                    onFailure(new NetworkResponse(JObject.Parse(response.Content)));
+                }
             } catch (Exception) {
-                throw;
+                onError();
             }
         }
 
@@ -141,10 +191,15 @@ namespace Musify {
         /// <param name="parameters">JSON body struct</param>
         /// <param name="fileRoutes">File routes to include in request</param>
         /// <param name="jsonEquivalents">JSON attributes equivalent to Model attributes</param>
-        /// <param name="callback">Callback with response received from request</param>
+        /// <param name="onSuccess">On response code is success</param>
+        /// <param name="onFailure">On response code is failure</param>
+        /// <param name="onError">On raised exception</param>
         public static async void PostMultimediaAsync<TModel>(
             string resource, dynamic parameters, string[] fileRoutes, 
-            Dictionary<string, string> jsonEquivalents, Action<IRestResponse, List<TModel>> callback
+            Dictionary<string, string> jsonEquivalents, 
+            Action<NetworkResponse<List<TModel>>> onSuccess,
+            Action<NetworkResponse> onFailure,
+            Action onError
         ) where TModel : new() {
             try {
                 var request = new RestRequest(resource);
@@ -162,12 +217,14 @@ namespace Musify {
                 var response = await Session.REST_CLIENT.ExecutePostAsync<TModel>(request, new CancellationTokenSource().Token);
                 dynamic json = JObject.Parse(response.Content);
                 List<TModel> objects = new List<TModel>();
-                if (json["status"] != null && json["status"] == "success") {
+                if (response.IsSuccessful) {
                     objects = FromJsonToObjectsList<TModel>(response.Content, jsonEquivalents);
+                    onSuccess(new NetworkResponse<List<TModel>>(json, objects));
+                } else {
+                    onFailure(new NetworkResponse(json));
                 }
-                callback(response, objects);
             } catch (Exception) {
-                throw;
+                onError();
             }
         }
 
@@ -178,10 +235,14 @@ namespace Musify {
         /// <param name="resource">API Resource</param>
         /// <param name="parameters">JSON body struct</param>
         /// <param name="jsonEquivalents">JSON attributes equivalent to Model attributes</param>
-        /// <param name="callback">Callback with response received from request</param>
+        /// <param name="onSuccess">On response code is success</param>
+        /// <param name="onFailure">On response code is failure</param>
+        /// <param name="onError">On raised exception</param>
         public static async void PutAsync<TModel>(
-            string resource, dynamic parameters, Dictionary<string, string> jsonEquivalents, 
-            Action<IRestResponse<TModel>> callback
+            string resource, dynamic parameters, Dictionary<string, string> jsonEquivalents,
+            Action<NetworkResponse<TModel>> onSuccess,
+            Action<NetworkResponse> onFailure,
+            Action onError
         ) where TModel : new() {
             try {
                 var request = new RestRequest(resource, DataFormat.Json);
@@ -191,10 +252,16 @@ namespace Musify {
                 dynamic json = JObject.Parse(response.Content);
                 if (json["status"] != null && json["status"] == "success") {
                     response.Data = FromJsonToObject<TModel>(response.Content, jsonEquivalents);
+                    if (response.IsSuccessful) {
+                        onSuccess(new NetworkResponse<TModel>(json, response.Data));
+                    } else {
+                        onFailure(new NetworkResponse(json));
+                    }
+                } else {
+                    onFailure(new NetworkResponse(json));
                 }
-                callback(response);
             } catch (Exception) {
-                throw;
+                onError();
             }
         }
 
@@ -203,16 +270,27 @@ namespace Musify {
         /// </summary>
         /// <param name="resource">API Resource</param>
         /// <param name="parameters">JSON body struct</param>
-        /// <param name="callback">Callback with response received from request</param>
-        public static async void DeleteAsync(string resource, dynamic parameters, Action<IRestResponse> callback) {
+        /// <param name="onSuccess">On response code is success</param>
+        /// <param name="onFailure">On response code is failure</param>
+        /// <param name="onError">On raised exception</param>
+        public static async void DeleteAsync(
+            string resource, dynamic parameters,
+            Action<NetworkResponse> onSuccess,
+            Action<NetworkResponse> onFailure,
+            Action onError
+        ) {
             try {
                 var request = new RestRequest(resource, DataFormat.Json);
                 request.AddJsonBody(parameters);
                 request.AddHeader("Authorization", Session.AccessToken ?? "");
                 var response = await Session.REST_CLIENT.ExecuteAsync(request, Method.DELETE, new CancellationTokenSource().Token);
-                callback(response);
+                if (response.IsSuccessful) {
+                    onSuccess(new NetworkResponse(JObject.Parse(response.Content)));
+                } else {
+                    onFailure(new NetworkResponse(JObject.Parse(response.Content)));
+                }
             } catch (Exception) {
-                throw;
+                onError();
             }
         }
 

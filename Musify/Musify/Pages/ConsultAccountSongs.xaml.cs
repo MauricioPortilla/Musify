@@ -3,18 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using Forms = System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using static Musify.Models.AccountSong;
 using MaterialDesignThemes.Wpf;
 
@@ -38,6 +30,8 @@ namespace Musify.Pages {
             DataContext = this;
             Session.Account.FetchAccountSongs(() => {
                 SetAccountSongs();
+            }, (errorResponse) => {
+                MessageBox.Show(errorResponse.Message);
             }, () => {
                 MessageBox.Show("Ocurrió un error al cargar las canciones.");
             });
@@ -72,7 +66,7 @@ namespace Musify.Pages {
         }
 
         /// <summary>
-        /// Opens up a dialog to add to play queue.
+        /// Shows up a dialog to add to play queue.
         /// </summary>
         /// <param name="sender">Button</param>
         /// <param name="e">Event</param>
@@ -132,11 +126,13 @@ namespace Musify.Pages {
                     Session.Account.AddAccountSongs(selectedFiles, () => {
                         SetAccountSongs();
                         MessageBox.Show("Canciones cargadas con éxito.");
+                    }, (errorResponse) => {
+                        MessageBox.Show(errorResponse.Message);
                     }, () => {
-                        MessageBox.Show("Ocurrió un error al subir la canción.");
+                        MessageBox.Show("Ocurrió un error al cargar las canciones.");
                     });
                 } catch (Exception) {
-                    MessageBox.Show("Ocurrió un error al subir la canción.");
+                    MessageBox.Show("Ocurrió un error al cargar las canciones.");
                 }
             }
         }
@@ -155,6 +151,8 @@ namespace Musify.Pages {
             Session.Account.DeleteAccountSong(accountSongSelected, () => {
                 accountSongList.Remove((AccountSongTable) accountSongsDataGrid.SelectedItem);
                 MessageBox.Show("Canción eliminada.");
+            }, (errorResponse) => {
+                MessageBox.Show(errorResponse.Message);
             }, () => {
                 MessageBox.Show("Ocurrió un error al eliminar la canción.");
             });

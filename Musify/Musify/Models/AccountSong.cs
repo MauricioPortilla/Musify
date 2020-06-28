@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Musify.Models {
     public class AccountSong {
@@ -71,20 +68,20 @@ namespace Musify.Models {
         /// <param name="SongId">Song ID</param>
         /// <param name="onSuccess">On success</param>
         /// <param name="onFailure">On failure</param>
-        public static void FetchById(int accountSongId, Action<AccountSong> onSuccess, Action onFailure) {
-            try {
-                RestSharpTools.GetAsync<AccountSong>("/account/" + Session.Account.AccountId + "/accountsong/" + accountSongId, null, JSON_EQUIVALENTS, (response) => {
-                    if (response.IsSuccessful) {
-                        onSuccess(response.Data);
-                    } else {
-                        onFailure();
-                    }
-                });
-            } catch (Exception exception) {
-                Console.WriteLine("Exception@Song->FetchById() -> " + exception.Message);
-                //onFailure?.Invoke();
-                throw;
-            }
+        /// <param name="onError">On error</param>
+        public static void FetchById(int accountSongId, Action<AccountSong> onSuccess, Action<NetworkResponse> onFailure, Action onError) {
+            RestSharpTools.GetAsync<AccountSong>(
+                "/account/" + Session.Account.AccountId + "/accountsong/" + accountSongId, 
+                null, JSON_EQUIVALENTS, 
+                (response) => {
+                    onSuccess(response.Model);
+                }, (errorResponse) => {
+                    onFailure?.Invoke(errorResponse);
+                }, () => {
+                    Console.WriteLine("Exception@Song->FetchById()");
+                    onError?.Invoke();
+                }
+            );
         }
     }
 }

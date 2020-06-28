@@ -1,9 +1,4 @@
 ﻿using Musify.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -25,7 +20,7 @@ namespace Musify {
                     if (grid != null && grid.SelectedItems != null && grid.SelectedItems.Count == 1) {
                         var songRow = (SongTable) grid.SelectedItem;
                         Song song = songRow.Song;
-                        Session.PlayerPage.PlaySong(song);
+                        Session.PlayerPage.PlaySong(song, false);
                     }
                 }
             }
@@ -44,7 +39,7 @@ namespace Musify {
                     if (grid != null && grid.SelectedItems != null && grid.SelectedItems.Count == 1) {
                         var accountSongRow = (AccountSongTable) grid.SelectedItem;
                         AccountSong accountSong = accountSongRow.AccountSong;
-                        Session.PlayerPage.PlayAccountSong(accountSong);
+                        Session.PlayerPage.PlayAccountSong(accountSong, false);
                     }
                 }
             }

@@ -63,7 +63,7 @@
             <TextBlock Text="Descargar" VerticalAlignment="Center" Margin="0,0,10,0"></TextBlock>
             <Button x:Name="deletePlaylistButton" Content="Eliminar lista" HorizontalAlignment="Left" VerticalAlignment="Center" Width="142" Margin="0,0,8,0" Click="DeletePlaylistButton_Click"/>
             <Menu Height="30" BorderThickness="0">
-                <MenuItem Header="..." Height="30" Background="#FF607D8B" Foreground="White" FontSize="12" Width="40">
+                <MenuItem Header="..." Height="30" Background="#FF607D8B" Foreground="White" FontSize="12" Width="49">
                     <MenuItem x:Name="RenamePlaylistMenuItem" Header="Renombrar lista" Background="#FF607D8B" Click="RenamePlaylistMenuItem_Click"/>
                     <MenuItem x:Name="DeleteSongMenuItem" Header="Eliminar canción" Background="#FF607D8B" Click="DeleteSongMenuItem_Click"/>
                 </MenuItem>

@@ -3,18 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace Musify {
     /// <summary>
@@ -23,6 +14,9 @@ namespace Musify {
     public partial class MainWindow : Window {
         private Timer calculateDownloadSpeedTimer;
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
         public MainWindow() {
             InitializeComponent();
             Session.MainWindow = this;
@@ -50,6 +44,9 @@ namespace Musify {
             }, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
         }
 
+        /// <summary>
+        /// Loads user configuration.
+        /// </summary>
         public void LoadConfiguration() {
             if (Session.Account.Artist.ArtisticName != null) {
                 CreateAlbumMenuItem.Visibility = Visibility.Visible;
@@ -61,6 +58,9 @@ namespace Musify {
             LoadGenresIdRadioStations();
         }
 
+        /// <summary>
+        /// Loads all songs in play queue.
+        /// </summary>
         public void LoadSongsIdPlayQueue() {
             string file = App.DATA_SONGS_DIRECTORY + "/playQueue" + Session.Account.AccountId;
             if (File.Exists(file)) {
@@ -74,6 +74,9 @@ namespace Musify {
             }
         }
 
+        /// <summary>
+        /// Loads all songs in play history.
+        /// </summary>
         public void LoadSongsIdPlayHistory() {
             string file = App.DATA_SONGS_DIRECTORY + "/playHistory" + Session.Account.AccountId;
             if (File.Exists(file)) {
@@ -88,6 +91,9 @@ namespace Musify {
             Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
         }
 
+        /// <summary>
+        /// Loads player configuration.
+        /// </summary>
         public void LoadConfigurationPlayer() {
             string file = App.DATA_PLAYER_DIRECTORY + "/player" + Session.Account.AccountId;
             if (File.Exists(file)) {
@@ -115,6 +121,9 @@ namespace Musify {
             }
         }
 
+        /// <summary>
+        /// Loads all radio stations stored.
+        /// </summary>
         public void LoadGenresIdRadioStations() {
             string file = App.DATA_STATIONS_DIRECTORY + "/stations" + Session.Account.AccountId;
             if (File.Exists(file)) {
@@ -128,6 +137,11 @@ namespace Musify {
             }
         }
 
+        /// <summary>
+        /// Shows up the menu.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         public void MenuButton_Click(object sender, RoutedEventArgs e) {
             MenuItem button = (MenuItem) sender;
             string opcion = button.Name;
@@ -162,6 +176,11 @@ namespace Musify {
             TitleBar.Text = button.Header.ToString();
         }
 
+        /// <summary>
+        /// Stores user data before closing the window.
+        /// </summary>
+        /// <param name="sender">Window</param>
+        /// <param name="e">Event</param>
         private void Window_Closing(object sender, CancelEventArgs e) {
             App.CreateDirectories();
             string file = App.DATA_SONGS_DIRECTORY + "/playHistory" + Session.Account.AccountId;
@@ -236,8 +255,8 @@ namespace Musify {
             if (messageDialog == MessageBoxResult.Yes) {
                 Session.Account.Subscribe((subscription) => {
                     MessageBox.Show("Cuenta suscrita.");
-                }, () => {
-                    MessageBox.Show("Ocurrió un error al intentar suscribirse.");
+                }, (errorResponse) => {
+                    MessageBox.Show(errorResponse.Message);
                 }, () => {
                     MessageBox.Show("Ocurrió un error al intentar suscribirse.");
                 });

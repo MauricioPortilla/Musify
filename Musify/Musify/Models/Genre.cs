@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Musify.Models {
     public class Genre {
@@ -38,19 +35,16 @@ namespace Musify.Models {
         /// <param name="genreId">Genre ID</param>
         /// <param name="onSuccess">On success</param>
         /// <param name="onFailure">On failure</param>
-        public static void FetchById(int genreId, Action<Genre> onSuccess, Action onFailure) {
-            try {
-                RestSharpTools.GetAsync<Genre>("/genre/" + genreId, null, JSON_EQUIVALENTS, (response) => {
-                    if (response.IsSuccessful) {
-                        onSuccess(response.Data);
-                    } else {
-                        onFailure();
-                    }
-                });
-            } catch (Exception exception) {
-                Console.WriteLine("Exception@Genre->FetchById() -> " + exception.Message);
-                onFailure?.Invoke();
-            }
+        /// <param name="onError">On error</param>
+        public static void FetchById(int genreId, Action<Genre> onSuccess, Action<NetworkResponse> onFailure, Action onError) {
+            RestSharpTools.GetAsync<Genre>("/genre/" + genreId, null, JSON_EQUIVALENTS, (response) => {
+                onSuccess(response.Model);
+            }, (errorResponse) => {
+                onFailure?.Invoke(errorResponse);
+            }, () => {
+                Console.WriteLine("Exception@Genre->FetchById()");
+                onError();
+            });
         }
 
         /// <summary>
@@ -58,19 +52,14 @@ namespace Musify.Models {
         /// </summary>
         /// <param name="onSuccess">On success</param>
         /// <param name="onFailure">On failure</param>
-        public static void FetchAll(Action<List<Genre>> onSuccess, Action onFailure) {
-            try {
-                RestSharpTools.GetAsyncMultiple<Genre>("/genres", null, JSON_EQUIVALENTS, (response, genres) => {
-                    if (response.IsSuccessful) {
-                        onSuccess(genres);
-                    } else {
-                        onFailure();
-                    }
-                });
-            } catch (Exception exception) {
-                Console.WriteLine("Exception@Genre->FetchAll() -> " + exception.Message);
-                onFailure?.Invoke();
-            }
+        /// <param name="onError">On error</param>
+        public static void FetchAll(Action<List<Genre>> onSuccess, Action<NetworkResponse> onFailure, Action onError) {
+            RestSharpTools.GetAsyncMultiple<Genre>("/genres", null, JSON_EQUIVALENTS, (response) => {
+                onSuccess(response.Model);
+            }, onFailure, () => {
+                onError?.Invoke();
+                Console.WriteLine("Exception@Genre->FetchAll()");
+            });
         }
 
         /// <summary>
@@ -78,30 +67,25 @@ namespace Musify.Models {
         /// </summary>
         /// <param name="onSuccess">On success</param>
         /// <param name="onFailure">On failure</param>
-        public void FetchSongs(Action<List<Song>> onSuccess, Action onFailure) {
-            try {
-                RestSharpTools.GetAsyncMultiple<Song>("/genre/" + genreId + "/songs", null, Song.JSON_EQUIVALENTS, (response, objects) => {
-                    if (response.IsSuccessful) {
-                        List<Song> songs = objects;
-                        foreach (var song in songs) {
-                            Album.FetchById(song.AlbumId, (album) => {
-                                song.Album = album;
-                                Genre.FetchById(song.GenreId, (genre) => {
-                                    song.Genre = genre;
-                                    song.FetchArtists(() => {
-                                        onSuccess(songs);
-                                    }, null);
-                                }, null);
-                            }, null);
-                        }
-                    } else {
-                        onFailure?.Invoke();
-                    }
-                });
-            } catch (Exception exception) {
-                Console.WriteLine("Exception@Playlist->FetchSongs() -> " + exception.Message);
-                onFailure?.Invoke();
-            }
+        /// <param name="onError">On error</param>
+        public void FetchSongs(Action<List<Song>> onSuccess, Action<NetworkResponse> onFailure, Action onError) {
+            RestSharpTools.GetAsyncMultiple<Song>("/genre/" + genreId + "/songs", null, Song.JSON_EQUIVALENTS, (response) => {
+                List<Song> songs = response.Model;
+                foreach (var song in songs) {
+                    Album.FetchById(song.AlbumId, (album) => {
+                        song.Album = album;
+                        Genre.FetchById(song.GenreId, (genre) => {
+                            song.Genre = genre;
+                            song.FetchArtists(() => {
+                                onSuccess(songs);
+                            }, null, null);
+                        }, null, null);
+                    }, null, null);
+                }
+            }, onFailure, () => {
+                onError?.Invoke();
+                Console.WriteLine("Exception@Playlist->FetchSongs()");
+            });
         }
 
         /// <summary>
