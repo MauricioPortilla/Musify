@@ -44,7 +44,7 @@ namespace Musify.Pages {
             foreach (int songId in Session.SongsIdSongList) {
                 songsIdPlayQueue.Add(songId);
             }
-            if (songsIdPlayQueue.Count > 0) {
+            if (Session.SongsIdPlayQueue.Count > 0) {
                 deletePlayQueueButton.Visibility = Visibility.Visible;
             } else {
                 deletePlayQueueButton.Visibility = Visibility.Hidden;
@@ -84,12 +84,12 @@ namespace Musify.Pages {
         }
 
         private void PlayQueueDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
-            Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
             if (playQueueDataGrid.SelectedItem is SongTable) {
                 UIFunctions.SongTable_OnDoubleClick(sender, e);
             } else {
                 UIFunctions.AccountSongTable_OnDoubleClick(sender, e);
             }
+            Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
             for (int i = 0; i <= playQueueDataGrid.SelectedIndex; i++) {
                 if (Session.SongsIdPlayQueue.Count > 0) {
                     Session.SongsIdPlayQueue.RemoveAt(0);
@@ -169,7 +169,11 @@ namespace Musify.Pages {
         }
 
         private void RemoveFromQueueMenuItem_Click(object sender, RoutedEventArgs e) {
-            Session.SongsIdPlayQueue.RemoveAt(playQueueDataGrid.SelectedIndex);
+            if (playQueueDataGrid.SelectedIndex < Session.SongsIdPlayQueue.Count) {
+                Session.SongsIdPlayQueue.RemoveAt(playQueueDataGrid.SelectedIndex);
+            } else {
+                Session.SongsIdSongList.RemoveAt(playQueueDataGrid.SelectedIndex - Session.SongsIdPlayQueue.Count);
+            }
             LoadPlayQueue();
         }
     }

@@ -44,11 +44,7 @@ namespace Musify.Pages {
                 }
                 foreach (Album album in artist.Albums) {
                     album.FetchArtists(() => {
-                        album.FetchSongs(() => {
-                            CreateAlbumUI(album);
-                        }, () => {
-                            MessageBox.Show("Ocurrió un error al cargar el artista.");
-                        });
+                        CreateAlbumUI(album);
                     }, () => {
                         MessageBox.Show("Ocurrió un error al cargar el artista.");
                     });
@@ -64,15 +60,20 @@ namespace Musify.Pages {
         /// <param name="album">Album</param>
         private void CreateAlbumUI(Album album) {
             ObservableCollection<SongTable> albumSongsList = new ObservableCollection<SongTable>();
-            foreach (Song albumSong in album.Songs) {
-                albumSongsList.Add(new SongTable {
-                    Album = album,
-                    Song = albumSong,
-                    Title = albumSong.Title,
-                    Duration = albumSong.Duration,
-                    ArtistsNames = albumSong.GetArtistsNames()
-                });
-            }
+            album.FetchSongs(() => {
+                albumSongsList.Clear();
+                foreach (Song albumSong in album.Songs) {
+                    albumSongsList.Add(new SongTable {
+                        Album = album,
+                        Song = albumSong,
+                        Title = albumSong.Title,
+                        Duration = albumSong.Duration,
+                        ArtistsNames = albumSong.GetArtistsNames()
+                    });
+                }
+            }, () => {
+                MessageBox.Show("Ocurrió un error al cargar el artista.");
+            });
             StackPanel mainStackPanel = new StackPanel();
             mainStackPanel.Orientation = Orientation.Vertical;
             StackPanel albumHeaderStackPanel = new StackPanel();
@@ -115,8 +116,8 @@ namespace Musify.Pages {
             albumSongsDataGrid.AutoGenerateColumns = false;
             albumSongsDataGrid.IsReadOnly = true;
             albumSongsDataGrid.MouseDoubleClick += (sender, e) => {
-                Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
                 UIFunctions.SongTable_OnDoubleClick(sender, e);
+                Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
                 Session.SongsIdSongList.Clear();
                 for (int i = albumSongsDataGrid.SelectedIndex + 1; i < albumSongsList.Count; i++) {
                     Session.SongsIdSongList.Add(albumSongsList.ElementAt(i).Song.SongId);

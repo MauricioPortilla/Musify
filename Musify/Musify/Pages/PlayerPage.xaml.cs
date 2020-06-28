@@ -403,8 +403,8 @@ namespace Musify.Pages {
                         try {
                             if (id > 0) {
                                 Song.FetchById(id, (song) => {
-                                    Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
                                     Session.PlayerPage.PlaySong(song);
+                                    Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
                                     if (Session.SongsIdPlayQueue.Count > 0) {
                                         Session.SongsIdPlayQueue.RemoveAt(0);
                                     } else {
@@ -416,8 +416,8 @@ namespace Musify.Pages {
                                 });
                             } else {
                                 AccountSong.FetchById(id * -1, (accountSong) => {
-                                    Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
                                     Session.PlayerPage.PlayAccountSong(accountSong);
+                                    Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
                                     if (Session.SongsIdPlayQueue.Count > 0) {
                                         Session.SongsIdPlayQueue.RemoveAt(0);
                                     } else {

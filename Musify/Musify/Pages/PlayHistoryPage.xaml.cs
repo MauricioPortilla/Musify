@@ -77,12 +77,12 @@ namespace Musify.Pages {
         }
 
         private void PlayHistoryDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
-            Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
             if (playHistoryDataGrid.SelectedItem is SongTable) {
                 UIFunctions.SongTable_OnDoubleClick(sender, e);
             } else {
                 UIFunctions.AccountSongTable_OnDoubleClick(sender, e);
             }
+            Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
             Session.SongsIdSongList.Clear();
             LoadPlayHistory();
         }

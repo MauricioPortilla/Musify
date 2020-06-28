@@ -63,6 +63,7 @@ namespace Musify.Pages {
                     automaticCheckBox.IsChecked = false;
                     break;
                 default:
+                    Session.SongStreamingQuality = "automaticquality";
                     lowCheckBox.IsChecked = false;
                     mediumCheckBox.IsChecked = false;
                     highCheckBox.IsChecked = false;

@@ -57,8 +57,8 @@ namespace Musify.Pages {
         }
 
         private void SongsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
-            Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
             UIFunctions.SongTable_OnDoubleClick(sender, e);
+            Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
             Session.SongsIdSongList.Clear();
             for (int i = songsDataGrid.SelectedIndex + 1; i < songsRadioStation.Count; i++) {
                 Session.SongsIdSongList.Add(songsRadioStation.ElementAt(i).Song.SongId);
