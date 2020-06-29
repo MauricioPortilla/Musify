@@ -1,6 +1,7 @@
 ﻿using MaterialDesignThemes.Wpf;
 using Musify.Models;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -151,6 +152,80 @@ namespace Musify.Pages {
         }
 
         /// <summary>
+        /// Opens up a dialog to add to play queue.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
+        private void AddToQueueMenuItem_Click(object sender, RoutedEventArgs e) {
+            if (songsDataGrid.SelectedItem == null) {
+                MessageBox.Show("Debes seleccionar una canción de la lista.");
+                return;
+            }
+            DialogHost.Show(mainStackPanelAddToQueue, "ConsultPlaylistPage_AddToQueue_WindowDialogHost", (openSender, openEventArgs) => {
+                dialogOpenEventArgs = openEventArgs;
+                dialogAddToQueueGrid.Visibility = Visibility.Visible;
+            }, null);
+        }
+
+        /// <summary>
+        /// Adds the selected song to the beginning of the queue.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
+        private void AddToBelowButton_Click(object sender, RoutedEventArgs e) {
+            List<int> songsIdPlayQueue = new List<int> { ((SongTable)songsDataGrid.SelectedItem).Song.SongId };
+            songsIdPlayQueue.AddRange(Session.SongsIdPlayQueue);
+            Session.SongsIdPlayQueue = songsIdPlayQueue;
+            songsDataGrid.SelectedIndex = -1;
+            dialogOpenEventArgs.Session.Close(true);
+            dialogAddToQueueGrid.Visibility = Visibility.Collapsed;
+        }
+
+        /// <summary>
+        /// Adds the selected song to the end of the queue.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
+        private void AddToTheEndButton_Click(object sender, RoutedEventArgs e) {
+            Session.SongsIdPlayQueue.Add(((SongTable)songsDataGrid.SelectedItem).Song.SongId);
+            songsDataGrid.SelectedIndex = -1;
+            dialogOpenEventArgs.Session.Close(true);
+            dialogAddToQueueGrid.Visibility = Visibility.Collapsed;
+        }
+
+        /// <summary>
+        /// Shows up a new window to add the selected song to a playlist.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
+        private void AddToPlaylistMenuItem_Click(object sender, RoutedEventArgs e) {
+            if (songsDataGrid.SelectedItem == null) {
+                MessageBox.Show("Debes seleccionar una canción de la lista.");
+                return;
+            }
+            new AddSongToPlaylistWindow(((SongTable)songsDataGrid.SelectedItem).Song).Show();
+            songsDataGrid.SelectedIndex = -1;
+        }
+
+        /// <summary>
+        /// Generates a radio station with the selected song.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
+        private void GenerateRadioStationMenuItem_Click(object sender, RoutedEventArgs e) {
+            if (songsDataGrid.SelectedItem == null) {
+                MessageBox.Show("Debes seleccionar una canción de la lista.");
+                return;
+            }
+            if (Session.GenresIdRadioStations.Find(x => x == ((SongTable)songsDataGrid.SelectedItem).Song.Genre.GenreId) == 0) {
+                Session.GenresIdRadioStations.Add(((SongTable)songsDataGrid.SelectedItem).Song.Genre.GenreId);
+            } else {
+                MessageBox.Show("Ya existe la estación de radio de este género.");
+            }
+            songsDataGrid.SelectedIndex = -1;
+        }
+
+        /// <summary>
         /// Deletes the selected song from playlist.
         /// </summary>
         /// <param name="sender">Button</param>
@@ -175,7 +250,7 @@ namespace Musify.Pages {
         /// <param name="sender">MenuItem</param>
         /// <param name="e">Event</param>
         private void RenamePlaylistMenuItem_Click(object sender, RoutedEventArgs e) {
-            DialogHost.Show(mainStackPanel, "ConsultPlaylistPage_WindowDialogHost", (openSender, openEventArgs) => {
+            DialogHost.Show(mainStackPanelRename, "ConsultPlaylistPage_Rename_WindowDialogHost", (openSender, openEventArgs) => {
                 dialogOpenEventArgs = openEventArgs;
                 dialogRenamePlaylistGrid.Visibility = Visibility.Visible;
             }, null);

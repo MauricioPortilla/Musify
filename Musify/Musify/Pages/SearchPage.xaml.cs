@@ -160,10 +160,12 @@ namespace Musify.Pages {
         /// <param name="sender">Button</param>
         /// <param name="e">Event</param>
         private void AddToPlaylistButton_Click(object sender, RoutedEventArgs e) {
-            if (songsDataGrid.SelectedItem != null) {
-                new AddSongToPlaylistWindow(((SongTable)songsDataGrid.SelectedItem).Song).Show();
-                songsDataGrid.SelectedIndex = -1;
+            if (songsDataGrid.SelectedItem == null) {
+                MessageBox.Show("Debes seleccionar una canción de la lista.");
+                return;
             }
+            new AddSongToPlaylistWindow(((SongTable)songsDataGrid.SelectedItem).Song).Show();
+            songsDataGrid.SelectedIndex = -1;
         }
 
         /// <summary>
@@ -172,14 +174,16 @@ namespace Musify.Pages {
         /// <param name="sender">Button</param>
         /// <param name="e">Event</param>
         private void GenerateRadioStationButton_Click(object sender, RoutedEventArgs e) {
-            if (songsDataGrid.SelectedItem != null) {
-                if (Session.GenresIdRadioStations.Find(x => x == ((SongTable)songsDataGrid.SelectedItem).Song.Genre.GenreId) == 0) {
-                    Session.GenresIdRadioStations.Add(((SongTable)songsDataGrid.SelectedItem).Song.Genre.GenreId);
-                } else {
-                    MessageBox.Show("Ya existe la estación de radio de este género.");
-                }
-                songsDataGrid.SelectedIndex = -1;
+            if (songsDataGrid.SelectedItem == null) {
+                MessageBox.Show("Debes seleccionar una canción de la lista.");
+                return;
             }
+            if (Session.GenresIdRadioStations.Find(x => x == ((SongTable)songsDataGrid.SelectedItem).Song.Genre.GenreId) == 0) {
+                Session.GenresIdRadioStations.Add(((SongTable)songsDataGrid.SelectedItem).Song.Genre.GenreId);
+            } else {
+                MessageBox.Show("Ya existe la estación de radio de este género.");
+            }
+            songsDataGrid.SelectedIndex = -1;
         }
 
         /// <summary>

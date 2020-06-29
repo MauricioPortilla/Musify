@@ -121,7 +121,7 @@ namespace Musify.Pages {
                 }
             };
             Dictionary<string, string> columns = new Dictionary<string, string>() {
-                { "Title", "Title" }, { "Duration", "Duración" }
+                { "Title", "Title" }, { "ArtistsNames", "Artista" }, { "Genre", "Género" }, { "Duration", "Duración" }
             };
             foreach (var column in columns) {
                 albumSongsDataGrid.Columns.Add(new DataGridTextColumn {

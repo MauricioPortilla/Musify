@@ -50,6 +50,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccountTests.cs" />
+    <Compile Include="AlbumTest.cs" />
+    <Compile Include="GenreTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AccountSongTests.cs" />
     <Compile Include="PlaylistTests.cs" />

@@ -9,17 +9,36 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="Consultar lista de reproducción" Background="White">
     <Grid>
-        <materialDesign:DialogHost Identifier="ConsultPlaylistPage_WindowDialogHost" IsOpen="False" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <materialDesign:DialogHost Identifier="ConsultPlaylistPage_Rename_WindowDialogHost" IsOpen="False" HorizontalAlignment="Center" VerticalAlignment="Center">
             <materialDesign:DialogHost.DialogContent>
-                <StackPanel Margin="16" x:Name="mainStackPanel">
-                    <Grid x:Name="dialogLoadingGrid" Visibility="Collapsed">
+                <StackPanel Margin="16" x:Name="mainStackPanelRename">
+                    <Grid x:Name="dialogLoadingGridRename" Visibility="Collapsed">
                         <ProgressBar Style="{DynamicResource MaterialDesignCircularProgressBar}" HorizontalAlignment="Center" Margin="16" IsIndeterminate="True" Value="0" />
                     </Grid>
                     <Grid x:Name="dialogRenamePlaylistGrid" Visibility="Collapsed">
                         <StackPanel>
                             <TextBox x:Name="dialogPlaylistNameTextBox" HorizontalAlignment="Left" Height="37" TextWrapping="NoWrap" VerticalAlignment="Top" Width="228" materialDesign:HintAssist.Hint="Nuevo nombre de la lista" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="0,0,0,15" />
                             <Button x:Name="dialogRenamePlaylistButton" Content="Renombrar" Click="RenamePlaylistButton_Click"/>
-                            <Button x:Name="dialogCancelButton" Content="Cancelar" Style="{StaticResource MaterialDesignFlatButton}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"/>
+                            <Button x:Name="dialogCancelRenameButton" Content="Cancelar" Style="{StaticResource MaterialDesignFlatButton}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </materialDesign:DialogHost.DialogContent>
+        </materialDesign:DialogHost>
+        <materialDesign:DialogHost Identifier="ConsultPlaylistPage_AddToQueue_WindowDialogHost" IsOpen="False" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <materialDesign:DialogHost.DialogContent>
+                <StackPanel Margin="16" x:Name="mainStackPanelAddToQueue">
+                    <Grid x:Name="dialogLoadingGridAddToQueue" Visibility="Collapsed">
+                        <ProgressBar Style="{DynamicResource MaterialDesignCircularProgressBar}" HorizontalAlignment="Center" Margin="16" IsIndeterminate="True" Value="0" />
+                    </Grid>
+                    <Grid x:Name="dialogAddToQueueGrid" Visibility="Collapsed">
+                        <StackPanel>
+                            <TextBlock TextAlignment="Center" TextWrapping="NoWrap" Text="Agregar ..." VerticalAlignment="Top" FontSize="20" Margin="0,0,0,15"/>
+                            <StackPanel Orientation="Horizontal">
+                                <Button x:Name="dialogAddToBelowButton" Content="A continuación" Margin="0,0,15,0" Click="AddToBelowButton_Click"/>
+                                <Button x:Name="dialogAddToTheEndButton" Content="Al final" Margin="0,0,15,0" Click="AddToTheEndButton_Click"/>
+                                <Button x:Name="dialogCancelButton" Content="Cancelar" Style="{StaticResource MaterialDesignFlatButton}" Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"/>
+                            </StackPanel>
                         </StackPanel>
                     </Grid>
                 </StackPanel>
@@ -62,10 +81,13 @@
             <ToggleButton x:Name="downloadToggleButton" Style="{StaticResource MaterialDesignSwitchToggleButton}" ToolTip="Descargar canciones" VerticalAlignment="Center" ToggleButton.Checked="DownloadToggleButton_Checked" ToggleButton.Unchecked="DownloadToggleButton_Unchecked"/>
             <TextBlock Text="Descargar" VerticalAlignment="Center" Margin="0,0,10,0"></TextBlock>
             <Button x:Name="deletePlaylistButton" Content="Eliminar lista" HorizontalAlignment="Left" VerticalAlignment="Center" Width="142" Margin="0,0,8,0" Click="DeletePlaylistButton_Click"/>
-            <Menu Height="30" BorderThickness="0">
-                <MenuItem Header="..." Height="30" Background="#FF607D8B" Foreground="White" FontSize="12" Width="49">
-                    <MenuItem x:Name="RenamePlaylistMenuItem" Header="Renombrar lista" Background="#FF607D8B" Click="RenamePlaylistMenuItem_Click"/>
-                    <MenuItem x:Name="DeleteSongMenuItem" Header="Eliminar canción" Background="#FF607D8B" Click="DeleteSongMenuItem_Click"/>
+            <Menu Height="30" Background="Gray" BorderThickness="0">
+                <MenuItem Header="..." Height="30" Background="Gray" Foreground="White" FontSize="12">
+                    <MenuItem Header="Renombrar lista" Background="Gray" Click="RenamePlaylistMenuItem_Click"/>
+                    <MenuItem Header="Agregar a la cola" Background="Gray" Click="AddToQueueMenuItem_Click"/>
+                    <MenuItem Header="Agregar a una lista de reproducción" Background="Gray" Click="AddToPlaylistMenuItem_Click"/>
+                    <MenuItem Header="Generar estación de radio" Background="Gray" Click="GenerateRadioStationMenuItem_Click"/>
+                    <MenuItem Header="Eliminar canción" Background="Gray" Click="DeleteSongMenuItem_Click"/>
                 </MenuItem>
             </Menu>
         </StackPanel>

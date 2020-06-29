@@ -1,20 +1,18 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Musify.Models;
 
 namespace MusifyTests {
     [TestClass]
-    public class ArtistTests {
-        /// <summary>
-        /// Test to prove that is possible fetch a artist by its ID.
-        /// </summary>
-        [TestMethod]
+    public class AlbumTest {
         public void FetchByIdTest() {
+            /// <summary>
+            /// Test to prove that is possible fetch a album by its ID.
+            /// </summary>
             AutoResetEvent autoResetEvent = new AutoResetEvent(false);
             bool pass = false;
             Account.Login("freya@arkanapp.com", "1230", (account) => {
-                Artist.FetchById(1, (artist) => {
+                Album.FetchById(1, (album) => {
                     pass = true;
                     autoResetEvent.Set();
                 }, (errorResponse) => {
@@ -30,17 +28,17 @@ namespace MusifyTests {
             autoResetEvent.WaitOne();
             Assert.AreEqual(true, pass);
         }
-
+        
         /// <summary>
-        /// Test to prove that is possible fetch artists by its starting title.
+        /// Test to prove that is possible fetch albums by its starting title.
         /// </summary>
         [TestMethod]
         public void FetchByTitleCoincidencesTest() {
             AutoResetEvent autoResetEvent = new AutoResetEvent(false);
             bool pass = false;
             Account.Login("freya@arkanapp.com", "1230", (account) => {
-                Artist.FetchByArtisticNameCoincidences("Fre", (artists) => {
-                    pass = artists.Count > 0;
+                Album.FetchByNameCoincidences("ori", (albums) => {
+                    pass = albums.Count > 0;
                     autoResetEvent.Set();
                 }, (errorResponse) => {
                     autoResetEvent.Set();
@@ -57,16 +55,47 @@ namespace MusifyTests {
         }
 
         /// <summary>
-        /// Test to prove that is possible fetch albums from an artist.
+        /// Test to prove that is possible fetch artists from a album.
         /// </summary>
         [TestMethod]
-        public void FetchArtistAlbumsTest() {
+        public void FetchAlbumArtistsTest() {
             AutoResetEvent autoResetEvent = new AutoResetEvent(false);
             bool pass = false;
             Account.Login("freya@arkanapp.com", "1230", (account) => {
-                Artist.FetchById(1, (artist) => {
-                    artist.FetchAlbums(() => {
-                        pass = artist.Albums.Count > 0;
+                Album.FetchById(1, (album) => {
+                    album.FetchArtists(() => {
+                        pass = album.Artists.Count > 0;
+                        autoResetEvent.Set();
+                    }, (errorResponse) => {
+                        autoResetEvent.Set();
+                    }, () => {
+                        autoResetEvent.Set();
+                    });
+                }, (errorResponse) => {
+                    autoResetEvent.Set();
+                }, () => {
+                    autoResetEvent.Set();
+                });
+            }, (errorResponse) => {
+                autoResetEvent.Set();
+            }, () => {
+                autoResetEvent.Set();
+            });
+            autoResetEvent.WaitOne();
+            Assert.AreEqual(true, pass);
+        }
+
+        /// <summary>
+        /// Test to prove that is possible fetch all album songs.
+        /// </summary>
+        [TestMethod]
+        public void FetchAlbumSongsTest() {
+            AutoResetEvent autoResetEvent = new AutoResetEvent(false);
+            bool pass = false;
+            Account.Login("freya@arkanapp.com", "1230", (account) => {
+                Album.FetchById(1, (album) => {
+                    album.FetchSongs(() => {
+                        pass = album.Songs.Count > 0;
                         autoResetEvent.Set();
                     }, (errorResponse) => {
                         autoResetEvent.Set();
