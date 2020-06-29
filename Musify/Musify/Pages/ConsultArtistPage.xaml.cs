@@ -62,6 +62,7 @@ namespace Musify.Pages {
                         Album = album,
                         Song = albumSong,
                         Title = albumSong.Title,
+                        Genre = albumSong.Genre,
                         Duration = albumSong.Duration,
                         ArtistsNames = albumSong.GetArtistsNames()
                     });

@@ -5,10 +5,55 @@ using Musify.Models;
 namespace MusifyTests {
     [TestClass]
     public class AlbumTest {
+        /// <summary>
+        /// Test to prove that is possible fetch a genre by its ID.
+        /// </summary>
+        [TestMethod]
+        public void SaveTest() {
+            AutoResetEvent autoResetEvent = new AutoResetEvent(false);
+            bool pass = false;
+            Account.Login("freya@arkanapp.com", "1230", (account) => {
+                account.FetchArtist(() => {
+                    Album album = new Album {
+                        Type = "Sencillo",
+                        Name = "Album Test",
+                        LaunchYear = 2020,
+                        Discography = "Discography Test",
+                        ImageLocation = "C:\\testImage.png",
+                        Artists = { account.Artist },
+                        Songs = { new Song {
+                           GenreId = 1,
+                           Title = "Song Test",
+                           SongLocation = "C:\\testSong.mp3",
+                           Artists = { account.Artist }
+                        } }
+                    };
+                    album.Save(() => {
+                        pass = true;
+                        autoResetEvent.Set();
+                    }, (errorResponse) => {
+                        autoResetEvent.Set();
+                    }, () => {
+                        autoResetEvent.Set();
+                    });
+                }, (errorResponse) => {
+                }, () => {
+                    autoResetEvent.Set();
+                });
+            }, (errorResponse) => {
+                autoResetEvent.Set();
+            }, () => {
+                autoResetEvent.Set();
+            });
+            autoResetEvent.WaitOne();
+            Assert.AreEqual(true, pass);
+        }
+
+        /// <summary>
+        /// Test to prove that is possible fetch a genre by its ID.
+        /// </summary>
+        [TestMethod]
         public void FetchByIdTest() {
-            /// <summary>
-            /// Test to prove that is possible fetch a album by its ID.
-            /// </summary>
             AutoResetEvent autoResetEvent = new AutoResetEvent(false);
             bool pass = false;
             Account.Login("freya@arkanapp.com", "1230", (account) => {

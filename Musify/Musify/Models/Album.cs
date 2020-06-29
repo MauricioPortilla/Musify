@@ -232,14 +232,18 @@ namespace Musify.Models {
         public BitmapImage FetchImage() {
             WebClient webClient = new WebClient();
             webClient.Headers["Authorization"] = Session.AccessToken ?? "";
-            var image = webClient.DownloadData(Core.SERVER_API_URL + "/album/" + albumId + "/image");
-            using (MemoryStream memoryStream = new MemoryStream(image)) {
-                BitmapImage bitmapImage = new BitmapImage();
-                bitmapImage.BeginInit();
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.StreamSource = memoryStream;
-                bitmapImage.EndInit();
-                return bitmapImage;
+            try {
+                var image = webClient.DownloadData(Core.SERVER_API_URL + "/album/" + albumId + "/image");
+                using (MemoryStream memoryStream = new MemoryStream(image)) {
+                    BitmapImage bitmapImage = new BitmapImage();
+                    bitmapImage.BeginInit();
+                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmapImage.StreamSource = memoryStream;
+                    bitmapImage.EndInit();
+                    return bitmapImage;
+                }
+            } catch (Exception) {
+                return null;
             }
         }
 
