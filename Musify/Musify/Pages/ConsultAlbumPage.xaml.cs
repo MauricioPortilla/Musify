@@ -10,7 +10,7 @@ using static Musify.Models.Song;
 
 namespace Musify.Pages {
     /// <summary>
-    /// Lógica de interacción para ConsultAlbumPage.xaml
+    /// Interaction logic for ConsultAlbumPage.xaml
     /// </summary>
     public partial class ConsultAlbumPage : Page {
         private DialogOpenedEventArgs dialogOpenEventArgs;
@@ -19,6 +19,10 @@ namespace Musify.Pages {
             get => albumSongs;
         }
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
+        /// <param name="album">Album to consult</param>
         public ConsultAlbumPage(Album album) {
             InitializeComponent();
             DataContext = this;
@@ -31,6 +35,9 @@ namespace Musify.Pages {
             LoadSongs(album);
         }
 
+        /// <summary>
+        /// Loads all the album songs.
+        /// </summary>
         private void LoadSongs(Album album) {
             album.FetchSongs(() => {
                 albumSongs.Clear();
@@ -51,6 +58,11 @@ namespace Musify.Pages {
             });
         }
 
+        /// <summary>
+        /// Attempts to play the double clicked song.
+        /// </summary>
+        /// <param name="sender">DataGrid</param>
+        /// <param name="e">Event</param>
         private void SongsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
             UIFunctions.SongTable_OnDoubleClick(sender, e);
             Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
@@ -60,6 +72,11 @@ namespace Musify.Pages {
             }
         }
 
+        /// <summary>
+        /// Shows up a menu with the options for selected song.
+        /// </summary>
+        /// <param name="sender">DataGrid</param>
+        /// <param name="e">Event</param>
         private void SongsDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             if (songsDataGrid.SelectedIndex >= 0) {
                 optionsMenu.Visibility = Visibility.Visible;
@@ -68,6 +85,11 @@ namespace Musify.Pages {
             }
         }
 
+        /// <summary>
+        /// Opens up a dialog to add to play queue.
+        /// </summary>
+        /// <param name="sender">MenuItem</param>
+        /// <param name="e">Event</param>
         private void AddToQueueMenuItem_Click(object sender, RoutedEventArgs e) {
             DialogHost.Show(mainStackPanel, "ConsultAlbumPage_WindowDialogHost", (openSender, openEventArgs) => {
                 dialogOpenEventArgs = openEventArgs;
@@ -75,6 +97,11 @@ namespace Musify.Pages {
             }, null);
         }
 
+        /// <summary>
+        /// Adds the selected song to the beginning of the queue.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void AddToBelowButton_Click(object sender, RoutedEventArgs e) {
             List<int> songsIdPlayQueue = new List<int> { ((SongTable)songsDataGrid.SelectedItem).Song.SongId };
             songsIdPlayQueue.AddRange(Session.SongsIdPlayQueue);
@@ -84,6 +111,11 @@ namespace Musify.Pages {
             dialogAddToQueueGrid.Visibility = Visibility.Collapsed;
         }
 
+        /// <summary>
+        /// Adds the selected song to the end of the queue.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void AddToTheEndButton_Click(object sender, RoutedEventArgs e) {
             Session.SongsIdPlayQueue.Add(((SongTable)songsDataGrid.SelectedItem).Song.SongId);
             songsDataGrid.SelectedIndex = -1;
@@ -91,11 +123,21 @@ namespace Musify.Pages {
             dialogAddToQueueGrid.Visibility = Visibility.Collapsed;
         }
 
+        /// <summary>
+        /// Shows up a new window to add the selected song to a playlist.
+        /// </summary>
+        /// <param name="sender">MenuItem</param>
+        /// <param name="e">Event</param>
         private void AddToPlaylistMenuItem_Click(object sender, RoutedEventArgs e) {
             new AddSongToPlaylistWindow(((SongTable)songsDataGrid.SelectedItem).Song).Show();
             songsDataGrid.SelectedIndex = -1;
         }
 
+        /// <summary>
+        /// Generates a radio station with the selected song genre.
+        /// </summary>
+        /// <param name="sender">MenuItem</param>
+        /// <param name="e">Event</param>
         private void GenerateRadioStationMenuItem_Click(object sender, RoutedEventArgs e) {
             if (Session.GenresIdRadioStations.Find(x => x == ((SongTable)songsDataGrid.SelectedItem).Song.Genre.GenreId) == 0) {
                 Session.GenresIdRadioStations.Add(((SongTable)songsDataGrid.SelectedItem).Song.Genre.GenreId);

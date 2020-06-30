@@ -6,7 +6,7 @@ namespace MusifyTests {
     [TestClass]
     public class AlbumTest {
         /// <summary>
-        /// Test to prove that is possible fetch a genre by its ID.
+        /// Test to prove that is possible save a album.
         /// </summary>
         [TestMethod]
         public void SaveTest() {
@@ -50,7 +50,7 @@ namespace MusifyTests {
         }
 
         /// <summary>
-        /// Test to prove that is possible fetch a genre by its ID.
+        /// Test to prove that is possible fetch a album by its ID.
         /// </summary>
         [TestMethod]
         public void FetchByIdTest() {

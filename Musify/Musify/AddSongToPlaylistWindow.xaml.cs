@@ -3,10 +3,9 @@ using System.Windows;
 
 namespace Musify {
     /// <summary>
-    /// Lógica de interacción para AddSongToPlaylistPage.xaml
+    /// Interaction logic for AddSongToPlaylistPage.xaml
     /// </summary>
     public partial class AddSongToPlaylistWindow : Window {
-
         private Song songToAdd;
 
         /// <summary>

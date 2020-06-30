@@ -9,7 +9,6 @@ using System.IO;
 
 namespace Musify {
     class RestSharpTools {
-
         /// <summary>
         /// Sends a GET request.
         /// </summary>

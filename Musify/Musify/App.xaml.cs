@@ -4,7 +4,7 @@ using System.Windows;
 
 namespace Musify {
     /// <summary>
-    /// Lógica de interacción para App.xaml
+    /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application {
         public static readonly string DATA_SONGS_DIRECTORY = AppDomain.CurrentDomain.BaseDirectory + "/data/songs";
@@ -12,6 +12,9 @@ namespace Musify {
         public static readonly string DATA_STATIONS_DIRECTORY = AppDomain.CurrentDomain.BaseDirectory + "/data/stations";
         public static readonly string DATA_DOWNLOADS_DIRECTORY = AppDomain.CurrentDomain.BaseDirectory + "/data/downloads";
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
         public App() {
             var downloadedPlaylists = Musify.Properties.Settings.Default.DownloadedPlaylists;
             if (downloadedPlaylists == null) {

@@ -6,10 +6,9 @@ using System.Windows;
 
 namespace Musify {
     /// <summary>
-    /// Lógica de interacción para LoginWindow.xaml
+    /// Interaction logic for LoginWindow.xaml
     /// </summary>
     public partial class LoginWindow : Window {
-
         /// <summary>
         /// Creates a new instance.
         /// </summary>

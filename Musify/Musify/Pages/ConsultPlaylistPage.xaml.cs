@@ -13,10 +13,9 @@ using static Musify.Models.Song;
 
 namespace Musify.Pages {
     /// <summary>
-    /// Lógica de interacción para ConsultPlaylistPage.xaml
+    /// Interaction logic for ConsultPlaylistPage.xaml
     /// </summary>
     public partial class ConsultPlaylistPage : Page {
-
         private DialogOpenedEventArgs dialogOpenEventArgs;
         private Playlist playlist;
         private ObservableCollection<SongTable> songsObservableCollection = new ObservableCollection<SongTable>();
@@ -139,7 +138,7 @@ namespace Musify.Pages {
         /// <summary>
         /// Deletes the playlist.
         /// </summary>
-        /// <param name="sender">MenuItem</param>
+        /// <param name="sender">Button</param>
         /// <param name="e">Event</param>
         private void DeletePlaylistButton_Click(object sender, RoutedEventArgs e) {
             playlist.Delete(() => {
@@ -154,7 +153,7 @@ namespace Musify.Pages {
         /// <summary>
         /// Opens up a dialog to add to play queue.
         /// </summary>
-        /// <param name="sender">Button</param>
+        /// <param name="sender">MenuItem</param>
         /// <param name="e">Event</param>
         private void AddToQueueMenuItem_Click(object sender, RoutedEventArgs e) {
             if (songsDataGrid.SelectedItem == null) {
@@ -196,7 +195,7 @@ namespace Musify.Pages {
         /// <summary>
         /// Shows up a new window to add the selected song to a playlist.
         /// </summary>
-        /// <param name="sender">Button</param>
+        /// <param name="sender">MenuItem</param>
         /// <param name="e">Event</param>
         private void AddToPlaylistMenuItem_Click(object sender, RoutedEventArgs e) {
             if (songsDataGrid.SelectedItem == null) {
@@ -208,9 +207,9 @@ namespace Musify.Pages {
         }
 
         /// <summary>
-        /// Generates a radio station with the selected song.
+        /// Generates a radio station with the selected song genre.
         /// </summary>
-        /// <param name="sender">Button</param>
+        /// <param name="sender">MenuItem</param>
         /// <param name="e">Event</param>
         private void GenerateRadioStationMenuItem_Click(object sender, RoutedEventArgs e) {
             if (songsDataGrid.SelectedItem == null) {
@@ -228,7 +227,7 @@ namespace Musify.Pages {
         /// <summary>
         /// Deletes the selected song from playlist.
         /// </summary>
-        /// <param name="sender">Button</param>
+        /// <param name="sender">MenuItem</param>
         /// <param name="e">Event</param>
         private void DeleteSongMenuItem_Click(object sender, RoutedEventArgs e) {
             if (songsDataGrid.SelectedItem == null) {

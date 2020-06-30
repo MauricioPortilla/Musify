@@ -9,7 +9,7 @@ using Musify.Pages;
 
 namespace Musify {
     /// <summary>
-    /// Lógica de interacción para AddSongToAlbumWindow.xaml
+    /// Interaction logic for AddSongToAlbumWindow.xaml
     /// </summary>
     public partial class AddSongToAlbumWindow : Window {
         private CreateAlbumPage createAlbumPage;
@@ -23,11 +23,22 @@ namespace Musify {
             get => genresList;
         }
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
+        /// <param name="createAlbumPage">Page where the album is being created</param>
         public AddSongToAlbumWindow(CreateAlbumPage createAlbumPage) {
             InitializeComponent();
             this.createAlbumPage = createAlbumPage;
             DataContext = this;
             artistsList.Add(Session.Account.Artist);
+            LoadGenres();
+        }
+
+        /// <summary>
+        /// Loads all genres.
+        /// </summary>
+        private void LoadGenres() {
             Genre.FetchAll((genres) => {
                 genresList.Clear();
                 foreach (Genre genre in genres) {
@@ -40,6 +51,11 @@ namespace Musify {
             });
         }
 
+        /// <summary>
+        /// Adds a song to album.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void SelectSongButton_Click(object sender, RoutedEventArgs e) {
             Forms.OpenFileDialog fileExplorer = new Forms.OpenFileDialog();
             fileExplorer.Filter = "MP3 Files|*.mp3|WAV Files|*.wav";
@@ -55,6 +71,11 @@ namespace Musify {
             }
         }
 
+        /// <summary>
+        /// Searches a artist that starts with given string.
+        /// </summary>
+        /// <param name="sender">TextBox</param>
+        /// <param name="e">Event</param>
         private void ArtistSearchTextBox_KeyUp(object sender, KeyEventArgs e) {
             if (string.IsNullOrWhiteSpace(artistSearchTextBox.Text)) {
                 artistsFoundListBox.Items.Clear();
@@ -74,6 +95,11 @@ namespace Musify {
             });
         }
 
+        /// <summary>
+        /// Add an artist to the song, if it has not been added.
+        /// </summary>
+        /// <param name="sender">ListBox</param>
+        /// <param name="e">Event</param>
         private void ArtistsFoundListBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             if (artistsFoundListBox.SelectedIndex == -1) {
                 return;
@@ -91,10 +117,20 @@ namespace Musify {
             artistSearchTextBox.Text = "";
         }
 
+        /// <summary>
+        /// Deletes the selected artist.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void DeleteArtistButton_Click(object sender, RoutedEventArgs e) {
             artistsList.RemoveAt(artistsListBox.SelectedIndex);
         }
 
+        /// <summary>
+        /// Add the song to the album if all the fields are complete.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void AcceptButton_Click(object sender, RoutedEventArgs e) {
             if (selectedSong.Equals("") || string.IsNullOrWhiteSpace(songNameTextBox.Text) || genreComboBox.Text.Equals("") || artistsList.Count <= 0) {
                 MessageBox.Show("Faltan campos por completar.");
@@ -109,6 +145,11 @@ namespace Musify {
             Close();
         }
 
+        /// <summary>
+        /// Closes the window.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void CancelButton_Click(object sender, RoutedEventArgs e) {
             Close();
         }

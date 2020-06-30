@@ -12,10 +12,9 @@ using MaterialDesignThemes.Wpf;
 
 namespace Musify.Pages {
     /// <summary>
-    /// Lógica de interacción para ConsultAccountSongs.xaml
+    /// Interaction logic for ConsultAccountSongs.xaml
     /// </summary>
     public partial class ConsultAccountSongs : Page {
-
         private DialogOpenedEventArgs dialogOpenEventArgs;
         private readonly ObservableCollection<AccountSongTable> accountSongList = new ObservableCollection<AccountSongTable>();
         public ObservableCollection<AccountSongTable> AccountSongList {

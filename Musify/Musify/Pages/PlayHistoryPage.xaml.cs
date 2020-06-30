@@ -11,7 +11,7 @@ using static Musify.Models.Song;
 
 namespace Musify.Pages {
     /// <summary>
-    /// Lógica de interacción para PlayHistoryPage.xaml
+    /// Interaction logic for PlayHistoryPage.xaml
     /// </summary>
     public partial class PlayHistoryPage : Page {
         private DialogOpenedEventArgs dialogOpenEventArgs;
@@ -20,22 +20,29 @@ namespace Musify.Pages {
             get => songsPlayHistory;
         }
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
         public PlayHistoryPage() {
             InitializeComponent();
             DataContext = this;
             LoadPlayHistory();
         }
 
+        /// <summary>
+        /// Loads song IDs that are in play history.
+        /// </summary>
         public void LoadPlayHistory() {
             songsPlayHistory.Clear();
             List<int> songsIdPlayHistory = Session.SongsIdPlayHistory;
-            /*int limit = 0;
-            if (songsIdPlayHistory.Count > Core.MAX_SONGS_IN_HISTORY) {
-                limit = songsIdPlayHistory.Count - Core.MAX_SONGS_IN_HISTORY;
-            }*/
             LoadSong(songsIdPlayHistory.Count - 1, songsIdPlayHistory);
         }
 
+        /// <summary>
+        /// Load a song from the play history.
+        /// </summary>
+        /// <param name="i">Index in the song IDs list of the play history</param>
+        /// <param name="songsIdPlayHistory">Song IDs list of the play history</param>
         public void LoadSong(int i, List<int> songsIdPlayHistory) {
             if (i >= 0) {
                 if (songsIdPlayHistory.ElementAt(i) > 0) {
@@ -71,6 +78,11 @@ namespace Musify.Pages {
             }
         }
 
+        /// <summary>
+        /// Attempts to play the double clicked song.
+        /// </summary>
+        /// <param name="sender">DataGrid</param>
+        /// <param name="e">Event</param>
         private void PlayHistoryDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
             if (playHistoryDataGrid.SelectedItem is SongTable) {
                 UIFunctions.SongTable_OnDoubleClick(sender, e);
@@ -82,6 +94,11 @@ namespace Musify.Pages {
             LoadPlayHistory();
         }
 
+        /// <summary>
+        /// Shows up a menu with the options according the selected song.
+        /// </summary>
+        /// <param name="sender">DataGrid</param>
+        /// <param name="e">Event</param>
         private void PlayHistoryDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             if (playHistoryDataGrid.SelectedIndex >= 0) {
                 optionsMenu.Visibility = Visibility.Visible;
@@ -99,6 +116,11 @@ namespace Musify.Pages {
             }
         }
 
+        /// <summary>
+        /// Opens up a dialog to add to play queue.
+        /// </summary>
+        /// <param name="sender">MenuItem</param>
+        /// <param name="e">Event</param>
         private void AddToQueueMenuItem_Click(object sender, RoutedEventArgs e) {
             DialogHost.Show(mainStackPanel, "PlayHistoryPage_WindowDialogHost", (openSender, openEventArgs) => {
                 dialogOpenEventArgs = openEventArgs;
@@ -106,6 +128,11 @@ namespace Musify.Pages {
             }, null);
         }
 
+        /// <summary>
+        /// Adds the selected song to the beginning of the queue.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void AddToBelowButton_Click(object sender, RoutedEventArgs e) {
             List<int> songsIdPlayQueue = new List<int>();
             if (playHistoryDataGrid.SelectedItem is SongTable) {
@@ -120,6 +147,11 @@ namespace Musify.Pages {
             dialogAddToQueueGrid.Visibility = Visibility.Collapsed;
         }
 
+        /// <summary>
+        /// Adds the selected song to the end of the queue.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void AddToTheEndButton_Click(object sender, RoutedEventArgs e) {
             if (playHistoryDataGrid.SelectedItem is SongTable) {
                 Session.SongsIdPlayQueue.Add(((SongTable)playHistoryDataGrid.SelectedItem).Song.SongId);
@@ -131,11 +163,21 @@ namespace Musify.Pages {
             dialogAddToQueueGrid.Visibility = Visibility.Collapsed;
         }
 
+        /// <summary>
+        /// Shows up a new window to add the selected song to a playlist.
+        /// </summary>
+        /// <param name="sender">MenuItem</param>
+        /// <param name="e">Event</param>
         private void AddToPlaylistMenuItem_Click(object sender, RoutedEventArgs e) {
             new AddSongToPlaylistWindow(((SongTable)playHistoryDataGrid.SelectedItem).Song).Show();
             playHistoryDataGrid.SelectedIndex = -1;
         }
 
+        /// <summary>
+        /// Generates a radio station with the selected song genre.
+        /// </summary>
+        /// <param name="sender">MenuItem</param>
+        /// <param name="e">Event</param>
         private void GenerateRadioStationMenuItem_Click(object sender, RoutedEventArgs e) {
             if (Session.GenresIdRadioStations.Find(x => x == ((SongTable)playHistoryDataGrid.SelectedItem).Song.Genre.GenreId) == 0) {
                 Session.GenresIdRadioStations.Add(((SongTable)playHistoryDataGrid.SelectedItem).Song.Genre.GenreId);

@@ -5,7 +5,6 @@ using Musify.Models;
 namespace MusifyTests {
     [TestClass]
     public class AccountSongTests {
-
         /// <summary>
         /// Test to prove that is possible fetch an owned account song.
         /// </summary>

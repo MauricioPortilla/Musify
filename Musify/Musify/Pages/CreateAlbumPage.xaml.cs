@@ -9,7 +9,7 @@ using System.Windows.Input;
 
 namespace Musify.Pages {
     /// <summary>
-    /// Lógica de interacción para CreateAlbumPage.xaml
+    /// Interaction logic for CreateAlbumPage.xaml
     /// </summary>
     public partial class CreateAlbumPage : Page {
         private string selectedImage = "";
@@ -26,6 +26,9 @@ namespace Musify.Pages {
             get => yearsList;
         }
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
         public CreateAlbumPage() {
             InitializeComponent();
             DataContext = this;
@@ -35,6 +38,11 @@ namespace Musify.Pages {
             }
         }
 
+        /// <summary>
+        /// Searches a artist that starts with given string.
+        /// </summary>
+        /// <param name="sender">TextBox</param>
+        /// <param name="e">Event</param>
         private void ArtistSearchTextBox_KeyUp(object sender, KeyEventArgs e) {
             if (string.IsNullOrWhiteSpace(artistSearchTextBox.Text)) {
                 artistsFoundListBox.Items.Clear();
@@ -54,6 +62,11 @@ namespace Musify.Pages {
             });
         }
 
+        /// <summary>
+        /// Add an artist to the song, if it has not been added.
+        /// </summary>
+        /// <param name="sender">ListBox</param>
+        /// <param name="e">Event</param>
         private void ArtistsFoundListBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             if (artistsFoundListBox.SelectedIndex == -1) {
                 return;
@@ -71,6 +84,11 @@ namespace Musify.Pages {
             artistSearchTextBox.Text = "";
         }
 
+        /// <summary>
+        /// Adds a image to album.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void SelectImageButton_Click(object sender, RoutedEventArgs e) {
             Forms.OpenFileDialog fileExplorer = new Forms.OpenFileDialog();
             fileExplorer.Filter = "Image Files|*.png";
@@ -81,6 +99,11 @@ namespace Musify.Pages {
             }
         }
 
+        /// <summary>
+        /// Deletes the selected artist.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void DeleteArtistButton_Click(object sender, RoutedEventArgs e) {
             if (artistsListBox.SelectedIndex == -1) {
                 return;
@@ -88,10 +111,20 @@ namespace Musify.Pages {
             artistsList.RemoveAt(artistsListBox.SelectedIndex);
         }
 
+        /// <summary>
+        /// Shows up a add song to album paget.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void AddSongButton_Click(object sender, RoutedEventArgs e) {
             new AddSongToAlbumWindow(this).Show();
         }
 
+        /// <summary>
+        /// Deletes the selected song.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void DeleteSongButton_Click(object sender, RoutedEventArgs e) {
             if (songsListBox.SelectedIndex == -1) {
                 return;
@@ -99,6 +132,11 @@ namespace Musify.Pages {
             songsList.RemoveAt(songsListBox.SelectedIndex);
         }
 
+        /// <summary>
+        /// Creates a new album if all the fields are complete..
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void AcceptButton_Click(object sender, RoutedEventArgs e) {
             if (string.IsNullOrWhiteSpace(albumNameTextBox.Text) || string.IsNullOrWhiteSpace(discographyTextBox.Text) || launchYearComboBox.Text.Equals("")
                     || selectedImage.Equals("") || artistsList.Count <= 0 || songsList.Count <= 0) {

@@ -4,10 +4,9 @@ using System.Windows;
 
 namespace Musify {
     /// <summary>
-    /// Lógica de interacción para RegisterWindow.xaml
+    /// Interaction logic for RegisterWindow.xaml
     /// </summary>
     public partial class RegisterWindow : Window {
-
         /// <summary>
         /// Creates a new instance.
         /// </summary>
@@ -79,7 +78,7 @@ namespace Musify {
         /// <summary>
         /// Disables artistic name textbox.
         /// </summary>
-        /// <param name="sender">Button</param>
+        /// <param name="sender">CheckBox</param>
         /// <param name="e">Event</param>
         private void ImAnArtistCheckBox_Unchecked(object sender, RoutedEventArgs e) {
             artisticNameTextBox.IsEnabled = false;

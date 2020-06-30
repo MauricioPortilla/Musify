@@ -11,7 +11,7 @@ using static Musify.Models.Song;
 
 namespace Musify.Pages {
     /// <summary>
-    /// Lógica de interacción para PlayQueuePage.xaml
+    /// Interaction logic for PlayQueuePage.xaml
     /// </summary>
     public partial class PlayQueuePage : Page {
         private DialogOpenedEventArgs dialogOpenEventArgs;
@@ -20,12 +20,18 @@ namespace Musify.Pages {
             get => songsPlayQueue;
         }
 
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
         public PlayQueuePage() {
             InitializeComponent();
             DataContext = this;
             LoadPlayQueue();
         }
 
+        /// <summary>
+        /// Loads song IDs that are in play queue.
+        /// </summary>
         public void LoadPlayQueue() {
             songsPlayQueue.Clear();
             List<int> songsIdPlayQueue = new List<int>();
@@ -43,6 +49,12 @@ namespace Musify.Pages {
             LoadSong(0, songsIdPlayQueue.Count, songsIdPlayQueue);
         }
 
+        /// <summary>
+        /// Load a song from the play queue.
+        /// </summary>
+        /// <param name="i">Index in the song IDs list of the play queue</param>
+        /// <param name="limit">Total song IDs in the play queue</param>
+        /// <param name="songsIdPlayQueue">Song IDs list of the play queue</param>
         public void LoadSong(int i, int limit, List<int> songsIdPlayQueue) {
             if (i < limit) {
                 if (songsIdPlayQueue.ElementAt(i) > 0) {
@@ -78,6 +90,11 @@ namespace Musify.Pages {
             }
         }
 
+        /// <summary>
+        /// Attempts to play the double clicked song.
+        /// </summary>
+        /// <param name="sender">DataGrid</param>
+        /// <param name="e">Event</param>
         private void PlayQueueDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
             if (playQueueDataGrid.SelectedItem is SongTable) {
                 UIFunctions.SongTable_OnDoubleClick(sender, e);
@@ -95,6 +112,11 @@ namespace Musify.Pages {
             LoadPlayQueue();
         }
 
+        /// <summary>
+        /// Shows up a menu with the options according the selected song.
+        /// </summary>
+        /// <param name="sender">DataGrid</param>
+        /// <param name="e">Event</param>
         private void PlayQueueDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             if (playQueueDataGrid.SelectedIndex >= 0) {
                 optionsMenu.Visibility = Visibility.Visible;
@@ -112,11 +134,21 @@ namespace Musify.Pages {
             }
         }
 
+        /// <summary>
+        /// Deletes the play queue.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void DeletePlayQueueButton_Click(object sender, RoutedEventArgs e) {
             Session.SongsIdPlayQueue = new List<int>();
             LoadPlayQueue();
         }
 
+        /// <summary>
+        /// Opens up a dialog to add to play queue.
+        /// </summary>
+        /// <param name="sender">MenuItem</param>
+        /// <param name="e">Event</param>
         private void AddToQueueMenuItem_Click(object sender, RoutedEventArgs e) {
             DialogHost.Show(mainStackPanel, "PlayQueuePage_WindowDialogHost", (openSender, openEventArgs) => {
                 dialogOpenEventArgs = openEventArgs;
@@ -124,6 +156,11 @@ namespace Musify.Pages {
             }, null);
         }
 
+        /// <summary>
+        /// Adds the selected song to the beginning of the queue.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void AddToBelowButton_Click(object sender, RoutedEventArgs e) {
             List<int> songsIdPlayQueue = new List<int>();
             if (playQueueDataGrid.SelectedItem is SongTable) {
@@ -138,6 +175,11 @@ namespace Musify.Pages {
             dialogAddToQueueGrid.Visibility = Visibility.Collapsed;
         }
 
+        /// <summary>
+        /// Adds the selected song to the end of the queue.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
         private void AddToTheEndButton_Click(object sender, RoutedEventArgs e) {
             if (playQueueDataGrid.SelectedItem is SongTable) {
                 Session.SongsIdPlayQueue.Add(((SongTable)playQueueDataGrid.SelectedItem).Song.SongId);
@@ -149,11 +191,21 @@ namespace Musify.Pages {
             dialogAddToQueueGrid.Visibility = Visibility.Collapsed;
         }
 
+        /// <summary>
+        /// Shows up a new window to add the selected song to a playlist.
+        /// </summary>
+        /// <param name="sender">MenuItem</param>
+        /// <param name="e">Event</param>
         private void AddToPlaylistMenuItem_Click(object sender, RoutedEventArgs e) {
             new AddSongToPlaylistWindow(((SongTable)playQueueDataGrid.SelectedItem).Song).Show();
             playQueueDataGrid.SelectedIndex = -1;
         }
 
+        /// <summary>
+        /// Generates a radio station with the selected song genre.
+        /// </summary>
+        /// <param name="sender">MenuItem</param>
+        /// <param name="e">Event</param>
         private void GenerateRadioStationMenuItem_Click(object sender, RoutedEventArgs e) {
             if (Session.GenresIdRadioStations.Find(x => x == ((SongTable)playQueueDataGrid.SelectedItem).Song.Genre.GenreId) == 0) {
                 Session.GenresIdRadioStations.Add(((SongTable)playQueueDataGrid.SelectedItem).Song.Genre.GenreId);
@@ -163,6 +215,11 @@ namespace Musify.Pages {
             playQueueDataGrid.SelectedIndex = -1;
         }
 
+        /// <summary>
+        /// Deletes the selected song from play queue.
+        /// </summary>
+        /// <param name="sender">MenuItem</param>
+        /// <param name="e">Event</param>
         private void RemoveFromQueueMenuItem_Click(object sender, RoutedEventArgs e) {
             if (playQueueDataGrid.SelectedIndex < Session.SongsIdPlayQueue.Count) {
                 Session.SongsIdPlayQueue.RemoveAt(playQueueDataGrid.SelectedIndex);

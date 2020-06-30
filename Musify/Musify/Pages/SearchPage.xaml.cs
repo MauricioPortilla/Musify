@@ -11,10 +11,9 @@ using static Musify.Models.Song;
 
 namespace Musify.Pages {
     /// <summary>
-    /// Lógica de interacción para SearchPage.xaml
+    /// Interaction logic for SearchPage.xaml
     /// </summary>
     public partial class SearchPage : Page {
-
         private DialogOpenedEventArgs dialogOpenEventArgs;
         private readonly ObservableCollection<SongTable> songList = new ObservableCollection<SongTable>();
         public ObservableCollection<SongTable> SongList {
@@ -169,7 +168,7 @@ namespace Musify.Pages {
         }
 
         /// <summary>
-        /// Generates a radio station with the selected song.
+        /// Generates a radio station with the selected song genre.
         /// </summary>
         /// <param name="sender">Button</param>
         /// <param name="e">Event</param>

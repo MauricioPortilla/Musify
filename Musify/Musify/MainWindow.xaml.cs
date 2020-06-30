@@ -9,7 +9,7 @@ using System.Windows.Controls;
 
 namespace Musify {
     /// <summary>
-    /// Lógica de interacción para MainMenuWindow.xaml
+    /// Interaction logic for MainMenuWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
         private Timer calculateDownloadSpeedTimer;

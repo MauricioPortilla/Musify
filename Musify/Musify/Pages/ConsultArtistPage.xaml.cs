@@ -9,10 +9,9 @@ using static Musify.Models.Song;
 
 namespace Musify.Pages {
     /// <summary>
-    /// Lógica de interacción para ConsultArtistPage.xaml
+    /// Interaction logic for ConsultArtistPage.xaml
     /// </summary>
     public partial class ConsultArtistPage : Page {
-
         /// <summary>
         /// Creates a new instance.
         /// </summary>

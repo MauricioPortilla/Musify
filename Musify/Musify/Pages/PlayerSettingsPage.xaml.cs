@@ -3,14 +3,20 @@ using System.Windows.Controls;
 
 namespace Musify.Pages {
     /// <summary>
-    /// Lógica de interacción para PlayerSettingsPage.xaml
+    /// Interaction logic for PlayerSettingsPage.xaml
     /// </summary>
     public partial class PlayerSettingsPage : Page {
+        /// <summary>
+        /// Creates a new instance.
+        /// </summary>
         public PlayerSettingsPage() {
             InitializeComponent();
             LoadPlayerSettings();
         }
 
+        /// <summary>
+        /// Loads player settings (song streaming quality).
+        /// </summary>
         public void LoadPlayerSettings() {
             string songStreamingQuality = Session.SongStreamingQuality;
             switch (songStreamingQuality) {
@@ -29,6 +35,11 @@ namespace Musify.Pages {
             }
         }
 
+        /// <summary>
+        /// Change song streaming quality.
+        /// </summary>
+        /// <param name="sender">CheckBox</param>
+        /// <param name="e">Event</param>
         private void CheckBox_Checked(object sender, RoutedEventArgs e) {
             string songStreamingQuality = ((CheckBox)sender).Name;
             switch (songStreamingQuality) {

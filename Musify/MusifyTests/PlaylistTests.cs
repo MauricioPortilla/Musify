@@ -6,7 +6,6 @@ using Musify.Models;
 namespace MusifyTests {
     [TestClass]
     public class PlaylistTests {
-
         /// <summary>
         /// Test to prove that is possible fetch all account playlists.
         /// </summary>

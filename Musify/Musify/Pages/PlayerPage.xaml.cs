@@ -12,10 +12,9 @@ using System.Windows.Input;
 
 namespace Musify.Pages {
     /// <summary>
-    /// Lógica de interacción para PlayerPage.xaml
+    /// Interaction logic for PlayerPage.xaml
     /// </summary>
     public partial class PlayerPage : Page {
-
         /// <summary>
         /// Manages song stream data.
         /// </summary>

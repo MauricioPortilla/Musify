@@ -6,10 +6,9 @@ using System.Windows.Controls;
 
 namespace Musify {
     /// <summary>
-    /// Lógica de interacción para PlaylistsPage.xaml
+    /// Interaction logic for PlaylistsPage.xaml
     /// </summary>
     public partial class PlaylistsPage : Page {
-
         private DialogOpenedEventArgs dialogOpenEventArgs;
 
         /// <summary>
@@ -76,7 +75,7 @@ namespace Musify {
         /// <summary>
         /// Shows up a consult playlist page with the selected playlist.
         /// </summary>
-        /// <param name="sender">Button</param>
+        /// <param name="sender">ListBox</param>
         /// <param name="e">Event</param>
         private void PlaylistsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             ConsultPlaylistPage consultPlaylistPage = new ConsultPlaylistPage(playlistsListBox.SelectedItem as Playlist);
