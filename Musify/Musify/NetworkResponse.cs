@@ -49,7 +49,7 @@ namespace Musify {
         public dynamic Json {
             get => json;
         }
-        private TModel model;
+        private readonly TModel model;
         public TModel Model {
             get => model;
         }

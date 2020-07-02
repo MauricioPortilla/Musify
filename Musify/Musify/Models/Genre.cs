@@ -3,25 +3,16 @@ using System.Collections.Generic;
 
 namespace Musify.Models {
     public class Genre {
-
         /// <summary>
         /// Explains how to pass JSON data to an object of this type.
         /// </summary>
-        public static Dictionary<string, string> JSON_EQUIVALENTS = new Dictionary<string, string>() {
+        public static Dictionary<string, string> JSON_EQUIVALENTS { get; set; } = new Dictionary<string, string>() {
             { "genre_id", "GenreId" },
             { "name", "Name" }
         };
 
-        private int genreId;
-        public int GenreId {
-            get => genreId;
-            set => genreId = value;
-        }
-        private string name;
-        public string Name {
-            get => name;
-            set => name = value;
-        }
+        public int GenreId { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Creates a new instance.
@@ -69,7 +60,7 @@ namespace Musify.Models {
         /// <param name="onFailure">On failure</param>
         /// <param name="onError">On error</param>
         public void FetchSongs(Action<List<Song>> onSuccess, Action<NetworkResponse> onFailure, Action onError) {
-            RestSharpTools.GetAsyncMultiple<Song>("/genre/" + genreId + "/songs", null, Song.JSON_EQUIVALENTS, (response) => {
+            RestSharpTools.GetAsyncMultiple<Song>("/genre/" + GenreId + "/songs", null, Song.JSON_EQUIVALENTS, (response) => {
                 List<Song> songs = response.Model;
                 foreach (var song in songs) {
                     Album.FetchById(song.AlbumId, (album) => {
@@ -93,7 +84,7 @@ namespace Musify.Models {
         /// </summary>
         /// <returns>Genre name</returns>
         public override string ToString() {
-            return name;
+            return Name;
         }
     }
 }

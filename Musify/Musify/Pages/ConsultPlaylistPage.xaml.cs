@@ -172,9 +172,7 @@ namespace Musify.Pages {
         /// <param name="sender">Button</param>
         /// <param name="e">Event</param>
         private void AddToBelowButton_Click(object sender, RoutedEventArgs e) {
-            List<int> songsIdPlayQueue = new List<int> { ((SongTable)songsDataGrid.SelectedItem).Song.SongId };
-            songsIdPlayQueue.AddRange(Session.SongsIdPlayQueue);
-            Session.SongsIdPlayQueue = songsIdPlayQueue;
+            Session.SongsIdPlayQueue.Insert(0, ((SongTable)songsDataGrid.SelectedItem).Song.SongId);
             songsDataGrid.SelectedIndex = -1;
             dialogOpenEventArgs.Session.Close(true);
             dialogAddToQueueGrid.Visibility = Visibility.Collapsed;

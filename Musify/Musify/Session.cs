@@ -6,7 +6,7 @@ using RestSharp;
 using SpeedTest.Net;
 
 namespace Musify {
-    class Session {
+    static class Session {
         public static readonly RestClient REST_CLIENT = new RestClient(Core.SERVER_API_URL);
         public static Account Account;
         public static System.Windows.Controls.Frame MainFrame;

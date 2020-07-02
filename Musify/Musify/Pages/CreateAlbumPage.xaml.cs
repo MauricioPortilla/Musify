@@ -138,8 +138,8 @@ namespace Musify.Pages {
         /// <param name="sender">Button</param>
         /// <param name="e">Event</param>
         private void AcceptButton_Click(object sender, RoutedEventArgs e) {
-            if (string.IsNullOrWhiteSpace(albumNameTextBox.Text) || string.IsNullOrWhiteSpace(discographyTextBox.Text) || launchYearComboBox.Text.Equals("")
-                    || selectedImage.Equals("") || artistsList.Count <= 0 || songsList.Count <= 0) {
+            if (string.IsNullOrWhiteSpace(albumNameTextBox.Text) || string.IsNullOrWhiteSpace(discographyTextBox.Text) || string.IsNullOrWhiteSpace(launchYearComboBox.Text)
+                    || string.IsNullOrWhiteSpace(selectedImage) || artistsList.Count <= 0 || songsList.Count <= 0) {
                 MessageBox.Show("Faltan campos por completar.");
                 return;
             }

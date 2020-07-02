@@ -26,11 +26,7 @@ namespace Musify.Pages {
         /// <summary>
         /// Stores the latest song played.
         /// </summary>
-        private Song latestSongPlayed;
-        public Song LatestSongPlayed {
-            get => latestSongPlayed;
-            set => latestSongPlayed = value;
-        }
+        public Song LatestSongPlayed { get; set; }
         /// <summary>
         /// Stores the latest stream retrieved from server.
         /// </summary>
@@ -38,11 +34,7 @@ namespace Musify.Pages {
         /// <summary>
         /// Stores the latest account song played.
         /// </summary>
-        private AccountSong latestAccountSongPlayed;
-        public AccountSong LatestAccountSongPlayed {
-            get => latestAccountSongPlayed;
-            set => latestAccountSongPlayed = value;
-        }
+        public AccountSong LatestAccountSongPlayed { get; set; }
         /// <summary>
         /// Checks if player was stopped or not.
         /// </summary>
@@ -73,24 +65,24 @@ namespace Musify.Pages {
         /// <param name="song">Song to play</param>
         public void PlaySong(Song song, bool shouldPlayNextSong = true) {
             this.shouldPlayNextSong = shouldPlayNextSong;
-            if (latestSongPlayed != null) {
+            if (LatestSongPlayed != null) {
                 if (Session.SongsIdPlayHistory.Count == Core.MAX_SONGS_IN_HISTORY) {
                     Session.SongsIdPlayHistory.RemoveAt(0);
                 }
-                Session.SongsIdPlayHistory.Add(latestSongPlayed.SongId);
+                Session.SongsIdPlayHistory.Add(LatestSongPlayed.SongId);
             }
-            if (latestAccountSongPlayed != null) {
+            if (LatestAccountSongPlayed != null) {
                 if (Session.SongsIdPlayHistory.Count == Core.MAX_SONGS_IN_HISTORY) {
                     Session.SongsIdPlayHistory.RemoveAt(0);
                 }
-                Session.SongsIdPlayHistory.Add(latestAccountSongPlayed.AccountSongId * -1);
+                Session.SongsIdPlayHistory.Add(LatestAccountSongPlayed.AccountSongId * -1);
             }
-            latestAccountSongPlayed = null;
-            if (latestSongPlayed != null && latestSongPlayed.SongId == song.SongId && latestStream != null) {
+            LatestAccountSongPlayed = null;
+            if (LatestSongPlayed != null && LatestSongPlayed.SongId == song.SongId && latestStream != null) {
                 PlayMemoryStream(new MemoryStream(latestStream.ToArray()));
                 return;
             }
-            latestSongPlayed = song;
+            LatestSongPlayed = song;
             songNameTextBlock.Text = song.Title;
             artistNameTextBlock.Text = song.Album.GetArtistsNames();
             if (song.IsDownloaded()) {
@@ -126,24 +118,24 @@ namespace Musify.Pages {
         /// <param name="accountSong">Account song to play</param>
         public void PlayAccountSong(AccountSong accountSong, bool shouldPlayNextSong = true) {
             this.shouldPlayNextSong = shouldPlayNextSong;
-            if (latestAccountSongPlayed != null) {
+            if (LatestAccountSongPlayed != null) {
                 if (Session.SongsIdPlayHistory.Count == Core.MAX_SONGS_IN_HISTORY) {
                     Session.SongsIdPlayHistory.RemoveAt(0);
                 }
-                Session.SongsIdPlayHistory.Add(latestAccountSongPlayed.AccountSongId * -1);
+                Session.SongsIdPlayHistory.Add(LatestAccountSongPlayed.AccountSongId * -1);
             }
-            if (latestSongPlayed != null) {
+            if (LatestSongPlayed != null) {
                 if (Session.SongsIdPlayHistory.Count == Core.MAX_SONGS_IN_HISTORY) {
                     Session.SongsIdPlayHistory.RemoveAt(0);
                 }
-                Session.SongsIdPlayHistory.Add(latestSongPlayed.SongId);
+                Session.SongsIdPlayHistory.Add(LatestSongPlayed.SongId);
             }
-            latestSongPlayed = null;
-            if (latestAccountSongPlayed != null && latestAccountSongPlayed.AccountSongId == accountSong.AccountSongId) {
+            LatestSongPlayed = null;
+            if (LatestAccountSongPlayed != null && LatestAccountSongPlayed.AccountSongId == accountSong.AccountSongId) {
                 PlayMemoryStream(new MemoryStream(latestStream.ToArray()));
                 return;
             }
-            latestAccountSongPlayed = accountSong;
+            LatestAccountSongPlayed = accountSong;
             songNameTextBlock.Text = accountSong.Title;
             artistNameTextBlock.Text = "";
             MakeRequestStreamSong(Core.SERVER_API_URL + "/stream/accountsong/" + accountSong.AccountSongId);
@@ -161,7 +153,6 @@ namespace Musify.Pages {
             isStreamSongLocked = false;
             Task.Run(() => {
                 while (!isPlayerWaveOutAvailable) {
-                    continue;
                 }
                 try {
                     latestStream = new List<byte>();
@@ -399,49 +390,47 @@ namespace Musify.Pages {
         /// </summary>
         private void PlayNextSong() {
             Application.Current.Dispatcher.Invoke(() => {
-                if (reader != null && !isPlayerWaveOutAvailable) {
-                    if (Session.SongsIdPlayQueue.Count > 0 || Session.SongsIdSongList.Count > 0) {
-                        int id;
-                        if (Session.SongsIdPlayQueue.Count > 0) {
-                            id = Session.SongsIdPlayQueue.First();
+                if (reader != null && !isPlayerWaveOutAvailable && (Session.SongsIdPlayQueue.Count > 0 || Session.SongsIdSongList.Count > 0)) {
+                    int id;
+                    if (Session.SongsIdPlayQueue.Count > 0) {
+                        id = Session.SongsIdPlayQueue.First();
+                    } else {
+                        id = Session.SongsIdSongList.First();
+                    }
+                    try {
+                        if (id > 0) {
+                            Song.FetchById(id, (song) => {
+                                Session.PlayerPage.PlaySong(song);
+                                Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
+                                if (Session.SongsIdPlayQueue.Count > 0) {
+                                    Session.SongsIdPlayQueue.RemoveAt(0);
+                                } else {
+                                    Session.SongsIdSongList.RemoveAt(0);
+                                }
+                                RefreshPage(true);
+                            }, (errorResponse) => {
+                                MessageBox.Show(errorResponse.Message);
+                            }, () => {
+                                MessageBox.Show("Ocurrió un error al cargar la canción.");
+                            });
                         } else {
-                            id = Session.SongsIdSongList.First();
+                            AccountSong.FetchById(id * -1, (accountSong) => {
+                                Session.PlayerPage.PlayAccountSong(accountSong);
+                                Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
+                                if (Session.SongsIdPlayQueue.Count > 0) {
+                                    Session.SongsIdPlayQueue.RemoveAt(0);
+                                } else {
+                                    Session.SongsIdSongList.RemoveAt(0);
+                                }
+                                RefreshPage(true);
+                            }, (errorResponse) => {
+                                MessageBox.Show(errorResponse.Message);
+                            }, () => {
+                                MessageBox.Show("Ocurrió un error al cargar la canción.");
+                            });
                         }
-                        try {
-                            if (id > 0) {
-                                Song.FetchById(id, (song) => {
-                                    Session.PlayerPage.PlaySong(song);
-                                    Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
-                                    if (Session.SongsIdPlayQueue.Count > 0) {
-                                        Session.SongsIdPlayQueue.RemoveAt(0);
-                                    } else {
-                                        Session.SongsIdSongList.RemoveAt(0);
-                                    }
-                                    RefreshPage(true);
-                                }, (errorResponse) => {
-                                    MessageBox.Show(errorResponse.Message);
-                                }, () => {
-                                    MessageBox.Show("Ocurrió un error al cargar la canción.");
-                                });
-                            } else {
-                                AccountSong.FetchById(id * -1, (accountSong) => {
-                                    Session.PlayerPage.PlayAccountSong(accountSong);
-                                    Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
-                                    if (Session.SongsIdPlayQueue.Count > 0) {
-                                        Session.SongsIdPlayQueue.RemoveAt(0);
-                                    } else {
-                                        Session.SongsIdSongList.RemoveAt(0);
-                                    }
-                                    RefreshPage(true);
-                                }, (errorResponse) => {
-                                    MessageBox.Show(errorResponse.Message);
-                                }, () => {
-                                    MessageBox.Show("Ocurrió un error al cargar la canción.");
-                                });
-                            }
-                        } catch (Exception) {
-                            MessageBox.Show("Ocurrió un error al cargar la canción.");
-                        }
+                    } catch (Exception) {
+                        MessageBox.Show("Ocurrió un error al cargar la canción.");
                     }
                 }
             });
@@ -489,8 +478,8 @@ namespace Musify.Pages {
             if (string.IsNullOrEmpty(artistNameTextBlock.Text)) {
                 return;
             }
-            Session.MainWindow.mainFrame.Navigate(new ConsultArtistPage(latestSongPlayed.Album.Artists[0]));
-            Session.MainWindow.TitleBar.Text = latestSongPlayed.Album.Artists[0].ArtisticName;
+            Session.MainWindow.mainFrame.Navigate(new ConsultArtistPage(LatestSongPlayed.Album.Artists[0]));
+            Session.MainWindow.TitleBar.Text = LatestSongPlayed.Album.Artists[0].ArtisticName;
         }
 
         /// <summary>
@@ -501,7 +490,7 @@ namespace Musify.Pages {
         private void LikeButton_Click(object sender, RoutedEventArgs e) {
             try {
                 if (dislikeButton.IsEnabled) {
-                    Session.Account.LikeSong(latestSongPlayed, () => {
+                    Session.Account.LikeSong(LatestSongPlayed, () => {
                         dislikeButton.IsEnabled = false;
                     }, (errorResponse) => {
                         MessageBox.Show(errorResponse.Message);
@@ -509,7 +498,7 @@ namespace Musify.Pages {
                         MessageBox.Show("Ocurrió un error al procesar tu solicitud.");
                     });
                 } else {
-                    Session.Account.UnlikeSong(latestSongPlayed, () => {
+                    Session.Account.UnlikeSong(LatestSongPlayed, () => {
                         dislikeButton.IsEnabled = true;
                     }, (errorResponse) => {
                         MessageBox.Show(errorResponse.Message);
@@ -530,7 +519,7 @@ namespace Musify.Pages {
         private void DislikeButton_Click(object sender, RoutedEventArgs e) {
             try {
                 if (likeButton.IsEnabled) {
-                    Session.Account.DislikeSong(latestSongPlayed, () => {
+                    Session.Account.DislikeSong(LatestSongPlayed, () => {
                         likeButton.IsEnabled = false;
                     }, (errorResponse) => {
                         MessageBox.Show(errorResponse.Message);
@@ -538,7 +527,7 @@ namespace Musify.Pages {
                         MessageBox.Show("Ocurrió un error al procesar tu solicitud.");
                     });
                 } else {
-                    Session.Account.UndislikeSong(latestSongPlayed, () => {
+                    Session.Account.UndislikeSong(LatestSongPlayed, () => {
                         likeButton.IsEnabled = true;
                     }, (errorResponse) => {
                         MessageBox.Show(errorResponse.Message);

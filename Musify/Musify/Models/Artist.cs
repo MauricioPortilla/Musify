@@ -3,41 +3,20 @@ using System.Collections.Generic;
 
 namespace Musify.Models {
     public class Artist {
-
         /// <summary>
         /// Explains how to pass JSON data to an object of this type.
         /// </summary>
-        public static Dictionary<string, string> JSON_EQUIVALENTS = new Dictionary<string, string>() {
+        public static Dictionary<string, string> JSON_EQUIVALENTS { get; set; } = new Dictionary<string, string>() {
             { "artist_id", "ArtistId" },
             { "account_id", "AccountId" },
             { "artistic_name", "ArtisticName" }
         };
 
-        private int artistId;
-        public int ArtistId {
-            get => artistId;
-            set => artistId = value;
-        }
-        private int accountId;
-        public int AccountId {
-            get => accountId;
-            set => accountId = value;
-        }
-        private Account account;
-        public Account Account {
-            get => account;
-            set => account = value;
-        }
-        private string artisticName;
-        public string ArtisticName {
-            get => artisticName;
-            set => artisticName = value;
-        }
-        private List<Album> albums = new List<Album>();
-        public List<Album> Albums {
-            get => albums;
-            set => albums = value;
-        }
+        public int ArtistId { get; set; }
+        public int AccountId { get; set; }
+        public Account Account { get; set; }
+        public string ArtisticName { get; set; }
+        public List<Album> Albums { get; set; } = new List<Album>();
 
         /// <summary>
         /// Creates a new instance.
@@ -89,8 +68,8 @@ namespace Musify.Models {
         /// <param name="onError">On error</param>
         public void FetchAlbums(Action onSuccess, Action<NetworkResponse> onFailure, Action onError) {
             RestSharpTools.GetAsyncMultiple<Album>(
-                "/artist/" + artistId + "/albums", null, Album.JSON_EQUIVALENTS, (response) => {
-                this.albums = response.Model;
+                "/artist/" + ArtistId + "/albums", null, Album.JSON_EQUIVALENTS, (response) => {
+                this.Albums = response.Model;
                 onSuccess();
             }, onFailure, () => {
                 Console.WriteLine("Exception@Artist->FetchAlbums()");
@@ -103,14 +82,14 @@ namespace Musify.Models {
         /// </summary>
         /// <returns>Artist artistic name</returns>
         public override string ToString() {
-            return artisticName;
+            return ArtisticName;
         }
 
         /// <summary>
         /// Represents an Artist in a table.
         /// </summary>
         public struct ArtistTable {
-            public Artist Artist;
+            public Artist Artist { get; set; }
             public string ArtisticName { get; set; }
         }
     }

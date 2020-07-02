@@ -1,5 +1,5 @@
 ﻿namespace Musify {
-    class Core {
+    static class Core {
         private static readonly string API_VERSION = "v1";
         public static readonly string SERVER_API_URL = "http://localhost:5000/api/" + API_VERSION;
 

@@ -4,11 +4,10 @@ using System.Linq;
 
 namespace Musify.Models {
     public class Account {
-
         /// <summary>
         /// Explains how to pass JSON data to an object of this type.
         /// </summary>
-        public static readonly Dictionary<string, string> JSON_EQUIVALENTS = new Dictionary<string, string>() {
+        public static Dictionary<string, string> JSON_EQUIVALENTS { get; set; } = new Dictionary<string, string>() {
             { "account_id", "AccountId" },
             { "email", "Email" },
             { "password", "Password" },
@@ -17,56 +16,16 @@ namespace Musify.Models {
             { "creation_date", "CreationDate" }
         };
 
-        private int accountId;
-        public int AccountId {
-            get => accountId;
-            set => accountId = value;
-        }
-        private string email;
-        public string Email {
-            get => email;
-            set => email = value;
-        }
-        private string password;
-        public string Password {
-            get => password;
-            set => password = value;
-        }
-        private string name;
-        public string Name {
-            get => name;
-            set => name = value;
-        }
-        private string lastName;
-        public string LastName {
-            get => lastName;
-            set => lastName = value;
-        }
-        private DateTime creationDate;
-        public DateTime CreationDate {
-            get => creationDate;
-            set => creationDate = value;
-        }
-        private Artist artist = new Artist();
-        public Artist Artist {
-            get => artist;
-            set => artist = value;
-        }
-        private List<AccountSong> accountSongs = new List<AccountSong>();
-        public List<AccountSong> AccountSongs {
-            get => accountSongs;
-            set => accountSongs = value;
-        }
-        private List<Song> likedSongs = new List<Song>();
-        public List<Song> LikedSongs {
-            get => likedSongs;
-            set => likedSongs = value;
-        }
-        private Subscription subscription;
-        public Subscription Subscription {
-            get => subscription;
-            set => subscription = value;
-        }
+        public int AccountId { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string Name { get; set; }
+        public string LastName { get; set; }
+        public DateTime CreationDate { get; set; }
+        public Artist Artist { get; set; } = new Artist();
+        public List<AccountSong> AccountSongs { get; set; } = new List<AccountSong>();
+        public List<Song> LikedSongs { get; set; } = new List<Song>();
+        public Subscription Subscription { get; set; }
 
         /// <summary>
         /// Creates a new instance.
@@ -82,10 +41,10 @@ namespace Musify.Models {
         /// <param name="name">Name</param>
         /// <param name="lastName">Last name</param>
         public Account(string email, string password, string name, string lastName) {
-            this.email = email;
-            this.password = password;
-            this.name = name;
-            this.lastName = lastName;
+            this.Email = email;
+            this.Password = password;
+            this.Name = name;
+            this.LastName = lastName;
         }
 
         /// <summary>
@@ -124,10 +83,10 @@ namespace Musify.Models {
         /// <param name="artisticName">Artistic name if should be registered as an artist too</param>
         public void Register(bool isArtist, Action onSuccess, Action<NetworkResponse> onFailure, Action onError, string artisticName = null) {
             var accountData = new {
-                email,
-                password,
-                name,
-                last_name = lastName,
+                Email,
+                Password,
+                Name,
+                last_name = LastName,
                 is_artist = isArtist,
                 artistic_name = artisticName
             };
@@ -147,8 +106,8 @@ namespace Musify.Models {
         /// <param name="onError">On error</param>
         /// <param name="onFinish">It's executed at the end of every case</param>
         public void FetchArtist(Action onSuccess, Action<NetworkResponse> onFailure, Action onError, Action onFinish = null) {
-            RestSharpTools.GetAsync<Artist>("/account/" + accountId + "/artist", null, Artist.JSON_EQUIVALENTS, (response) => {
-                this.artist = response.Model;
+            RestSharpTools.GetAsync<Artist>("/account/" + AccountId + "/artist", null, Artist.JSON_EQUIVALENTS, (response) => {
+                this.Artist = response.Model;
                 onSuccess();
                 onFinish?.Invoke();
             }, (errorResponse) => {
@@ -169,10 +128,10 @@ namespace Musify.Models {
         /// <param name="onError">On error</param>
         public void FetchAccountSongs(Action onSuccess, Action<NetworkResponse> onFailure, Action onError) {
             RestSharpTools.GetAsyncMultiple<AccountSong>(
-                "/account/" + accountId + "/accountsongs", null, 
+                "/account/" + AccountId + "/accountsongs", null, 
                 AccountSong.JSON_EQUIVALENTS, 
                 (response) => {
-                    this.accountSongs = response.Model;
+                    this.AccountSongs = response.Model;
                     onSuccess?.Invoke();
                 }, (errorResponse) => {
                     onFailure?.Invoke(errorResponse);
@@ -192,10 +151,10 @@ namespace Musify.Models {
         /// <param name="onError">On error</param>
         public void AddAccountSongs(string[] fileRoutes, Action onSuccess, Action<NetworkResponse> onFailure, Action onError) {
             RestSharpTools.PostMultimediaAsync<AccountSong>(
-                "/account/" + accountId + "/accountsongs", null, fileRoutes,
+                "/account/" + AccountId + "/accountsongs", null, fileRoutes,
                 AccountSong.JSON_EQUIVALENTS, 
                 (response) => {
-                    this.accountSongs = this.accountSongs.Union(response.Model).ToList();
+                    this.AccountSongs = this.AccountSongs.Union(response.Model).ToList();
                     onSuccess?.Invoke();
                 }, onFailure, () => {
                     Console.WriteLine("Exception@Account->AddAccountSongs()");
@@ -212,8 +171,8 @@ namespace Musify.Models {
         /// <param name="onFailure">On failure</param>
         /// <param name="onError">On error</param>
         public void DeleteAccountSong(AccountSong accountSong, Action onSuccess, Action<NetworkResponse> onFailure, Action onError) {
-            RestSharpTools.DeleteAsync("/account/" + accountId + "/accountsong/" + accountSong.AccountSongId, null, (response) => {
-                accountSongs.Remove(accountSong);
+            RestSharpTools.DeleteAsync("/account/" + AccountId + "/accountsong/" + accountSong.AccountSongId, null, (response) => {
+                AccountSongs.Remove(accountSong);
                 onSuccess?.Invoke();
             }, onFailure, () => {
                 Console.WriteLine("Exception@Account->DeleteAccountSong() -> ");
@@ -230,7 +189,7 @@ namespace Musify.Models {
         /// <param name="onError">On error</param>
         public void LikeSong(Song song, Action onSuccess, Action<NetworkResponse> onFailure, Action onError) {
             var data = new {
-                account_id = accountId
+                account_id = AccountId
             };
             RestSharpTools.PostAsync("/song/" + song.SongId + "/songlike", data, (response) => {
                 onSuccess();
@@ -249,7 +208,7 @@ namespace Musify.Models {
         /// <param name="onError">On error</param>
         public void DislikeSong(Song song, Action onSuccess, Action<NetworkResponse> onFailure, Action onError) {
             var data = new {
-                account_id = accountId
+                account_id = AccountId
             };
             RestSharpTools.PostAsync("/song/" + song.SongId + "/songdislike", data, (response) => {
                 onSuccess();
@@ -268,7 +227,7 @@ namespace Musify.Models {
         /// <param name="onError">On error</param>
         public void HasLikedSong(Song song, Action onSuccess, Action<NetworkResponse> onFailure, Action onError) {
             var data = new {
-                account_id = accountId
+                account_id = AccountId
             };
             RestSharpTools.GetAsync("/song/" + song.SongId + "/songlike", data, (response) => {
                 onSuccess();
@@ -289,7 +248,7 @@ namespace Musify.Models {
         /// <param name="onError">On error</param>
         public void HasDislikedSong(Song song, Action onSuccess, Action<NetworkResponse> onFailure, Action onError) {
             var data = new {
-                account_id = accountId
+                account_id = AccountId
             };
             RestSharpTools.GetAsync("/song/" + song.SongId + "/songdislike", data, (response) => {
                 onSuccess();
@@ -310,7 +269,7 @@ namespace Musify.Models {
         /// <param name="onError">On error</param>
         public void UnlikeSong(Song song, Action onSuccess, Action<NetworkResponse> onFailure, Action onError) {
             var data = new {
-                account_id = accountId
+                account_id = AccountId
             };
             RestSharpTools.DeleteAsync("/song/" + song.SongId + "/songlike", data, (response) => {
                 onSuccess();
@@ -329,7 +288,7 @@ namespace Musify.Models {
         /// <param name="onError">On error</param>
         public void UndislikeSong(Song song, Action onSuccess, Action<NetworkResponse> onFailure, Action onError) {
             var data = new {
-                account_id = accountId
+                account_id = AccountId
             };
             RestSharpTools.DeleteAsync("/song/" + song.SongId + "/songdislike", data, (response) => {
                 onSuccess();
@@ -368,7 +327,7 @@ namespace Musify.Models {
         /// <param name="onError">On error</param>
         public void Subscribe(Action<Subscription> onSuccess, Action<NetworkResponse> onFailure, Action onError) {
             RestSharpTools.PostAsync<Subscription>("/subscription", null, Subscription.JSON_EQUIVALENTS, (response) => {
-                subscription = response.Model;
+                Subscription = response.Model;
                 onSuccess(response.Model);
             }, onFailure, () => {
                 Console.WriteLine("Exception@Account->Subscribe()");

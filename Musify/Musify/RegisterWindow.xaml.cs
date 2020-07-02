@@ -23,7 +23,7 @@ namespace Musify {
                 !string.IsNullOrWhiteSpace(passwordPasswordBox.Password) &&
                 !string.IsNullOrWhiteSpace(nameTextBox.Text) &&
                 !string.IsNullOrWhiteSpace(lastNameTextBox.Text) &&
-                imAnArtistCheckBox.IsChecked.GetValueOrDefault() ? 
+                imAnArtistCheckBox.IsChecked.GetValueOrDefault() ?
                     !string.IsNullOrWhiteSpace(artisticNameTextBox.Text) : true;
         }
 

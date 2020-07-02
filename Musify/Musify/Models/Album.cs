@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Windows.Media.Imaging;
 
 namespace Musify.Models {
     public class Album {
-
         /// <summary>
         /// Explains how to pass JSON data to an object of this type.
         /// </summary>
-        public static Dictionary<string, string> JSON_EQUIVALENTS = new Dictionary<string, string>() {
+        public static Dictionary<string, string> JSON_EQUIVALENTS { get; set; } = new Dictionary<string, string>() {
             { "album_id", "AlbumId" },
             { "type", "Type" },
             { "name", "Name" },
@@ -23,50 +23,18 @@ namespace Musify.Models {
         /// <summary>
         /// Explains how to pass JSON image location data to an object of this type.
         /// </summary>
-        public static Dictionary<string, string> JSON_IMAGE_EQUIVALENT = new Dictionary<string, string>() {
+        public static Dictionary<string, string> JSON_IMAGE_EQUIVALENT { get; set; } = new Dictionary<string, string>() {
             { "image_location", "ImageLocation" },
         };
 
-        private int albumId;
-        public int AlbumId {
-            get => albumId;
-            set => albumId = value;
-        }
-        private string type;
-        public string Type {
-            get => type;
-            set => type = value;
-        }
-        private string name;
-        public string Name {
-            get => name;
-            set => name = value;
-        }
-        private int launchYear;
-        public int LaunchYear {
-            get => launchYear;
-            set => launchYear = value;
-        }
-        private string discography;
-        public string Discography {
-            get => discography;
-            set => discography = value;
-        }
-        private string imageLocation;
-        public string ImageLocation {
-            get => imageLocation;
-            set => imageLocation = value;
-        }
-        private List<Artist> artists = new List<Artist>();
-        public List<Artist> Artists {
-            get => artists;
-            set => artists = value;
-        }
-        private List<Song> songs = new List<Song>();
-        public List<Song> Songs {
-            get => songs;
-            set => songs = value;
-        }
+        public int AlbumId { get; set; }
+        public string Type { get; set; }
+        public string Name { get; set; }
+        public int LaunchYear { get; set; }
+        public string Discography { get; set; }
+        public string ImageLocation { get; set; }
+        public List<Artist> Artists { get; set; } = new List<Artist>();
+        public List<Song> Songs { get; set; } = new List<Song>();
 
         /// <summary>
         /// Creates a new instance.
@@ -81,22 +49,22 @@ namespace Musify.Models {
         /// <param name="onFailure">On failure</param>
         /// <param name="onError">On error</param>
         public void Save(Action onSuccess, Action<NetworkResponse> onFailure, Action onError) {
-            string[] filesRoutes = new string[songs.Count];
-            for (int i = 0; i < songs.Count; i++) {
-                filesRoutes[i] = songs.ElementAt(i).SongLocation;
+            string[] filesRoutes = new string[Songs.Count];
+            for (int i = 0; i < Songs.Count; i++) {
+                filesRoutes[i] = Songs.ElementAt(i).SongLocation;
             }
             RestSharpTools.PostMultimediaAsync<Song>("album/songs", null, filesRoutes, Song.JSON_MIN_EQUIVALENTS, (responseSongs) => {
-                filesRoutes = new string[] { imageLocation };
+                filesRoutes = new string[] { ImageLocation };
                 RestSharpTools.PostMultimediaAsync<Album>("album/image", null, filesRoutes, JSON_IMAGE_EQUIVALENT, (responseImage) => {
                     List<object> artists_id = new List<object>();
-                    foreach (Artist artist in artists) {
+                    foreach (Artist artist in Artists) {
                         artists_id.Add(new {
                             artist_id = artist.ArtistId
                         });
                     }
                     List<object> new_songs = new List<object>();
                     int i = 0;
-                    foreach (Song song in songs) {
+                    foreach (Song song in Songs) {
                         List<object> song_artists_id = new List<object>();
                         foreach (Artist artist in song.Artists) {
                             song_artists_id.Add(new {
@@ -113,10 +81,10 @@ namespace Musify.Models {
                         i++;
                     }
                     var albumData = new {
-                        type,
-                        name,
-                        launch_year = launchYear,
-                        discography,
+                        Type,
+                        Name,
+                        launch_year = LaunchYear,
+                        Discography,
                         image_location = responseImage.Model.ElementAt(0).ImageLocation,
                         artists_id,
                         new_songs
@@ -197,9 +165,9 @@ namespace Musify.Models {
         /// <param name="onError">On error</param>
         public void FetchArtists(Action onSuccess, Action<NetworkResponse> onFailure, Action onError) {
             RestSharpTools.GetAsyncMultiple<Artist>(
-                "/album/" + albumId + "/artists", null, Artist.JSON_EQUIVALENTS, 
+                "/album/" + AlbumId + "/artists", null, Artist.JSON_EQUIVALENTS, 
                 (response) => {
-                    this.artists = response.Model;
+                    this.Artists = response.Model;
                     onSuccess();
                 }, (errorResponse) => {
                     onFailure?.Invoke(errorResponse);
@@ -215,14 +183,14 @@ namespace Musify.Models {
         /// </summary>
         /// <returns>Artistic names of each artist attached to this album</returns>
         public string GetArtistsNames() {
-            string names = "";
-            foreach (Artist artist in artists) {
-                if (!string.IsNullOrEmpty(names)) {
-                    names += ", ";
+            StringBuilder names = new StringBuilder();
+            foreach (Artist artist in Artists) {
+                if (!string.IsNullOrEmpty(names.ToString())) {
+                    names.Append(", ");
                 }
-                names += artist.ArtisticName;
+                names.Append(artist.ArtisticName);
             }
-            return names;
+            return names.ToString();
         }
 
         /// <summary>
@@ -233,7 +201,8 @@ namespace Musify.Models {
             WebClient webClient = new WebClient();
             webClient.Headers["Authorization"] = Session.AccessToken ?? "";
             try {
-                var image = webClient.DownloadData(Core.SERVER_API_URL + "/album/" + albumId + "/image");
+                var image = webClient.DownloadData(Core.SERVER_API_URL + "/album/" + AlbumId + "/image");
+                webClient.Dispose();
                 using (MemoryStream memoryStream = new MemoryStream(image)) {
                     BitmapImage bitmapImage = new BitmapImage();
                     bitmapImage.BeginInit();
@@ -243,6 +212,7 @@ namespace Musify.Models {
                     return bitmapImage;
                 }
             } catch (Exception) {
+                webClient.Dispose();
                 return null;
             }
         }
@@ -255,10 +225,10 @@ namespace Musify.Models {
         /// <param name="onError">On error</param>
         public void FetchSongs(Action onSuccess, Action<NetworkResponse> onFailure, Action onError) {
             RestSharpTools.GetAsyncMultiple<Song>(
-                "/album/" + albumId + "/songs", null, Song.JSON_EQUIVALENTS, 
+                "/album/" + AlbumId + "/songs", null, Song.JSON_EQUIVALENTS, 
                 (response) => {
-                    this.songs = response.Model;
-                    foreach (var song in songs) {
+                    this.Songs = response.Model;
+                    foreach (var song in Songs) {
                         song.Album = this;
                         Genre.FetchById(song.GenreId, (genre) => {
                             song.Genre = genre;
@@ -281,14 +251,14 @@ namespace Musify.Models {
         /// </summary>
         /// <returns>Album name</returns>
         public override string ToString() {
-            return name;
+            return Name;
         }
 
         /// <summary>
         /// Represents an Album in a table.
         /// </summary>
         public struct AlbumTable {
-            public Album Album;
+            public Album Album { get; set; }
             public string Type { get; set; }
             public string Name { get; set; }
             public string Artist { get; set; }

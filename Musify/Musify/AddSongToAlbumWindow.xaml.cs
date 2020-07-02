@@ -132,7 +132,7 @@ namespace Musify {
         /// <param name="sender">Button</param>
         /// <param name="e">Event</param>
         private void AcceptButton_Click(object sender, RoutedEventArgs e) {
-            if (selectedSong.Equals("") || string.IsNullOrWhiteSpace(songNameTextBox.Text) || genreComboBox.Text.Equals("") || artistsList.Count <= 0) {
+            if (string.IsNullOrWhiteSpace(selectedSong) || string.IsNullOrWhiteSpace(songNameTextBox.Text) || string.IsNullOrWhiteSpace(genreComboBox.Text) || artistsList.Count <= 0) {
                 MessageBox.Show("Faltan campos por completar.");
                 return;
             }

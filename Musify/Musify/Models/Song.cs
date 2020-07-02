@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace Musify.Models {
     public class Song {
-
         /// <summary>
         /// Explains how to pass JSON data to an object of this type.
         /// </summary>
-        public static Dictionary<string, string> JSON_EQUIVALENTS = new Dictionary<string, string>() {
+        public static Dictionary<string, string> JSON_EQUIVALENTS { get; set; } = new Dictionary<string, string>() {
             { "song_id", "SongId" },
             { "album_id", "AlbumId" },
             { "genre_id", "GenreId" },
@@ -21,61 +21,21 @@ namespace Musify.Models {
         /// <summary>
         /// Explains how to pass JSON minimum data to an object of this type.
         /// </summary>
-        public static Dictionary<string, string> JSON_MIN_EQUIVALENTS = new Dictionary<string, string>() {
+        public static Dictionary<string, string> JSON_MIN_EQUIVALENTS { get; set; } = new Dictionary<string, string>() {
             { "name", "SongLocation" },
             { "duration", "Duration" }
         };
 
-        private int songId;
-        public int SongId {
-            get => songId;
-            set => songId = value;
-        }
-        private int albumId;
-        public int AlbumId {
-            get => albumId;
-            set => albumId = value;
-        }
-        private Album album;
-        public Album Album {
-            get => album;
-            set => album = value;
-        }
-        private int genreId;
-        public int GenreId {
-            get => genreId;
-            set => genreId = value;
-        }
-        private Genre genre;
-        public Genre Genre {
-            get => genre;
-            set => genre = value;
-        }
-        private string title;
-        public string Title {
-            get => title;
-            set => title = value;
-        }
-        private string duration = "0:00";
-        public string Duration {
-            get => duration;
-            set => duration = value;
-        }
-        private string songLocation;
-        public string SongLocation {
-            get => songLocation;
-            set => songLocation = value;
-        }
-        private string status;
-        public string Status {
-            get => status;
-            set => status = value;
-        }
-        private List<Artist> artists = new List<Artist>();
-        public List<Artist> Artists {
-            get => artists;
-            set => artists = value;
-        }
+        public int SongId { get; set; }
+        public int AlbumId { get; set; }
+        public Album Album { get; set; }
+        public int GenreId { get; set; }
+        public Genre Genre { get; set; }
+        public string Title { get; set; }
+        public string Duration { get; set; } = "0:00";
+        public string SongLocation { get; set; }
+        public string Status { get; set; }
+        public List<Artist> Artists { get; set; } = new List<Artist>();
 
         /// <summary>
         /// Creates a new instance.
@@ -87,7 +47,7 @@ namespace Musify.Models {
         /// Represents a song in a table.
         /// </summary>
         public struct SongTable {
-            public Song Song;
+            public Song Song { get; set; }
             public string Title { get; set; }
             public string ArtistsNames { get; set; }
             public Album Album { get; set; }
@@ -111,10 +71,10 @@ namespace Musify.Models {
                     return;
                 }
                 foreach (var song in response.Model) {
-                    Album.FetchById(song.albumId, (album) => {
-                        song.album = album;
-                        Genre.FetchById(song.genreId, (genre) => {
-                            song.genre = genre;
+                    Album.FetchById(song.AlbumId, (album) => {
+                        song.Album = album;
+                        Genre.FetchById(song.GenreId, (genre) => {
+                            song.Genre = genre;
                             song.FetchArtists(() => {
                                 onSuccess(response.Model);
                             }, null, null);
@@ -136,10 +96,10 @@ namespace Musify.Models {
         /// <param name="onError">On error</param>
         public static void FetchById(int songId, Action<Song> onSuccess, Action<NetworkResponse> onFailure, Action onError) {
             RestSharpTools.GetAsync<Song>("/song/" + songId, null, JSON_EQUIVALENTS, (response) => {
-                Album.FetchById(response.Model.albumId, (album) => {
-                    response.Model.album = album;
-                    Genre.FetchById(response.Model.genreId, (genre) => {
-                        response.Model.genre = genre;
+                Album.FetchById(response.Model.AlbumId, (album) => {
+                    response.Model.Album = album;
+                    Genre.FetchById(response.Model.GenreId, (genre) => {
+                        response.Model.Genre = genre;
                         response.Model.FetchArtists(() => {
                             onSuccess(response.Model);
                         }, null, null);
@@ -161,7 +121,7 @@ namespace Musify.Models {
         /// <param name="onError">On error</param>
         public void FetchArtists(Action onSuccess, Action<NetworkResponse> onFailure, Action onError) {
             RestSharpTools.GetAsyncMultiple<Artist>("/song/" + SongId + "/artists", null, Artist.JSON_EQUIVALENTS, (response) => {
-                this.artists = response.Model;
+                this.Artists = response.Model;
                 onSuccess();
             }, onFailure, () => {
                 Console.WriteLine("Exception@Album->FetchArtists()");
@@ -174,14 +134,14 @@ namespace Musify.Models {
         /// </summary>
         /// <returns>Artistic name of each artist attached to this song</returns>
         public string GetArtistsNames() {
-            string names = "";
-            foreach (Artist artist in artists) {
-                if (!string.IsNullOrEmpty(names)) {
-                    names += ", ";
+            StringBuilder names = new StringBuilder();
+            foreach (Artist artist in Artists) {
+                if (!string.IsNullOrEmpty(names.ToString())) {
+                    names.Append(", ");
                 }
-                names += artist.ArtisticName;
+                names.Append(artist.ArtisticName);
             }
-            return names;
+            return names.ToString();
         }
 
         /// <summary>
@@ -189,7 +149,7 @@ namespace Musify.Models {
         /// </summary>
         /// <returns>true if is downloaded; false if not</returns>
         public bool IsDownloaded() {
-            return File.Exists(App.DATA_DOWNLOADS_DIRECTORY + "/" + songId + ".bin");
+            return File.Exists(App.DATA_DOWNLOADS_DIRECTORY + "/" + SongId + ".bin");
         }
 
         /// <summary>
@@ -197,7 +157,7 @@ namespace Musify.Models {
         /// </summary>
         /// <returns>Stream with song file bytes</returns>
         public Stream CreateDownloadedFileStream() {
-            Stream stream = new MemoryStream(File.ReadAllBytes(App.DATA_DOWNLOADS_DIRECTORY + "/" + songId + ".bin"));
+            Stream stream = new MemoryStream(File.ReadAllBytes(App.DATA_DOWNLOADS_DIRECTORY + "/" + SongId + ".bin"));
             return stream;
         }
 
@@ -206,7 +166,7 @@ namespace Musify.Models {
         /// </summary>
         /// <returns>Song title</returns>
         public override string ToString() {
-            return title;
+            return Title;
         }
     }
 }

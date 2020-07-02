@@ -3,41 +3,20 @@ using System.Collections.Generic;
 
 namespace Musify.Models {
     public class Playlist {
-
         /// <summary>
         /// Explains how to pass JSON data to an object of this type.
         /// </summary>
-        public static readonly Dictionary<string, string> JSON_EQUIVALENTS = new Dictionary<string, string>() {
+        public static Dictionary<string, string> JSON_EQUIVALENTS { get; set; } = new Dictionary<string, string>() {
             { "playlist_id", "PlaylistId" },
             { "account_id", "AccountId" },
             { "name", "Name" }
         };
 
-        private int playlistId = 0;
-        public int PlaylistId {
-            get => playlistId;
-            set => playlistId = value;
-        }
-        private int accountId;
-        public int AccountId {
-            get => accountId;
-            set => accountId = value;
-        }
-        private Account account;
-        public Account Account {
-            get => account;
-            set => account = value;
-        }
-        private List<Song> songs = new List<Song>();
-        public List<Song> Songs {
-            get => songs;
-            set => songs = value;
-        }
-        private string name;
-        public string Name {
-            get => name;
-            set => name = value;
-        }
+        public int PlaylistId { get; set; } = 0;
+        public int AccountId { get; set; }
+        public Account Account { get; set; }
+        public List<Song> Songs { get; set; } = new List<Song>();
+        public string Name { get; set; }
 
         /// <summary>
         /// Creates a new instance.
@@ -68,9 +47,9 @@ namespace Musify.Models {
         /// <param name="onFailure">On failure</param>
         /// <param name="onError">On error</param>
         public void FetchSongs(Action onSuccess, Action<NetworkResponse> onFailure, Action onError) {
-            RestSharpTools.GetAsyncMultiple<Song>("/playlist/" + playlistId + "/songs", null, Song.JSON_EQUIVALENTS, (response) => {
-                songs = response.Model;
-                foreach (var song in songs) {
+            RestSharpTools.GetAsyncMultiple<Song>("/playlist/" + PlaylistId + "/songs", null, Song.JSON_EQUIVALENTS, (response) => {
+                Songs = response.Model;
+                foreach (var song in Songs) {
                     Album.FetchById(song.AlbumId, (album) => {
                         song.Album = album;
                         Genre.FetchById(song.GenreId, (genre) => {
@@ -96,11 +75,11 @@ namespace Musify.Models {
         /// <param name="onError">On error</param>
         public void Save(Action<Playlist> onSuccess, Action<NetworkResponse> onFailure, Action onError) {
             var playlistData = new {
-                playlist_id = playlistId,
-                account_id = accountId,
-                name
+                playlist_id = PlaylistId,
+                account_id = AccountId,
+                Name
             };
-            if (playlistId == 0) {
+            if (PlaylistId == 0) {
                 RestSharpTools.PostAsync<Playlist>("/playlist", playlistData, JSON_EQUIVALENTS, (response) => {
                     onSuccess(response.Model);
                 }, onFailure, () => {
@@ -108,7 +87,7 @@ namespace Musify.Models {
                     onError?.Invoke();
                 });
             } else {
-                RestSharpTools.PutAsync<Playlist>("/playlist/" + playlistId, playlistData, JSON_EQUIVALENTS, (response) => {
+                RestSharpTools.PutAsync<Playlist>("/playlist/" + PlaylistId, playlistData, JSON_EQUIVALENTS, (response) => {
                     onSuccess(response.Model);
                 }, onFailure, () => {
                     Console.WriteLine("Exception@Playlist->Save()");
@@ -128,7 +107,7 @@ namespace Musify.Models {
             var data = new {
                 song_id = song.SongId
             };
-            RestSharpTools.PostAsync("/playlist/" + playlistId + "/song", data, (response) => {
+            RestSharpTools.PostAsync("/playlist/" + PlaylistId + "/song", data, (response) => {
                 onSuccess();
             }, onFailure, () => {
                 Console.WriteLine("Exception@Playlist->AddSong()");
@@ -144,11 +123,8 @@ namespace Musify.Models {
         /// <param name="onFailure">On failure</param>
         /// <param name="onError">On error</param>
         public void ContainsSong(Song song, Action onSuccess, Action<NetworkResponse> onFailure, Action onError) {
-            var data = new {
-                song_id = song.SongId
-            };
             RestSharpTools.GetAsync<Song>(
-                "/playlist/" + playlistId + "/songs/" + song.SongId, 
+                "/playlist/" + PlaylistId + "/songs/" + song.SongId, 
                 null, Song.JSON_EQUIVALENTS, 
                 (response) => {
                     onSuccess();
@@ -168,7 +144,7 @@ namespace Musify.Models {
         /// <param name="onFailure">On failure</param>
         /// <param name="onError">On error</param>
         public void Delete(Action onSuccess, Action<NetworkResponse> onFailure, Action onError) {
-            RestSharpTools.DeleteAsync("/playlist/" + playlistId, null, (response) => {
+            RestSharpTools.DeleteAsync("/playlist/" + PlaylistId, null, (response) => {
                 onSuccess();
             }, onFailure, () => {
                 Console.WriteLine("Exception@Playlist->Delete()");
@@ -184,7 +160,7 @@ namespace Musify.Models {
         /// <param name="onFailure">On failure</param>
         /// <param name="onError">On error</param>
         public void DeleteSong(Song song, Action onSuccess, Action<NetworkResponse> onFailure, Action onError) {
-            RestSharpTools.DeleteAsync("/playlist/" + playlistId + "/songs/" + song.SongId, null, (response) => {
+            RestSharpTools.DeleteAsync("/playlist/" + PlaylistId + "/songs/" + song.SongId, null, (response) => {
                 onSuccess();
             }, onFailure, () => {
                 Console.WriteLine("Exception@Playlist->DeleteSong()");
@@ -197,7 +173,7 @@ namespace Musify.Models {
         /// </summary>
         /// <returns>Playlist name</returns>
         public override string ToString() {
-            return name;
+            return Name;
         }
     }
 }

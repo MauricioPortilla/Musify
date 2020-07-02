@@ -6,7 +6,7 @@ namespace Musify.Models {
         /// <summary>
         /// Explains how to pass JSON data to an object of this type.
         /// </summary>
-        public static Dictionary<string, string> JSON_EQUIVALENTS = new Dictionary<string, string>() {
+        public static Dictionary<string, string> JSON_EQUIVALENTS { get; set; } = new Dictionary<string, string>() {
             { "subscription_id", "SubscriptionId" },
             { "account_id", "AccountId" },
             { "cost", "Cost" },
@@ -14,31 +14,11 @@ namespace Musify.Models {
             { "end_date", "EndDate" }
         };
 
-        private int subscriptionId;
-        public int SubscriptionId {
-            get => subscriptionId;
-            set => subscriptionId = value;
-        }
-        private int accountId;
-        public int AccountId {
-            get => accountId;
-            set => accountId = value;
-        }
-        private float cost;
-        public float Cost {
-            get => cost;
-            set => cost = value;
-        }
-        private DateTime startDate;
-        public DateTime StartDate {
-            get => startDate;
-            set => startDate = value;
-        }
-        private DateTime endDate;
-        public DateTime EndDate {
-            get => endDate;
-            set => endDate = value;
-        }
+        public int SubscriptionId { get; set; }
+        public int AccountId { get; set; }
+        public float Cost { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
 
         /// <summary>
         /// Creates a new instance.

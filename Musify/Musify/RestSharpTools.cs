@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using System.IO;
 
 namespace Musify {
-    class RestSharpTools {
+    static class RestSharpTools {
         /// <summary>
         /// Sends a GET request.
         /// </summary>
@@ -103,7 +103,7 @@ namespace Musify {
                 request.AddHeader("Authorization", Session.AccessToken ?? "");
                 var response = await Session.REST_CLIENT.ExecuteGetAsync(request, new CancellationTokenSource().Token);
                 dynamic json = JObject.Parse(response.Content);
-                List<TModel> objects = new List<TModel>();
+                List<TModel> objects;
                 if (response.IsSuccessful) {
                     objects = FromJsonToObjectsList<TModel>(response.Content, jsonEquivalents);
                     onSuccess(new NetworkResponse<List<TModel>>(json, objects));
@@ -215,7 +215,7 @@ namespace Musify {
                 }
                 var response = await Session.REST_CLIENT.ExecutePostAsync<TModel>(request, new CancellationTokenSource().Token);
                 dynamic json = JObject.Parse(response.Content);
-                List<TModel> objects = new List<TModel>();
+                List<TModel> objects;
                 if (response.IsSuccessful) {
                     objects = FromJsonToObjectsList<TModel>(response.Content, jsonEquivalents);
                     onSuccess(new NetworkResponse<List<TModel>>(json, objects));
