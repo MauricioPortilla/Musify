@@ -6,7 +6,7 @@ namespace Musify.Models {
         /// <summary>
         /// Explains how to pass JSON data to an object of this type.
         /// </summary>
-        public static Dictionary<string, string> JSON_EQUIVALENTS { get; set; } = new Dictionary<string, string>() {
+        public static Dictionary<string, string> JSON_EQUIVALENTS { get; } = new Dictionary<string, string>() {
             { "playlist_id", "PlaylistId" },
             { "account_id", "AccountId" },
             { "name", "Name" }
@@ -77,7 +77,7 @@ namespace Musify.Models {
             var playlistData = new {
                 playlist_id = PlaylistId,
                 account_id = AccountId,
-                Name
+                name = Name
             };
             if (PlaylistId == 0) {
                 RestSharpTools.PostAsync<Playlist>("/playlist", playlistData, JSON_EQUIVALENTS, (response) => {

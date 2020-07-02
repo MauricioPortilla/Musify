@@ -79,7 +79,7 @@ namespace Musify {
         /// <param name="e">Event</param>
         private void PlaylistsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             ConsultPlaylistPage consultPlaylistPage = new ConsultPlaylistPage(playlistsListBox.SelectedItem as Playlist);
-            Session.MainFrame.Navigate(consultPlaylistPage);
+            Session.MainWindow.mainFrame.Navigate(consultPlaylistPage);
         }
     }
 }

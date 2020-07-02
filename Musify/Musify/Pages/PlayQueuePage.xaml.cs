@@ -101,7 +101,7 @@ namespace Musify.Pages {
             } else {
                 UIFunctions.AccountSongTable_OnDoubleClick(sender, e);
             }
-            Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
+            Session.HistoryIndex = Session.SongsIdPlayHistory.Count - 1;
             for (int i = 0; i <= playQueueDataGrid.SelectedIndex; i++) {
                 if (Session.SongsIdPlayQueue.Count > 0) {
                     Session.SongsIdPlayQueue.RemoveAt(0);

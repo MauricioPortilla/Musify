@@ -89,7 +89,7 @@ namespace Musify.Pages {
             } else {
                 UIFunctions.AccountSongTable_OnDoubleClick(sender, e);
             }
-            Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
+            Session.HistoryIndex = Session.SongsIdPlayHistory.Count - 1;
             Session.SongsIdSongList.Clear();
             LoadPlayHistory();
         }

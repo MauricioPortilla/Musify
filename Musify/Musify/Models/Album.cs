@@ -11,7 +11,7 @@ namespace Musify.Models {
         /// <summary>
         /// Explains how to pass JSON data to an object of this type.
         /// </summary>
-        public static Dictionary<string, string> JSON_EQUIVALENTS { get; set; } = new Dictionary<string, string>() {
+        public static Dictionary<string, string> JSON_EQUIVALENTS { get; } = new Dictionary<string, string>() {
             { "album_id", "AlbumId" },
             { "type", "Type" },
             { "name", "Name" },
@@ -23,7 +23,7 @@ namespace Musify.Models {
         /// <summary>
         /// Explains how to pass JSON image location data to an object of this type.
         /// </summary>
-        public static Dictionary<string, string> JSON_IMAGE_EQUIVALENT { get; set; } = new Dictionary<string, string>() {
+        public static Dictionary<string, string> JSON_IMAGE_EQUIVALENT { get; } = new Dictionary<string, string>() {
             { "image_location", "ImageLocation" },
         };
 
@@ -56,38 +56,38 @@ namespace Musify.Models {
             RestSharpTools.PostMultimediaAsync<Song>("album/songs", null, filesRoutes, Song.JSON_MIN_EQUIVALENTS, (responseSongs) => {
                 filesRoutes = new string[] { ImageLocation };
                 RestSharpTools.PostMultimediaAsync<Album>("album/image", null, filesRoutes, JSON_IMAGE_EQUIVALENT, (responseImage) => {
-                    List<object> artists_id = new List<object>();
+                    List<object> artistsId = new List<object>();
                     foreach (Artist artist in Artists) {
-                        artists_id.Add(new {
+                        artistsId.Add(new {
                             artist_id = artist.ArtistId
                         });
                     }
-                    List<object> new_songs = new List<object>();
+                    List<object> newSongs = new List<object>();
                     int i = 0;
                     foreach (Song song in Songs) {
-                        List<object> song_artists_id = new List<object>();
+                        List<object> songArtistsId = new List<object>();
                         foreach (Artist artist in song.Artists) {
-                            song_artists_id.Add(new {
+                            songArtistsId.Add(new {
                                 artist_id = artist.ArtistId
                             });
                         }
-                        new_songs.Add(new {
+                        newSongs.Add(new {
                             genre_id = song.GenreId,
                             title = song.Title,
                             duration = responseSongs.Model.ElementAt(i).Duration,
                             song_location = responseSongs.Model.ElementAt(i).SongLocation,
-                            artists_id = song_artists_id
+                            artists_id = songArtistsId
                         });
                         i++;
                     }
                     var albumData = new {
-                        Type,
-                        Name,
+                        type = Type,
+                        name = Name,
                         launch_year = LaunchYear,
-                        Discography,
+                        discography = Discography,
                         image_location = responseImage.Model.ElementAt(0).ImageLocation,
-                        artists_id,
-                        new_songs
+                        artistsId,
+                        newSongs
                     };
                     RestSharpTools.PostAsync("/album", albumData, (responseAlbum) => {
                         onSuccess();

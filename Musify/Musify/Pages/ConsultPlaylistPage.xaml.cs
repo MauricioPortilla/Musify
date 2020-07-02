@@ -78,7 +78,7 @@ namespace Musify.Pages {
         /// <param name="e">Event</param>
         private void SongsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
             UIFunctions.SongTable_OnDoubleClick(sender, e);
-            Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
+            Session.HistoryIndex = Session.SongsIdPlayHistory.Count - 1;
             Session.SongsIdSongList.Clear();
             for (int i = songsDataGrid.SelectedIndex + 1; i < songsObservableCollection.Count; i++) {
                 Session.SongsIdSongList.Add(songsObservableCollection.ElementAt(i).Song.SongId);
@@ -98,9 +98,16 @@ namespace Musify.Pages {
             }
             foreach (var song in playlist.Songs) {
                 try {
-                    if (!File.Exists(App.DATA_DOWNLOADS_DIRECTORY + "/" + song.SongId + ".bin")) {
-                        using (BinaryWriter songFileWriter = new BinaryWriter(new FileStream(App.DATA_DOWNLOADS_DIRECTORY + "/" + song.SongId + ".bin", FileMode.Create))) {
-                            WebRequest webRequest = WebRequest.Create(Core.SERVER_API_URL + "/stream/song/" + song.SongId + "/" + Session.SongStreamingQuality);
+                    if (!File.Exists(App.DATA_DOWNLOADS_DIRECTORY + Path.AltDirectorySeparatorChar + song.SongId + ".bin")) {
+                        using (BinaryWriter songFileWriter = new BinaryWriter(
+                            new FileStream(
+                                App.DATA_DOWNLOADS_DIRECTORY + Path.AltDirectorySeparatorChar + song.SongId + ".bin", FileMode.Create
+                            ))
+                        ) {
+                            WebRequest webRequest = WebRequest.Create(
+                                Core.SERVER_API_URL + "/stream/song/" + song.SongId + 
+                                Path.AltDirectorySeparatorChar + Session.SongStreamingQuality
+                            );
                             webRequest.Headers["Authorization"] = Session.AccessToken ?? "";
                             using (Stream stream = webRequest.GetResponse().GetResponseStream()) {
                                 byte[] buffer = new byte[1024 * 1024];
@@ -127,8 +134,8 @@ namespace Musify.Pages {
         /// <param name="e">Event</param>
         private void DownloadToggleButton_Unchecked(object sender, RoutedEventArgs e) {
             foreach (var song in playlist.Songs) {
-                if (File.Exists(App.DATA_DOWNLOADS_DIRECTORY + "/" + song.SongId + ".bin")) {
-                    File.Delete(App.DATA_DOWNLOADS_DIRECTORY + "/" + song.SongId + ".bin");
+                if (File.Exists(App.DATA_DOWNLOADS_DIRECTORY + Path.AltDirectorySeparatorChar + song.SongId + ".bin")) {
+                    File.Delete(App.DATA_DOWNLOADS_DIRECTORY + Path.AltDirectorySeparatorChar + song.SongId + ".bin");
                 }
             }
             Properties.Settings.Default.DownloadedPlaylists.Remove(playlist.PlaylistId.ToString());
@@ -142,7 +149,7 @@ namespace Musify.Pages {
         /// <param name="e">Event</param>
         private void DeletePlaylistButton_Click(object sender, RoutedEventArgs e) {
             playlist.Delete(() => {
-                Session.MainFrame.Source = new Uri("Pages/PlaylistsPage.xaml", UriKind.RelativeOrAbsolute);
+                Session.MainWindow.mainFrame.Source = new Uri("Pages/PlaylistsPage.xaml", UriKind.RelativeOrAbsolute);
             }, (errorResponse) => {
                 MessageBox.Show(errorResponse.Message);
             }, () => {

@@ -107,7 +107,7 @@ namespace Musify.Pages {
         /// <param name="e">Event</param>
         private void SongsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
             UIFunctions.SongTable_OnDoubleClick(sender, e);
-            Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
+            Session.HistoryIndex = Session.SongsIdPlayHistory.Count - 1;
             Session.SongsIdSongList.Clear();
         }
 

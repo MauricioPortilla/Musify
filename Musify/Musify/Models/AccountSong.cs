@@ -7,7 +7,7 @@ namespace Musify.Models {
         /// <summary>
         /// Explains how to pass JSON data to an object of this type.
         /// </summary>
-        public static Dictionary<string, string> JSON_EQUIVALENTS { get; set; } = new Dictionary<string, string>() {
+        public static Dictionary<string, string> JSON_EQUIVALENTS { get; } = new Dictionary<string, string>() {
             { "account_song_id", "AccountSongId" },
             { "account_id", "AccountId" },
             { "title", "Title" },

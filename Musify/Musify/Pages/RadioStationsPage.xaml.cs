@@ -38,7 +38,7 @@ namespace Musify.Pages {
         /// <param name="e">Event</param>
         private void GenresListBox_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             ConsultRadioStationPage consultRadioStationPage = new ConsultRadioStationPage(genresListBox.SelectedItem as Genre);
-            Session.MainFrame.Navigate(consultRadioStationPage);
+            Session.MainWindow.mainFrame.Navigate(consultRadioStationPage);
         }
     }
 }

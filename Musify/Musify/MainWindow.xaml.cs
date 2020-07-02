@@ -19,10 +19,7 @@ namespace Musify {
         /// </summary>
         public MainWindow() {
             InitializeComponent();
-            Session.MainWindow = this;
-            Session.MainFrame = mainFrame;
             mainFrame.Source = new Uri("Pages/PlaylistsPage.xaml", UriKind.RelativeOrAbsolute);
-            Session.PlayerPage = new PlayerPage();
             playerFrame.Navigate(Session.PlayerPage);
             LoadConfiguration();
             if (Session.Account.Subscription != null) {
@@ -88,7 +85,7 @@ namespace Musify {
                 binaryReader.Close();
                 fileStream.Close();
             }
-            Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
+            Session.HistoryIndex = Session.SongsIdPlayHistory.Count - 1;
         }
 
         /// <summary>

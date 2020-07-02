@@ -7,7 +7,7 @@ namespace Musify.Models {
         /// <summary>
         /// Explains how to pass JSON data to an object of this type.
         /// </summary>
-        public static Dictionary<string, string> JSON_EQUIVALENTS { get; set; } = new Dictionary<string, string>() {
+        public static Dictionary<string, string> JSON_EQUIVALENTS { get; } = new Dictionary<string, string>() {
             { "account_id", "AccountId" },
             { "email", "Email" },
             { "password", "Password" },
@@ -83,9 +83,9 @@ namespace Musify.Models {
         /// <param name="artisticName">Artistic name if should be registered as an artist too</param>
         public void Register(bool isArtist, Action onSuccess, Action<NetworkResponse> onFailure, Action onError, string artisticName = null) {
             var accountData = new {
-                Email,
-                Password,
-                Name,
+                email = Email,
+                passsword = Password,
+                name = Name,
                 last_name = LastName,
                 is_artist = isArtist,
                 artistic_name = artisticName

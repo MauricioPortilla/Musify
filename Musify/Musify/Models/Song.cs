@@ -8,7 +8,7 @@ namespace Musify.Models {
         /// <summary>
         /// Explains how to pass JSON data to an object of this type.
         /// </summary>
-        public static Dictionary<string, string> JSON_EQUIVALENTS { get; set; } = new Dictionary<string, string>() {
+        public static Dictionary<string, string> JSON_EQUIVALENTS { get; } = new Dictionary<string, string>() {
             { "song_id", "SongId" },
             { "album_id", "AlbumId" },
             { "genre_id", "GenreId" },
@@ -21,7 +21,7 @@ namespace Musify.Models {
         /// <summary>
         /// Explains how to pass JSON minimum data to an object of this type.
         /// </summary>
-        public static Dictionary<string, string> JSON_MIN_EQUIVALENTS { get; set; } = new Dictionary<string, string>() {
+        public static Dictionary<string, string> JSON_MIN_EQUIVALENTS { get; } = new Dictionary<string, string>() {
             { "name", "SongLocation" },
             { "duration", "Duration" }
         };
@@ -149,7 +149,7 @@ namespace Musify.Models {
         /// </summary>
         /// <returns>true if is downloaded; false if not</returns>
         public bool IsDownloaded() {
-            return File.Exists(App.DATA_DOWNLOADS_DIRECTORY + "/" + SongId + ".bin");
+            return File.Exists(App.DATA_DOWNLOADS_DIRECTORY + Path.AltDirectorySeparatorChar + SongId + ".bin");
         }
 
         /// <summary>
@@ -157,7 +157,7 @@ namespace Musify.Models {
         /// </summary>
         /// <returns>Stream with song file bytes</returns>
         public Stream CreateDownloadedFileStream() {
-            Stream stream = new MemoryStream(File.ReadAllBytes(App.DATA_DOWNLOADS_DIRECTORY + "/" + SongId + ".bin"));
+            Stream stream = new MemoryStream(File.ReadAllBytes(App.DATA_DOWNLOADS_DIRECTORY + Path.AltDirectorySeparatorChar + SongId + ".bin"));
             return stream;
         }
 

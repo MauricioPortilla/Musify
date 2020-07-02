@@ -8,18 +8,17 @@ using SpeedTest.Net;
 namespace Musify {
     static class Session {
         public static readonly RestClient REST_CLIENT = new RestClient(Core.SERVER_API_URL);
-        public static Account Account;
-        public static System.Windows.Controls.Frame MainFrame;
-        public static MainWindow MainWindow;
-        public static PlayerPage PlayerPage;
-        public static List<int> SongsIdPlayQueue = new List<int>();
-        public static List<int> SongsIdPlayHistory = new List<int>();
-        public static List<int> GenresIdRadioStations = new List<int>();
-        public static List<int> SongsIdSongList= new List<int>();
-        public static int historyIndex;
-        public static string SongStreamingQuality = "highquality";
-        public static string SongStreamingQualitySelected = "lowquality";
-        public static string AccessToken = null;
+        public static Account Account { get; set; }
+        public static MainWindow MainWindow { get; set; }
+        public static PlayerPage PlayerPage { get; set; } = new PlayerPage();
+        public static List<int> SongsIdPlayQueue { get; set; } = new List<int>();
+        public static List<int> SongsIdPlayHistory { get; set; } = new List<int>();
+        public static List<int> GenresIdRadioStations { get; set; } = new List<int>();
+        public static List<int> SongsIdSongList { get; set; } = new List<int>();
+        public static int HistoryIndex { get; set; }
+        public static string SongStreamingQuality { get; set; } = "highquality";
+        public static string SongStreamingQualitySelected { get; set; } = "lowquality";
+        public static string AccessToken { get; set; } = null;
 
         /// <summary>
         /// Gets download speed in megabits and sets song streaming quality.

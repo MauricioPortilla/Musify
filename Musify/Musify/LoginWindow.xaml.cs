@@ -55,7 +55,8 @@ namespace Musify {
                             Session.Account.FetchArtist(() => {
                             }, null, null, onFinish: () => {
                                 openEventArgs.Session.Close(true);
-                                new MainWindow().Show();
+                                Session.MainWindow = new MainWindow();
+                                Session.MainWindow.Show();
                                 Close();
                             });
                         });

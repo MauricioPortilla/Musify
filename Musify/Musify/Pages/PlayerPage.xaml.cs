@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -91,9 +92,9 @@ namespace Musify.Pages {
                 });
             } else {
                 if (Session.SongStreamingQuality == "automaticquality") {
-                    MakeRequestStreamSong(Core.SERVER_API_URL + "/stream/song/" + song.SongId + "/" + Session.SongStreamingQualitySelected);
+                    MakeRequestStreamSong(Core.SERVER_API_URL + "/stream/song/" + song.SongId + Path.AltDirectorySeparatorChar + Session.SongStreamingQualitySelected);
                 } else {
-                    MakeRequestStreamSong(Core.SERVER_API_URL + "/stream/song/" + song.SongId + "/" + Session.SongStreamingQuality);
+                    MakeRequestStreamSong(Core.SERVER_API_URL + "/stream/song/" + song.SongId + Path.AltDirectorySeparatorChar + Session.SongStreamingQuality);
                 }
             }
             likeButton.Visibility = Visibility.Visible;
@@ -153,6 +154,7 @@ namespace Musify.Pages {
             isStreamSongLocked = false;
             Task.Run(() => {
                 while (!isPlayerWaveOutAvailable) {
+                    Thread.Sleep(100);
                 }
                 try {
                     latestStream = new List<byte>();
@@ -313,13 +315,13 @@ namespace Musify.Pages {
         /// Attempts to play the previous played song.
         /// </summary>
         public void PreviousSong() {
-            if (Session.historyIndex >= 0) {
+            if (Session.HistoryIndex >= 0) {
                 try {
-                    if (Session.SongsIdPlayHistory.ElementAt(Session.historyIndex) > 0) {
-                        Song.FetchById(Session.SongsIdPlayHistory.ElementAt(Session.historyIndex), (song) => {
-                            Session.historyIndex--;
+                    if (Session.SongsIdPlayHistory.ElementAt(Session.HistoryIndex) > 0) {
+                        Song.FetchById(Session.SongsIdPlayHistory.ElementAt(Session.HistoryIndex), (song) => {
+                            Session.HistoryIndex--;
                             if (Session.SongsIdPlayHistory.Count == Core.MAX_SONGS_IN_HISTORY) {
-                                Session.historyIndex--;
+                                Session.HistoryIndex--;
                             }
                             Session.PlayerPage.PlaySong(song);
                             RefreshPage(false);
@@ -329,10 +331,10 @@ namespace Musify.Pages {
                             MessageBox.Show("Ocurrió un error al cargar la canción.");
                         });
                     } else {
-                        AccountSong.FetchById(Session.SongsIdPlayHistory.ElementAt(Session.historyIndex) * -1, (accountSong) => {
-                            Session.historyIndex--;
+                        AccountSong.FetchById(Session.SongsIdPlayHistory.ElementAt(Session.HistoryIndex) * -1, (accountSong) => {
+                            Session.HistoryIndex--;
                             if (Session.SongsIdPlayHistory.Count == Core.MAX_SONGS_IN_HISTORY) {
-                                Session.historyIndex--;
+                                Session.HistoryIndex--;
                             }
                             Session.PlayerPage.PlayAccountSong(accountSong);
                             RefreshPage(true);
@@ -397,40 +399,33 @@ namespace Musify.Pages {
                     } else {
                         id = Session.SongsIdSongList.First();
                     }
-                    try {
-                        if (id > 0) {
-                            Song.FetchById(id, (song) => {
-                                Session.PlayerPage.PlaySong(song);
-                                Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
-                                if (Session.SongsIdPlayQueue.Count > 0) {
-                                    Session.SongsIdPlayQueue.RemoveAt(0);
-                                } else {
-                                    Session.SongsIdSongList.RemoveAt(0);
-                                }
-                                RefreshPage(true);
-                            }, (errorResponse) => {
-                                MessageBox.Show(errorResponse.Message);
-                            }, () => {
-                                MessageBox.Show("Ocurrió un error al cargar la canción.");
-                            });
+                    Action update = () => {
+                        Session.HistoryIndex = Session.SongsIdPlayHistory.Count - 1;
+                        if (Session.SongsIdPlayQueue.Count > 0) {
+                            Session.SongsIdPlayQueue.RemoveAt(0);
                         } else {
-                            AccountSong.FetchById(id * -1, (accountSong) => {
-                                Session.PlayerPage.PlayAccountSong(accountSong);
-                                Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
-                                if (Session.SongsIdPlayQueue.Count > 0) {
-                                    Session.SongsIdPlayQueue.RemoveAt(0);
-                                } else {
-                                    Session.SongsIdSongList.RemoveAt(0);
-                                }
-                                RefreshPage(true);
-                            }, (errorResponse) => {
-                                MessageBox.Show(errorResponse.Message);
-                            }, () => {
-                                MessageBox.Show("Ocurrió un error al cargar la canción.");
-                            });
+                            Session.SongsIdSongList.RemoveAt(0);
                         }
-                    } catch (Exception) {
-                        MessageBox.Show("Ocurrió un error al cargar la canción.");
+                        RefreshPage(true);
+                    };
+                    if (id > 0) {
+                        Song.FetchById(id, (song) => {
+                            Session.PlayerPage.PlaySong(song);
+                            update();
+                        }, (errorResponse) => {
+                            MessageBox.Show(errorResponse.Message);
+                        }, () => {
+                            MessageBox.Show("Ocurrió un error al cargar la canción.");
+                        });
+                    } else {
+                        AccountSong.FetchById(id * -1, (accountSong) => {
+                            Session.PlayerPage.PlayAccountSong(accountSong);
+                            update();
+                        }, (errorResponse) => {
+                            MessageBox.Show(errorResponse.Message);
+                        }, () => {
+                            MessageBox.Show("Ocurrió un error al cargar la canción.");
+                        });
                     }
                 }
             });
@@ -440,12 +435,12 @@ namespace Musify.Pages {
         /// Refresh current page if it's history or play queue page.
         /// </summary>
         public void RefreshPage(bool nextSong) {
-            if (Session.MainFrame.ToString().Split('/').Last().Equals("PlayHistoryPage.xaml")) {
-                PlayHistoryPage currentPage = Session.MainFrame.Content as PlayHistoryPage;
+            if (Session.MainWindow.mainFrame.ToString().Split('/').Last().Equals("PlayHistoryPage.xaml")) {
+                PlayHistoryPage currentPage = Session.MainWindow.mainFrame.Content as PlayHistoryPage;
                 currentPage.LoadPlayHistory();
             } else {
-                if (Session.MainFrame.ToString().Split('/').Last().Equals("PlayQueuePage.xaml") && nextSong) {
-                    PlayQueuePage currentPage = Session.MainFrame.Content as PlayQueuePage;
+                if (Session.MainWindow.mainFrame.ToString().Split('/').Last().Equals("PlayQueuePage.xaml") && nextSong) {
+                    PlayQueuePage currentPage = Session.MainWindow.mainFrame.Content as PlayQueuePage;
                     currentPage.LoadPlayQueue();
                 }
             }

@@ -63,7 +63,7 @@ namespace Musify.Pages {
         /// <param name="e">Event</param>
         private void SongsDataGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
             UIFunctions.SongTable_OnDoubleClick(sender, e);
-            Session.historyIndex = Session.SongsIdPlayHistory.Count - 1;
+            Session.HistoryIndex = Session.SongsIdPlayHistory.Count - 1;
             Session.SongsIdSongList.Clear();
             for (int i = songsDataGrid.SelectedIndex + 1; i < songsRadioStation.Count; i++) {
                 Session.SongsIdSongList.Add(songsRadioStation.ElementAt(i).Song.SongId);
@@ -92,7 +92,7 @@ namespace Musify.Pages {
             Session.GenresIdRadioStations.Remove(genre.GenreId);
             Session.MainWindow.TitleBar.Text = "Estaciones de radio";
             RadioStationsPage radioStationPage = new RadioStationsPage();
-            Session.MainFrame.Navigate(radioStationPage);
+            Session.MainWindow.mainFrame.Navigate(radioStationPage);
         }
 
         /// <summary>
