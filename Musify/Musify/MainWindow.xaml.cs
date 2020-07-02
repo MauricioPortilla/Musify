@@ -169,6 +169,10 @@ namespace Musify {
                 case "CreateAlbumMenuItem":
                     mainFrame.Source = new Uri("Pages/CreateAlbumPage.xaml", UriKind.RelativeOrAbsolute);
                     break;
+                case "LogoutMenuItem":
+                    new LoginWindow().Show();
+                    Close();
+                    break;
             }
             TitleBar.Text = button.Header.ToString();
         }
@@ -179,6 +183,8 @@ namespace Musify {
         /// <param name="sender">Window</param>
         /// <param name="e">Event</param>
         private void Window_Closing(object sender, CancelEventArgs e) {
+            Session.PlayerPage.ShouldPlayNextSong = false;
+            Session.PlayerPage.IsStreamSongLocked = false;
             App.CreateDirectories();
             string file = App.DATA_SONGS_DIRECTORY + "/playHistory" + Session.Account.AccountId;
             List<int> songsId = Session.SongsIdPlayHistory;
@@ -240,7 +246,16 @@ namespace Musify {
             }
             binaryWriter.Close();
             fileStream.Close();
-        }
+            Session.AccessToken = null;
+            Session.Account = null;
+            Session.PlayerPage = new PlayerPage();
+            Session.SongsIdPlayQueue.Clear();
+            Session.SongsIdPlayHistory.Clear();
+            Session.GenresIdRadioStations.Clear(); 
+            Session.SongsIdSongList.Clear();
+            Session.SongStreamingQuality= "highquality";
+            Session.SongStreamingQualitySelected = "lowquality";
+    }
 
         /// <summary>
         /// Attempts to subscribe.

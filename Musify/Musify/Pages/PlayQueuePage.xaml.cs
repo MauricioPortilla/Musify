@@ -82,6 +82,12 @@ namespace Musify.Pages {
                         });
                         LoadSong(i + 1, limit, songsIdPlayQueue);
                     }, (errorResponse) => {
+                        if (i < Session.SongsIdPlayQueue.Count) {
+                            Session.SongsIdPlayQueue.RemoveAt(i);
+                        } else {
+                            Session.SongsIdSongList.RemoveAt(i - Session.SongsIdPlayQueue.Count);
+                        }
+                        LoadSong(i + 1, limit, songsIdPlayQueue);
                         MessageBox.Show(errorResponse.Message);
                     }, () => {
                         MessageBox.Show("Ocurrió un error al cargar las canciones.");

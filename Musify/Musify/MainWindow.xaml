@@ -21,6 +21,7 @@
                             <MenuItem x:Name="RadioStationsMenuItem" Header="Estaciones de radio" Background="Gray" Click="MenuButton_Click"/>
                             <MenuItem x:Name="PlayerSettingsMenuItem" Header="Configuración del reproductor" Background="Gray" Click="MenuButton_Click"/>
                             <MenuItem x:Name="CreateAlbumMenuItem" Header="Crear álbum" Background="Gray" Click="MenuButton_Click" Visibility="Collapsed"/>
+                            <MenuItem x:Name="LogoutMenuItem" Header="Cerrar sesión" Background="Gray" Click="MenuButton_Click"/>
                         </MenuItem>
                     </Menu>
                 </StackPanel>

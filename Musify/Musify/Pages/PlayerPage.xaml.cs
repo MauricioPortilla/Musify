@@ -43,7 +43,7 @@ namespace Musify.Pages {
         /// <summary>
         /// True if there's no song requests; false if a new one is asking to be played.
         /// </summary>
-        private bool isStreamSongLocked = false;
+        public bool IsStreamSongLocked { get; set; } = false;
         /// <summary>
         /// True if player is playing a song; false if not.
         /// </summary>
@@ -51,7 +51,7 @@ namespace Musify.Pages {
         /// <summary>
         /// True if should play next song in queue when a song or an account song is about to be played; false if not.
         /// </summary>
-        private bool shouldPlayNextSong = true;
+        public bool ShouldPlayNextSong { get; set; } = true;
 
         /// <summary>
         /// Creates a new player instance.
@@ -64,8 +64,8 @@ namespace Musify.Pages {
         /// Plays a Song.
         /// </summary>
         /// <param name="song">Song to play</param>
-        public void PlaySong(Song song, bool shouldPlayNextSong = true) {
-            this.shouldPlayNextSong = shouldPlayNextSong;
+        public void PlaySong(Song song, bool shouldPlayNextSong = false) {
+            this.ShouldPlayNextSong = shouldPlayNextSong;
             if (LatestSongPlayed != null) {
                 if (Session.SongsIdPlayHistory.Count == Core.MAX_SONGS_IN_HISTORY) {
                     Session.SongsIdPlayHistory.RemoveAt(0);
@@ -117,8 +117,8 @@ namespace Musify.Pages {
         /// Plays an AccountSong.
         /// </summary>
         /// <param name="accountSong">Account song to play</param>
-        public void PlayAccountSong(AccountSong accountSong, bool shouldPlayNextSong = true) {
-            this.shouldPlayNextSong = shouldPlayNextSong;
+        public void PlayAccountSong(AccountSong accountSong, bool shouldPlayNextSong) {
+            this.ShouldPlayNextSong = shouldPlayNextSong;
             if (LatestAccountSongPlayed != null) {
                 if (Session.SongsIdPlayHistory.Count == Core.MAX_SONGS_IN_HISTORY) {
                     Session.SongsIdPlayHistory.RemoveAt(0);
@@ -151,7 +151,7 @@ namespace Musify.Pages {
         /// </summary>
         /// <param name="streamUrl">Stream URL</param>
         private void MakeRequestStreamSong(string streamUrl) {
-            isStreamSongLocked = false;
+            IsStreamSongLocked = false;
             Task.Run(() => {
                 while (!isPlayerWaveOutAvailable) {
                     Thread.Sleep(100);
@@ -186,7 +186,7 @@ namespace Musify.Pages {
         private void PlayMemoryStream(Stream memoryStream) {
             try {
                 isPlayerWaveOutAvailable = false;
-                isStreamSongLocked = true;
+                IsStreamSongLocked = true;
                 isPlayerStopped = false;
                 memoryStream.Position = 0;
                 if (memoryStream.Length != latestStream.Count) {
@@ -239,7 +239,7 @@ namespace Musify.Pages {
                     });
                     while (playerWaveOut.PlaybackState == PlaybackState.Playing || isPlayerStopped) {
                         System.Threading.Thread.Sleep(1000);
-                        if (!isStreamSongLocked) {
+                        if (!IsStreamSongLocked) {
                             break;
                         }
                         if (!isPlayerStopped) {
@@ -253,10 +253,10 @@ namespace Musify.Pages {
                         songSlider.Value = 0;
                         songSlider.IsEnabled = false;
                     });
-                    if (shouldPlayNextSong) {
+                    if (ShouldPlayNextSong) {
                         PlayNextSong();
                     }
-                    shouldPlayNextSong = true;
+                    ShouldPlayNextSong = true;
                     isPlayerWaveOutAvailable = true;
                 }
             } catch (Exception) {
@@ -323,7 +323,7 @@ namespace Musify.Pages {
                             if (Session.SongsIdPlayHistory.Count == Core.MAX_SONGS_IN_HISTORY) {
                                 Session.HistoryIndex--;
                             }
-                            Session.PlayerPage.PlaySong(song);
+                            Session.PlayerPage.PlaySong(song, false);
                             RefreshPage(false);
                         }, (errorResponse) => {
                             MessageBox.Show(errorResponse.Message);
@@ -336,7 +336,7 @@ namespace Musify.Pages {
                             if (Session.SongsIdPlayHistory.Count == Core.MAX_SONGS_IN_HISTORY) {
                                 Session.HistoryIndex--;
                             }
-                            Session.PlayerPage.PlayAccountSong(accountSong);
+                            Session.PlayerPage.PlayAccountSong(accountSong, false);
                             RefreshPage(true);
                         }, (errorResponse) => {
                             MessageBox.Show(errorResponse.Message);
@@ -410,7 +410,7 @@ namespace Musify.Pages {
                     };
                     if (id > 0) {
                         Song.FetchById(id, (song) => {
-                            Session.PlayerPage.PlaySong(song);
+                            Session.PlayerPage.PlaySong(song, true);
                             update();
                         }, (errorResponse) => {
                             MessageBox.Show(errorResponse.Message);
@@ -419,7 +419,7 @@ namespace Musify.Pages {
                         });
                     } else {
                         AccountSong.FetchById(id * -1, (accountSong) => {
-                            Session.PlayerPage.PlayAccountSong(accountSong);
+                            Session.PlayerPage.PlayAccountSong(accountSong, true);
                             update();
                         }, (errorResponse) => {
                             MessageBox.Show(errorResponse.Message);
