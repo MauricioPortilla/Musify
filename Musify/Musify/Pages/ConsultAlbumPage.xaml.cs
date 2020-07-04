@@ -26,7 +26,7 @@ namespace Musify.Pages {
         public ConsultAlbumPage(Album album) {
             InitializeComponent();
             DataContext = this;
-            Session.MainWindow.TitleBar.Text = album.Name;
+            Session.MainWindow.titleBarTextBlock.Text = album.Name;
             typeTextBlock.Text = album.Type;
             launchYearTextBlock.Text = album.LaunchYear.ToString();
             discographyTextBlock.Text = album.Discography;

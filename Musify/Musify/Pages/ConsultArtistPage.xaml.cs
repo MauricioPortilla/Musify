@@ -19,7 +19,7 @@ namespace Musify.Pages {
         public ConsultArtistPage(Artist artist) {
             InitializeComponent();
             LoadArtist(artist);
-            Session.MainWindow.TitleBar.Text = artist.ArtisticName;
+            Session.MainWindow.titleBarTextBlock.Text = artist.ArtisticName;
         }
 
         /// <summary>

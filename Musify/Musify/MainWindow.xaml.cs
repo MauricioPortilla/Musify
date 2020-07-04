@@ -46,7 +46,7 @@ namespace Musify {
         /// </summary>
         public void LoadConfiguration() {
             if (Session.Account.Artist.ArtisticName != null) {
-                CreateAlbumMenuItem.Visibility = Visibility.Visible;
+                createAlbumMenuItem.Visibility = Visibility.Visible;
             }
             App.CreateDirectories();
             LoadSongsIdPlayQueue();
@@ -174,7 +174,7 @@ namespace Musify {
                     Close();
                     break;
             }
-            TitleBar.Text = button.Header.ToString();
+            titleBarTextBlock.Text = button.Header.ToString();
         }
 
         /// <summary>

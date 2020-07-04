@@ -474,7 +474,7 @@ namespace Musify.Pages {
                 return;
             }
             Session.MainWindow.mainFrame.Navigate(new ConsultArtistPage(LatestSongPlayed.Album.Artists[0]));
-            Session.MainWindow.TitleBar.Text = LatestSongPlayed.Album.Artists[0].ArtisticName;
+            Session.MainWindow.titleBarTextBlock.Text = LatestSongPlayed.Album.Artists[0].ArtisticName;
         }
 
         /// <summary>

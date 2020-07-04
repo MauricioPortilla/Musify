@@ -11,7 +11,7 @@
         <materialDesign:ColorZone Mode="Accent" Padding="10" CornerRadius="0" materialDesign:ShadowAssist.ShadowDepth="Depth3">
             <Grid>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBlock x:Name="TitleBar" VerticalAlignment="Center" FontSize="16" Text="Agregar canción"/>
+                    <TextBlock x:Name="titleBarTextBlock" VerticalAlignment="Center" FontSize="16" Text="Agregar canción"/>
                 </StackPanel>
             </Grid>
         </materialDesign:ColorZone>

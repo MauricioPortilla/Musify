@@ -27,7 +27,7 @@ namespace Musify.Pages {
         public ConsultRadioStationPage(Genre genre) {
             InitializeComponent();
             DataContext = this;
-            Session.MainWindow.TitleBar.Text = "Estación de radio";
+            Session.MainWindow.titleBarTextBlock.Text = "Estación de radio";
             this.genre = genre;
             radioStationNameTextBlock.Text = genre.Name;
             LoadRadioStationSongs();
@@ -90,7 +90,7 @@ namespace Musify.Pages {
         /// <param name="e">Event</param>
         private void DeleteRadioStationButton_Click(object sender, RoutedEventArgs e) {
             Session.GenresIdRadioStations.Remove(genre.GenreId);
-            Session.MainWindow.TitleBar.Text = "Estaciones de radio";
+            Session.MainWindow.titleBarTextBlock.Text = "Estaciones de radio";
             RadioStationsPage radioStationPage = new RadioStationsPage();
             Session.MainWindow.mainFrame.Navigate(radioStationPage);
         }
