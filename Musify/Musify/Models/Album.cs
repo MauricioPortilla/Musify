@@ -86,8 +86,8 @@ namespace Musify.Models {
                         launch_year = LaunchYear,
                         discography = Discography,
                         image_location = responseImage.Model.ElementAt(0).ImageLocation,
-                        artistsId,
-                        newSongs
+                        artists_id = artistsId,
+                        new_songs = newSongs
                     };
                     RestSharpTools.PostAsync("/album", albumData, (responseAlbum) => {
                         onSuccess();

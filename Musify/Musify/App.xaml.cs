@@ -1,5 +1,7 @@
-﻿using System;
+﻿using DotNetEnv;
+using System;
 using System.IO;
+using System.Text;
 using System.Windows;
 
 namespace Musify {
@@ -20,6 +22,7 @@ namespace Musify {
             if (downloadedPlaylists == null) {
                 Musify.Properties.Settings.Default.DownloadedPlaylists = new System.Collections.Specialized.StringCollection();
             }
+            LoadEnvFile();
         }
 
         /// <summary>
@@ -47,6 +50,19 @@ namespace Musify {
             if (!Directory.Exists(DATA_DOWNLOADS_DIRECTORY)) {
                 Directory.CreateDirectory(DATA_DOWNLOADS_DIRECTORY);
             }
+        }
+
+        /// <summary>
+        /// Loads the .env file located in Musify directory. If it does not exist, it will be created.
+        /// </summary>
+        private void LoadEnvFile() {
+            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "/.env")) {
+                var fileStream = File.Create(AppDomain.CurrentDomain.BaseDirectory + "/.env");
+                var content = Encoding.ASCII.GetBytes("API_VERSION=1\nSERVER_URL=http://localhost:5000");
+                fileStream.Write(content, 0, content.Length);
+                fileStream.Close();
+            }
+            Env.Load();
         }
     }
 }
