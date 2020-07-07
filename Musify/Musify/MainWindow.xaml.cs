@@ -141,35 +141,35 @@ namespace Musify {
         /// <param name="e">Event</param>
         public void MenuButton_Click(object sender, RoutedEventArgs e) {
             MenuItem button = (MenuItem) sender;
-            string opcion = button.Name;
+            string option = button.Name;
             subscribeButton.Visibility = Visibility.Hidden;
-            switch (opcion) {
-                case "MainMenuMenuItem":
+            switch (option) {
+                case "mainMenuMenuItem":
                     mainFrame.Source = new Uri("Pages/PlaylistsPage.xaml", UriKind.RelativeOrAbsolute);
                     subscribeButton.Visibility = Visibility.Visible;
                     break;
-                case "SearchMenuItem":
+                case "searchMenuItem":
                     mainFrame.Source = new Uri("Pages/SearchPage.xaml", UriKind.RelativeOrAbsolute);
                     break;
-                case "PlayQueueMenuItem":
+                case "playQueueMenuItem":
                     mainFrame.Source = new Uri("Pages/PlayQueuePage.xaml", UriKind.RelativeOrAbsolute);
                     break;
-                case "PlayHistoryMenuItem":
+                case "playHistoryMenuItem":
                     mainFrame.Source = new Uri("Pages/PlayHistoryPage.xaml", UriKind.RelativeOrAbsolute);
                     break;
-                case "PersonalLibraryMenuItem":
+                case "personalLibraryMenuItem":
                     mainFrame.Source = new Uri("Pages/ConsultAccountSongs.xaml", UriKind.RelativeOrAbsolute);
                     break;
-                case "RadioStationsMenuItem":
+                case "radioStationsMenuItem":
                     mainFrame.Source = new Uri("Pages/RadioStationsPage.xaml", UriKind.RelativeOrAbsolute);
                     break;
-                case "PlayerSettingsMenuItem":
+                case "playerSettingsMenuItem":
                     mainFrame.Source = new Uri("Pages/PlayerSettingsPage.xaml", UriKind.RelativeOrAbsolute);
                     break;
-                case "CreateAlbumMenuItem":
+                case "createAlbumMenuItem":
                     mainFrame.Source = new Uri("Pages/CreateAlbumPage.xaml", UriKind.RelativeOrAbsolute);
                     break;
-                case "LogoutMenuItem":
+                case "logoutMenuItem":
                     new LoginWindow().Show();
                     Close();
                     break;
@@ -253,7 +253,7 @@ namespace Musify {
             Session.SongsIdPlayHistory.Clear();
             Session.GenresIdRadioStations.Clear(); 
             Session.SongsIdSongList.Clear();
-            Session.SongStreamingQuality= "highquality";
+            Session.SongStreamingQuality = "highquality";
             Session.SongStreamingQualitySelected = "lowquality";
     }
 

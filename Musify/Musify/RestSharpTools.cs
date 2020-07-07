@@ -29,6 +29,7 @@ namespace Musify {
                     request.AddParameter("data", JsonConvert.SerializeObject(parameters));
                 }
                 request.AddHeader("Authorization", Session.AccessToken ?? "");
+                request.AddHeader("Accept-Language", "es");
                 var response = await Session.REST_CLIENT.ExecuteGetAsync(request, new CancellationTokenSource().Token);
                 if (response.IsSuccessful) {
                     onSuccess(new NetworkResponse(JObject.Parse(response.Content)));
@@ -62,6 +63,7 @@ namespace Musify {
                     request.AddParameter("data", JsonConvert.SerializeObject(parameters));
                 }
                 request.AddHeader("Authorization", Session.AccessToken ?? "");
+                request.AddHeader("Accept-Language", "es");
                 var response = await Session.REST_CLIENT.ExecuteGetAsync<TModel>(request, new CancellationTokenSource().Token);
                 dynamic json = JObject.Parse(response.Content);
                 if (json["status"] != null && json["status"] == "success") {
@@ -101,6 +103,7 @@ namespace Musify {
                     request.AddParameter("data", JsonConvert.SerializeObject(parameters));
                 }
                 request.AddHeader("Authorization", Session.AccessToken ?? "");
+                request.AddHeader("Accept-Language", "es");
                 var response = await Session.REST_CLIENT.ExecuteGetAsync(request, new CancellationTokenSource().Token);
                 dynamic json = JObject.Parse(response.Content);
                 List<TModel> objects;
@@ -135,6 +138,7 @@ namespace Musify {
                 var request = new RestRequest(resource, DataFormat.Json);
                 request.AddJsonBody(parameters);
                 request.AddHeader("Authorization", Session.AccessToken ?? "");
+                request.AddHeader("Accept-Language", "es");
                 var response = await Session.REST_CLIENT.ExecutePostAsync<TModel>(request, new CancellationTokenSource().Token);
                 dynamic json = JObject.Parse(response.Content);
                 if (json["status"] != null && json["status"] == "success") {
@@ -171,6 +175,7 @@ namespace Musify {
                 request.RequestFormat = DataFormat.Json;
                 request.AddJsonBody(parameters);
                 request.AddHeader("Authorization", Session.AccessToken ?? "");
+                request.AddHeader("Accept-Language", "es");
                 var response = await Session.REST_CLIENT.ExecutePostAsync(request, new CancellationTokenSource().Token);
                 if (response.IsSuccessful) {
                     onSuccess(new NetworkResponse(JObject.Parse(response.Content)));
@@ -206,6 +211,7 @@ namespace Musify {
                 request.AlwaysMultipartFormData = true;
                 request.AddHeader("Content-Type", "multipart/form-data");
                 request.AddHeader("Authorization", Session.AccessToken ?? "");
+                request.AddHeader("Accept-Language", "es");
                 int counter = 0;
                 foreach (var fileRoute in fileRoutes) {
                     if (File.Exists(fileRoute)) {
@@ -247,6 +253,7 @@ namespace Musify {
                 var request = new RestRequest(resource, DataFormat.Json);
                 request.AddJsonBody(parameters);
                 request.AddHeader("Authorization", Session.AccessToken ?? "");
+                request.AddHeader("Accept-Language", "es");
                 var response = await Session.REST_CLIENT.ExecuteAsync<TModel>(request, Method.PUT, new CancellationTokenSource().Token);
                 dynamic json = JObject.Parse(response.Content);
                 if (json["status"] != null && json["status"] == "success") {
@@ -282,6 +289,7 @@ namespace Musify {
                 var request = new RestRequest(resource, DataFormat.Json);
                 request.AddJsonBody(parameters);
                 request.AddHeader("Authorization", Session.AccessToken ?? "");
+                request.AddHeader("Accept-Language", "es");
                 var response = await Session.REST_CLIENT.ExecuteAsync(request, Method.DELETE, new CancellationTokenSource().Token);
                 if (response.IsSuccessful) {
                     onSuccess(new NetworkResponse(JObject.Parse(response.Content)));

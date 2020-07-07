@@ -64,7 +64,7 @@ namespace Musify.Pages {
         /// Plays a Song.
         /// </summary>
         /// <param name="song">Song to play</param>
-        public void PlaySong(Song song, bool shouldPlayNextSong = false) {
+        public void PlaySong(Song song, bool shouldPlayNextSong) {
             this.ShouldPlayNextSong = shouldPlayNextSong;
             if (LatestSongPlayed != null) {
                 if (Session.SongsIdPlayHistory.Count == Core.MAX_SONGS_IN_HISTORY) {
@@ -80,7 +80,9 @@ namespace Musify.Pages {
             }
             LatestAccountSongPlayed = null;
             if (LatestSongPlayed != null && LatestSongPlayed.SongId == song.SongId && latestStream != null) {
-                PlayMemoryStream(new MemoryStream(latestStream.ToArray()));
+                Task.Run(() => {
+                    PlayMemoryStream(new MemoryStream(latestStream.ToArray()), false);
+                });
                 return;
             }
             LatestSongPlayed = song;
@@ -88,13 +90,19 @@ namespace Musify.Pages {
             artistNameTextBlock.Text = song.Album.GetArtistsNames();
             if (song.IsDownloaded()) {
                 Task.Run(() => {
-                    PlayMemoryStream(song.CreateDownloadedFileStream());
+                    PlayMemoryStream(song.CreateDownloadedFileStream(), false);
                 });
             } else {
                 if (Session.SongStreamingQuality == "automaticquality") {
-                    MakeRequestStreamSong(Core.SERVER_API_URL + "/stream/song/" + song.SongId + Path.AltDirectorySeparatorChar + Session.SongStreamingQualitySelected);
+                    MakeRequestStreamSong(
+                        Core.SERVER_API_URL + "/stream/song/" + song.SongId + Path.AltDirectorySeparatorChar + 
+                        Session.SongStreamingQualitySelected
+                    );
                 } else {
-                    MakeRequestStreamSong(Core.SERVER_API_URL + "/stream/song/" + song.SongId + Path.AltDirectorySeparatorChar + Session.SongStreamingQuality);
+                    MakeRequestStreamSong(
+                        Core.SERVER_API_URL + "/stream/song/" + song.SongId + Path.AltDirectorySeparatorChar + 
+                        Session.SongStreamingQuality
+                    );
                 }
             }
             likeButton.Visibility = Visibility.Visible;
@@ -133,7 +141,7 @@ namespace Musify.Pages {
             }
             LatestSongPlayed = null;
             if (LatestAccountSongPlayed != null && LatestAccountSongPlayed.AccountSongId == accountSong.AccountSongId) {
-                PlayMemoryStream(new MemoryStream(latestStream.ToArray()));
+                PlayMemoryStream(new MemoryStream(latestStream.ToArray()), false);
                 return;
             }
             LatestAccountSongPlayed = accountSong;
@@ -156,6 +164,9 @@ namespace Musify.Pages {
                 while (!isPlayerWaveOutAvailable) {
                     Thread.Sleep(100);
                 }
+                isPlayerWaveOutAvailable = false;
+                IsStreamSongLocked = true;
+                isPlayerStopped = false;
                 try {
                     latestStream = new List<byte>();
                     using (Stream memoryStream = new MemoryStream()) {
@@ -169,7 +180,7 @@ namespace Musify.Pages {
                                 latestStream.AddRange(buffer.ToList().GetRange(0, read).ToArray());
                             }
                         }
-                        PlayMemoryStream(memoryStream);
+                        PlayMemoryStream(memoryStream, true);
                     }
                 } catch (Exception exception) {
                     Console.WriteLine("Exception@PlayerPage->MakeRequestStreamSong() -> " + exception);
@@ -183,13 +194,19 @@ namespace Musify.Pages {
         /// Attempts to play an audio stream.
         /// </summary>
         /// <param name="memoryStream">Audio stream to play</param>
-        private void PlayMemoryStream(Stream memoryStream) {
+        private void PlayMemoryStream(Stream memoryStream, bool fromRequest) {
             try {
+                if (!fromRequest) {
+                    IsStreamSongLocked = false;
+                    while (!isPlayerWaveOutAvailable) {
+                        Thread.Sleep(100);
+                    }
+                }
                 isPlayerWaveOutAvailable = false;
                 IsStreamSongLocked = true;
                 isPlayerStopped = false;
                 memoryStream.Position = 0;
-                if (memoryStream.Length != latestStream.Count) {
+                if (latestStream == null || memoryStream.Length != latestStream.Count) {
                     latestStream = (memoryStream as MemoryStream).ToArray().ToList();
                 }
                 reader = new WaveFileReader(memoryStream);
@@ -238,7 +255,7 @@ namespace Musify.Pages {
                         songSlider.IsEnabled = true;
                     });
                     while (playerWaveOut.PlaybackState == PlaybackState.Playing || isPlayerStopped) {
-                        System.Threading.Thread.Sleep(1000);
+                        Thread.Sleep(1000);
                         if (!IsStreamSongLocked) {
                             break;
                         }
@@ -370,7 +387,7 @@ namespace Musify.Pages {
                 } else {
                     if (latestStream != null) {
                         Task.Run(() => {
-                            PlayMemoryStream(new MemoryStream(latestStream.ToArray()));
+                            PlayMemoryStream(new MemoryStream(latestStream.ToArray()), false);
                         });
                     }
                 }

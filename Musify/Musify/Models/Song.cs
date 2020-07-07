@@ -157,7 +157,9 @@ namespace Musify.Models {
         /// </summary>
         /// <returns>Stream with song file bytes</returns>
         public Stream CreateDownloadedFileStream() {
-            Stream stream = new MemoryStream(File.ReadAllBytes(App.DATA_DOWNLOADS_DIRECTORY + Path.AltDirectorySeparatorChar + SongId + ".bin"));
+            Stream stream = new MemoryStream(
+                File.ReadAllBytes(App.DATA_DOWNLOADS_DIRECTORY + Path.AltDirectorySeparatorChar + SongId + ".bin")
+            );
             return stream;
         }
 

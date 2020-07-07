@@ -1,4 +1,5 @@
-﻿using Musify.Models;
+﻿using MaterialDesignThemes.Wpf;
+using Musify.Models;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -12,6 +13,11 @@ namespace Musify.Pages {
     /// Interaction logic for ConsultArtistPage.xaml
     /// </summary>
     public partial class ConsultArtistPage : Page {
+
+        private DialogOpenedEventArgs dialogOpenEventArgs;
+        private List<DataGrid> albumSongsDataGrids = new List<DataGrid>();
+        private Song selectedSong;
+
         /// <summary>
         /// Creates a new instance.
         /// </summary>
@@ -104,14 +110,16 @@ namespace Musify.Pages {
             albumDataStackPanel.Children.Add(albumDiscographyTextBlock);
             albumHeaderStackPanel.Children.Add(albumDataStackPanel);
             mainStackPanel.Children.Add(albumHeaderStackPanel);
-            DataGrid albumSongsDataGrid = new DataGrid();
-            albumSongsDataGrid.Margin = new Thickness(34, 0, 34, 0);
-            albumSongsDataGrid.ItemsSource = albumSongsList;
-            albumSongsDataGrid.CanUserSortColumns = true;
-            albumSongsDataGrid.CanUserAddRows = false;
-            albumSongsDataGrid.CanUserReorderColumns = false;
-            albumSongsDataGrid.AutoGenerateColumns = false;
-            albumSongsDataGrid.IsReadOnly = true;
+            DataGrid albumSongsDataGrid = new DataGrid {
+                Margin = new Thickness(34, 0, 34, 0),
+                ItemsSource = albumSongsList,
+                CanUserSortColumns = true,
+                CanUserAddRows = false,
+                CanUserReorderColumns = false,
+                AutoGenerateColumns = false,
+                IsReadOnly = true,
+                SelectionMode = DataGridSelectionMode.Single
+            };
             albumSongsDataGrid.MouseDoubleClick += (sender, e) => {
                 UIFunctions.SongTable_OnDoubleClick(sender, e);
                 Session.HistoryIndex = Session.SongsIdPlayHistory.Count - 1;
@@ -120,17 +128,89 @@ namespace Musify.Pages {
                     Session.SongsIdSongList.Add(albumSongsList.ElementAt(i).Song.SongId);
                 }
             };
+            albumSongsDataGrid.SelectionChanged += (sender, e) => {
+                foreach (var dataGrid in albumSongsDataGrids) {
+                    if (dataGrid == sender) {
+                        continue;
+                    }
+                    dataGrid.SelectedIndex = -1;
+                }
+                if (e.AddedItems.Count > 0) {
+                    selectedSong = ((SongTable) e.AddedItems[0]).Song;
+                }
+            };
             Dictionary<string, string> columns = new Dictionary<string, string>() {
                 { "Title", "Title" }, { "ArtistsNames", "Artista" }, { "Genre", "Género" }, { "Duration", "Duración" }
             };
             foreach (var column in columns) {
-                albumSongsDataGrid.Columns.Add(new DataGridTextColumn {
+                albumSongsDataGrid.Columns.Add(new System.Windows.Controls.DataGridTextColumn {
                     Binding = new Binding(column.Key),
                     Header = column.Value
                 });
             }
+            albumSongsDataGrids.Add(albumSongsDataGrid);
             mainStackPanel.Children.Add(albumSongsDataGrid);
             albumsStackPanel.Children.Add(mainStackPanel);
+        }
+
+        /// <summary>
+        /// Opens up a dialog to add to play queue.
+        /// </summary>
+        /// <param name="sender">MenuItem</param>
+        /// <param name="e">Event</param>
+        private void AddToQueueButton_Click(object sender, RoutedEventArgs e) {
+            DialogHost.Show(mainStackPanel, "ConsultAlbumPage_WindowDialogHost", (openSender, openEventArgs) => {
+                dialogOpenEventArgs = openEventArgs;
+                dialogAddToQueueGrid.Visibility = Visibility.Visible;
+            }, null);
+        }
+
+        /// <summary>
+        /// Adds the selected song to the beginning of the queue.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
+        private void AddToBelowButton_Click(object sender, RoutedEventArgs e) {
+            Session.SongsIdPlayQueue.Insert(0, selectedSong.SongId);
+            //songsDataGrid.SelectedIndex = -1;
+            dialogOpenEventArgs.Session.Close(true);
+            dialogAddToQueueGrid.Visibility = Visibility.Collapsed;
+        }
+
+        /// <summary>
+        /// Adds the selected song to the end of the queue.
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="e">Event</param>
+        private void AddToTheEndButton_Click(object sender, RoutedEventArgs e) {
+            Session.SongsIdPlayQueue.Add(selectedSong.SongId);
+            //songsDataGrid.SelectedIndex = -1;
+            dialogOpenEventArgs.Session.Close(true);
+            dialogAddToQueueGrid.Visibility = Visibility.Collapsed;
+        }
+
+        /// <summary>
+        /// Shows up a new window to add the selected song to a playlist.
+        /// </summary>
+        /// <param name="sender">MenuItem</param>
+        /// <param name="e">Event</param>
+        private void AddToPlaylistButton_Click(object sender, RoutedEventArgs e) {
+            new AddSongToPlaylistWindow(selectedSong).Show();
+            //songsDataGrid.SelectedIndex = -1;
+        }
+
+        /// <summary>
+        /// Generates a radio station with the selected song genre.
+        /// </summary>
+        /// <param name="sender">MenuItem</param>
+        /// <param name="e">Event</param>
+        private void GenerateRadioStationButton_Click(object sender, RoutedEventArgs e) {
+            if (Session.GenresIdRadioStations.Find(x => x == selectedSong.Genre.GenreId) == 0) {
+                Session.GenresIdRadioStations.Add(selectedSong.Genre.GenreId);
+            } else {
+                MessageBox.Show("Ya existe la estación de radio de este género.");
+            }
+            //songsDataGrid.SelectedIndex = -1;
         }
     }
 }
