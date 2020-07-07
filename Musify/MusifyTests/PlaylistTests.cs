@@ -13,7 +13,7 @@ namespace MusifyTests {
         public void FetchAccountPlaylistsTest() {
             AutoResetEvent autoResetEvent = new AutoResetEvent(false);
             bool pass = false;
-            Account.Login("freya@arkanapp.com", "1230", (account) => {
+            Account.Login("freya2@arkanapp.com", "1230", (account) => {
                 Playlist.FetchByAccountId(account.AccountId, (playlists) => {
                     pass = true;
                     autoResetEvent.Set();
@@ -38,7 +38,7 @@ namespace MusifyTests {
         public void FetchPlaylistSongsTest() {
             AutoResetEvent autoResetEvent = new AutoResetEvent(false);
             bool pass = false;
-            Account.Login("freya@arkanapp.com", "1230", (account) => {
+            Account.Login("freya2@arkanapp.com", "1230", (account) => {
                 Playlist.FetchByAccountId(account.AccountId, (playlists) => {
                     if (playlists.Count == 0) {
                         autoResetEvent.Set();
@@ -73,7 +73,7 @@ namespace MusifyTests {
         public void CreatePlaylistTest() {
             AutoResetEvent autoResetEvent = new AutoResetEvent(false);
             bool pass = false;
-            Account.Login("freya@arkanapp.com", "1230", (account) => {
+            Account.Login("freya2@arkanapp.com", "1230", (account) => {
                 Playlist playlist = new Playlist {
                     AccountId = account.AccountId,
                     Name = "Playlist Test"
@@ -102,7 +102,7 @@ namespace MusifyTests {
         public void RenamePlaylistTest() {
             AutoResetEvent autoResetEvent = new AutoResetEvent(false);
             bool pass = false;
-            Account.Login("freya@arkanapp.com", "1230", (account) => {
+            Account.Login("freya2@arkanapp.com", "1230", (account) => {
                 Playlist.FetchByAccountId(account.AccountId, (playlists) => {
                     if (playlists.Count == 0) {
                         autoResetEvent.Set();
@@ -139,7 +139,7 @@ namespace MusifyTests {
         public void AddSongTest() {
             AutoResetEvent autoResetEvent = new AutoResetEvent(false);
             bool pass = false;
-            Account.Login("freya@arkanapp.com", "1230", (account) => {
+            Account.Login("freya2@arkanapp.com", "1230", (account) => {
                 Playlist.FetchByAccountId(account.AccountId, (playlists) => {
                     if (playlists.Count == 0) {
                         autoResetEvent.Set();
@@ -178,7 +178,7 @@ namespace MusifyTests {
         public void DeleteSongTest() {
             AutoResetEvent autoResetEvent = new AutoResetEvent(false);
             bool pass = false;
-            Account.Login("freya@arkanapp.com", "1230", (account) => {
+            Account.Login("freya2@arkanapp.com", "1230", (account) => {
                 Playlist.FetchByAccountId(account.AccountId, (playlists) => {
                     if (playlists.Count == 0) {
                         autoResetEvent.Set();
@@ -217,7 +217,7 @@ namespace MusifyTests {
         public void DeletePlaylistTest() {
             AutoResetEvent autoResetEvent = new AutoResetEvent(false);
             bool pass = false;
-            Account.Login("freya@arkanapp.com", "1230", (account) => {
+            Account.Login("freya2@arkanapp.com", "1230", (account) => {
                 Playlist.FetchByAccountId(account.AccountId, (playlists) => {
                     if (playlists.Count == 0) {
                         autoResetEvent.Set();

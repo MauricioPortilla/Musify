@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Musify.Models;
@@ -13,7 +14,7 @@ namespace MusifyTests {
         public void LoginWithExistentAccountTest() {
             AutoResetEvent autoResetEvent = new AutoResetEvent(false);
             bool pass = false;
-            Account.Login("frey@arkanapp.com", "1230", (account) => {
+            Account.Login("freya@arkanapp.com", "1230", (account) => {
                 pass = true;
                 autoResetEvent.Set();
             }, (errorResponse) => {
@@ -35,6 +36,7 @@ namespace MusifyTests {
             Account.Login("mlum@arkanapp.com", "123123", (account) => {
                 autoResetEvent.Set();
             }, (errorResponse) => {
+                pass = true;
                 autoResetEvent.Set();
             }, () => {
                 autoResetEvent.Set();
@@ -84,6 +86,7 @@ namespace MusifyTests {
             account.Register(false, () => {
                 autoResetEvent.Set();
             }, (errorResponse) => {
+                pass = true;
                 autoResetEvent.Set();
             }, () => {
                 autoResetEvent.Set();
@@ -100,7 +103,7 @@ namespace MusifyTests {
             AutoResetEvent autoResetEvent = new AutoResetEvent(false);
             bool pass = false;
             Account account = new Account {
-                Email = "freya@arkanapp.com",
+                Email = "freya2@arkanapp.com",
                 Password = "1230",
                 Name = "Freya",
                 LastName = "Stroud"
@@ -200,7 +203,7 @@ namespace MusifyTests {
             AutoResetEvent autoResetEvent = new AutoResetEvent(false);
             bool pass = false;
             string[] fileSongsPath = {
-                ""
+                Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/Postman/files/The Eden Project - Statues ft.mp3"
             };
             Account.Login("freya@arkanapp.com", "1230", (account) => {
                 account.AddAccountSongs(fileSongsPath, () => {
@@ -370,7 +373,7 @@ namespace MusifyTests {
         public void FetchSubscriptionTest() {
             AutoResetEvent autoResetEvent = new AutoResetEvent(false);
             bool pass = false;
-            Account.Login("freya@arkanapp.com", "1230", (account) => {
+            Account.Login("freya2@arkanapp.com", "1230", (account) => {
                 account.FetchSubscription((subscription) => {
                     pass = true;
                     autoResetEvent.Set();
@@ -395,7 +398,7 @@ namespace MusifyTests {
         public void SubscribeTest() {
             AutoResetEvent autoResetEvent = new AutoResetEvent(false);
             bool pass = false;
-            Account.Login("freya@arkanapp.com", "1230", (account) => {
+            Account.Login("freya2@arkanapp.com", "1230", (account) => {
                 account.Subscribe((subscription) => {
                     pass = true;
                     autoResetEvent.Set();

@@ -13,7 +13,7 @@ namespace MusifyTests {
             AutoResetEvent autoResetEvent = new AutoResetEvent(false);
             bool pass = false;
             Account.Login("freya@arkanapp.com", "1230", (account) => {
-                Song.FetchByTitleCoincidences("ori", (songs) => {
+                Song.FetchByTitleCoincidences("song", (songs) => {
                     pass = songs.Count > 0;
                     autoResetEvent.Set();
                 }, (errorResponse) => {

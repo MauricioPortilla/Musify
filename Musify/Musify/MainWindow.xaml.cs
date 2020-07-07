@@ -20,6 +20,7 @@ namespace Musify {
         public MainWindow() {
             InitializeComponent();
             mainFrame.Source = new Uri("Pages/PlaylistsPage.xaml", UriKind.RelativeOrAbsolute);
+            Session.PlayerPage = new PlayerPage();
             playerFrame.Navigate(Session.PlayerPage);
             LoadConfiguration();
             if (Session.Account.Subscription != null) {

@@ -84,7 +84,7 @@ namespace Musify.Models {
         public void Register(bool isArtist, Action onSuccess, Action<NetworkResponse> onFailure, Action onError, string artisticName = null) {
             var accountData = new {
                 email = Email,
-                passsword = Password,
+                password = Password,
                 name = Name,
                 last_name = LastName,
                 is_artist = isArtist,

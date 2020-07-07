@@ -82,7 +82,7 @@ namespace MusifyTests {
             AutoResetEvent autoResetEvent = new AutoResetEvent(false);
             bool pass = false;
             Account.Login("freya@arkanapp.com", "1230", (account) => {
-                Album.FetchByNameCoincidences("ori", (albums) => {
+                Album.FetchByNameCoincidences("Alb", (albums) => {
                     pass = albums.Count > 0;
                     autoResetEvent.Set();
                 }, (errorResponse) => {

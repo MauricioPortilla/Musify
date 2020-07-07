@@ -10,7 +10,7 @@ namespace Musify {
         public static readonly RestClient REST_CLIENT = new RestClient(Core.SERVER_API_URL);
         public static Account Account { get; set; }
         public static MainWindow MainWindow { get; set; }
-        public static PlayerPage PlayerPage { get; set; } = new PlayerPage();
+        public static PlayerPage PlayerPage { get; set; }
         public static List<int> SongsIdPlayQueue { get; set; } = new List<int>();
         public static List<int> SongsIdPlayHistory { get; set; } = new List<int>();
         public static List<int> GenresIdRadioStations { get; set; } = new List<int>();
