@@ -77,8 +77,8 @@ namespace Musify.Pages {
             }, () => {
                 MessageBox.Show("Ocurrió un error al cargar el artista.");
             });
-            StackPanel mainStackPanel = new StackPanel();
-            mainStackPanel.Orientation = Orientation.Vertical;
+            StackPanel stackPanel = new StackPanel();
+            stackPanel.Orientation = Orientation.Vertical;
             StackPanel albumHeaderStackPanel = new StackPanel();
             albumHeaderStackPanel.Orientation = Orientation.Horizontal;
             Image albumImage = new Image();
@@ -109,7 +109,7 @@ namespace Musify.Pages {
             albumDiscographyTextBlock.FontSize = 11;
             albumDataStackPanel.Children.Add(albumDiscographyTextBlock);
             albumHeaderStackPanel.Children.Add(albumDataStackPanel);
-            mainStackPanel.Children.Add(albumHeaderStackPanel);
+            stackPanel.Children.Add(albumHeaderStackPanel);
             DataGrid albumSongsDataGrid = new DataGrid {
                 Margin = new Thickness(34, 0, 34, 0),
                 ItemsSource = albumSongsList,
@@ -149,8 +149,8 @@ namespace Musify.Pages {
                 });
             }
             albumSongsDataGrids.Add(albumSongsDataGrid);
-            mainStackPanel.Children.Add(albumSongsDataGrid);
-            albumsStackPanel.Children.Add(mainStackPanel);
+            stackPanel.Children.Add(albumSongsDataGrid);
+            albumsStackPanel.Children.Add(stackPanel);
         }
 
         /// <summary>
@@ -172,7 +172,6 @@ namespace Musify.Pages {
         /// <param name="e">Event</param>
         private void AddToBelowButton_Click(object sender, RoutedEventArgs e) {
             Session.SongsIdPlayQueue.Insert(0, selectedSong.SongId);
-            //songsDataGrid.SelectedIndex = -1;
             dialogOpenEventArgs.Session.Close(true);
             dialogAddToQueueGrid.Visibility = Visibility.Collapsed;
         }
@@ -184,7 +183,6 @@ namespace Musify.Pages {
         /// <param name="e">Event</param>
         private void AddToTheEndButton_Click(object sender, RoutedEventArgs e) {
             Session.SongsIdPlayQueue.Add(selectedSong.SongId);
-            //songsDataGrid.SelectedIndex = -1;
             dialogOpenEventArgs.Session.Close(true);
             dialogAddToQueueGrid.Visibility = Visibility.Collapsed;
         }
@@ -196,7 +194,6 @@ namespace Musify.Pages {
         /// <param name="e">Event</param>
         private void AddToPlaylistButton_Click(object sender, RoutedEventArgs e) {
             new AddSongToPlaylistWindow(selectedSong).Show();
-            //songsDataGrid.SelectedIndex = -1;
         }
 
         /// <summary>
@@ -210,7 +207,6 @@ namespace Musify.Pages {
             } else {
                 MessageBox.Show("Ya existe la estación de radio de este género.");
             }
-            //songsDataGrid.SelectedIndex = -1;
         }
     }
 }
