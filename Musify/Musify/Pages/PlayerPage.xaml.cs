@@ -203,6 +203,7 @@ namespace Musify.Pages {
                 isPlayerWaveOutAvailable = false;
                 IsStreamSongLocked = true;
                 isPlayerStopped = false;
+                ShouldPlayNextSong = true;
                 memoryStream.Position = 0;
                 if (latestStream == null || memoryStream.Length != latestStream.Count) {
                     latestStream = (memoryStream as MemoryStream).ToArray().ToList();
