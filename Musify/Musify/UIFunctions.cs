@@ -19,7 +19,8 @@ namespace Musify {
                 if (grid != null && grid.SelectedItems != null && grid.SelectedItems.Count == 1) {
                     var songRow = (SongTable) grid.SelectedItem;
                     Song song = songRow.Song;
-                    Session.PlayerPage.PlaySong(song, false);
+                    Session.PlayerPage.ShouldPlayNextSong = false;
+                    Session.PlayerPage.PlaySong(song);
                 }
             }
         }
@@ -36,7 +37,8 @@ namespace Musify {
                 if (grid != null && grid.SelectedItems != null && grid.SelectedItems.Count == 1) {
                     var accountSongRow = (AccountSongTable) grid.SelectedItem;
                     AccountSong accountSong = accountSongRow.AccountSong;
-                    Session.PlayerPage.PlayAccountSong(accountSong, false);
+                    Session.PlayerPage.ShouldPlayNextSong = false;
+                    Session.PlayerPage.PlayAccountSong(accountSong);
                 }
             }
         }

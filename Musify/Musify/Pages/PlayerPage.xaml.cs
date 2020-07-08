@@ -64,8 +64,7 @@ namespace Musify.Pages {
         /// Plays a Song.
         /// </summary>
         /// <param name="song">Song to play</param>
-        public void PlaySong(Song song, bool shouldPlayNextSong) {
-            this.ShouldPlayNextSong = shouldPlayNextSong;
+        public void PlaySong(Song song) {
             if (LatestSongPlayed != null) {
                 if (Session.SongsIdPlayHistory.Count == Core.MAX_SONGS_IN_HISTORY) {
                     Session.SongsIdPlayHistory.RemoveAt(0);
@@ -125,8 +124,7 @@ namespace Musify.Pages {
         /// Plays an AccountSong.
         /// </summary>
         /// <param name="accountSong">Account song to play</param>
-        public void PlayAccountSong(AccountSong accountSong, bool shouldPlayNextSong) {
-            this.ShouldPlayNextSong = shouldPlayNextSong;
+        public void PlayAccountSong(AccountSong accountSong) {
             if (LatestAccountSongPlayed != null) {
                 if (Session.SongsIdPlayHistory.Count == Core.MAX_SONGS_IN_HISTORY) {
                     Session.SongsIdPlayHistory.RemoveAt(0);
@@ -340,7 +338,8 @@ namespace Musify.Pages {
                             if (Session.SongsIdPlayHistory.Count == Core.MAX_SONGS_IN_HISTORY) {
                                 Session.HistoryIndex--;
                             }
-                            Session.PlayerPage.PlaySong(song, false);
+                            ShouldPlayNextSong = false;
+                            Session.PlayerPage.PlaySong(song);
                             RefreshPage(false);
                         }, (errorResponse) => {
                             MessageBox.Show(errorResponse.Message);
@@ -353,7 +352,8 @@ namespace Musify.Pages {
                             if (Session.SongsIdPlayHistory.Count == Core.MAX_SONGS_IN_HISTORY) {
                                 Session.HistoryIndex--;
                             }
-                            Session.PlayerPage.PlayAccountSong(accountSong, false);
+                            ShouldPlayNextSong = false;
+                            Session.PlayerPage.PlayAccountSong(accountSong);
                             RefreshPage(true);
                         }, (errorResponse) => {
                             MessageBox.Show(errorResponse.Message);
@@ -401,6 +401,7 @@ namespace Musify.Pages {
         /// <param name="sender">Forward button</param>
         /// <param name="e">Button event</param>
         private void ForwardButton_Click(object sender, RoutedEventArgs e) {
+            ShouldPlayNextSong = false;
             PlayNextSong();
         }
 
@@ -427,7 +428,7 @@ namespace Musify.Pages {
                     };
                     if (id > 0) {
                         Song.FetchById(id, (song) => {
-                            Session.PlayerPage.PlaySong(song, true);
+                            Session.PlayerPage.PlaySong(song);
                             update();
                         }, (errorResponse) => {
                             MessageBox.Show(errorResponse.Message);
@@ -436,7 +437,7 @@ namespace Musify.Pages {
                         });
                     } else {
                         AccountSong.FetchById(id * -1, (accountSong) => {
-                            Session.PlayerPage.PlayAccountSong(accountSong, true);
+                            Session.PlayerPage.PlayAccountSong(accountSong);
                             update();
                         }, (errorResponse) => {
                             MessageBox.Show(errorResponse.Message);
